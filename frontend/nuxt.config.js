@@ -21,11 +21,11 @@ if (result.error) {
 
 const config = {
   head: {
-    title: 'DHA',
+    title: 'TIP',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'DHA' }
+      { hid: 'description', name: 'description', content: 'TIP' }
     ],
     link: [
       { rel: 'icon', type: 'image/ico', href: '/favicon.ico' },
