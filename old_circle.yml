@@ -1,0 +1,68 @@
+machine:
+  python:
+    version: 3.6.0
+  node:
+    version: 9.0.0
+  environment:
+    DATABASE_URL: localhost
+    PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
+  services:
+    # - docker
+    - postgresql
+    - redis
+  pre:
+    # - sudo curl -L -o /usr/bin/docker 'http://s3-external-1.amazonaws.com/circle-downloads/docker-1.9.1-circleci'
+    # - sudo chmod 0755 /usr/bin/docker
+
+dependencies:
+  pre:
+    - curl -L -o google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    - sudo dpkg -i google-chrome.deb
+    - sudo sed -i 's|HERE/chrome\"|HERE/chrome\" --disable-setuid-sandbox|g' /opt/google/chrome/google-chrome
+    - rm google-chrome.deb
+    - sudo apt-get update && sudo apt-get install -y gettext  # django i18n needs this
+    - sudo sh -c 'echo "127.0.0.1 redis" >> /etc/hosts'  # so that redis is available under 'redis' like in docker
+  cache_directories:
+    - "frontend/node_modules"
+    - "~/.cache/yarn"
+  override:
+    # - sudo pip install docker-compose
+    - cd frontend && yarn
+    #- cd frontend && npm install -g webpack
+    - npm install -g mapshaper
+    - cd django && pip install -r requirements.txt
+    - cd django && python manage.py migrate
+#    - cd frontend && npm run e2e-server-circleci:
+#          background: true
+#    - sleep 5
+
+test:
+  pre:
+    - cd django && flake8
+    - cd django && CI_RUN=True py.test --cov --cov-report html --cov-fail-under 100 --cov-report term-missing --cov-config .coveragerc
+    - cd frontend && yarn test:ci
+    # - docker build ./django
+    # - docker-compose up -d
+    # - docker exec -it whomaps_django_1 python manage.py migrate
+    # - docker exec -it whomaps_django_1 python manage.py test
+
+deployment:
+ dev:
+   branch: master
+   commands:
+     - cd django && fab dev deploy
+
+general:
+  branches:
+    ignore:
+      - gh-pages
+      - site-build
+  artifacts:
+    - "frontend/coverage"
+    - "django/htmlcov"
+
+experimental:
+  notify:
+    branches:
+      ignore:
+        - site-build
