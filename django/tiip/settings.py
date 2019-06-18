@@ -69,7 +69,7 @@ MIDDLEWARE = [
     'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
-ROOT_URLCONF = 'tip.urls'
+ROOT_URLCONF = 'tiip.urls'
 
 TEMPLATES = [
     {
@@ -89,7 +89,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'tip.wsgi.application'
+WSGI_APPLICATION = 'tiip.wsgi.application'
 
 
 # Database
@@ -372,8 +372,8 @@ else:
 
 
 if CI_RUN:
-    STATIC_ROOT = "/root/tip/nginx/site/static/"
-    MEDIA_ROOT = "/root/tip/django/media/"
+    STATIC_ROOT = "/root/tiip/nginx/site/static/"
+    MEDIA_ROOT = "/root/tiip/django/media/"
 
 OSM_MAP_CLI_KEY = 'a9ea45b5-ab37-4323-8263-767aa5896113'
 
