@@ -263,26 +263,24 @@ if SITE_ID in [3, 4]:
                 }
             })
 
-    RAVEN_CONFIG = {
-        'dsn': 'http://cea32567f8aa4eefa4d2051848d37dea:a884ff71e8ae444c8a40af705699a19c@sentry.vidzor.com/12',
-    }
+# TODO: Change this for prod/dev
+RAVEN_CONFIG = {
+    'dsn': 'https://98baba479feb4b5ba8a4b49d30087045:caef26d719b645a1af65eaf8c156d073@sentry.vidzor.com/20',
+}
+DEBUG = False
 
-    DEBUG = False
+ALLOWED_HOSTS = ['.tipp.pulilab.com', 'nginx:9010', 'nginx']
 
-    ALLOWED_HOSTS = ['.digitalhealthatlas.org', '.prod.whomaps.pulilab.com',
-                     '.qa.whomaps.pulilab.com', '.dhatlas.org',
-                     '.digitalhealthatlas.com', '.v3.dha.pulilab.com', 'nginx:9010', 'nginx']
+EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 
-    EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
-
-    REST_FRAMEWORK = {
-        'DEFAULT_AUTHENTICATION_CLASSES': (
-            'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        ),
-        'DEFAULT_RENDERER_CLASSES': (
-            'rest_framework.renderers.JSONRenderer',
-        )
-    }
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
+}
 
 CACHES = {
     "default": {
