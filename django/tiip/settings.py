@@ -263,34 +263,34 @@ if SITE_ID in [3, 4]:
                 }
             })
 
-# TODO: Change this for prod/dev
-RAVEN_CONFIG = {
-    'dsn': 'https://98baba479feb4b5ba8a4b49d30087045:caef26d719b645a1af65eaf8c156d073@sentry.vidzor.com/20',
-}
-DEBUG = False
+    # TODO: Change this for prod/dev
+    RAVEN_CONFIG = {
+        'dsn': 'https://98baba479feb4b5ba8a4b49d30087045:caef26d719b645a1af65eaf8c156d073@sentry.vidzor.com/20',
+    }
+    DEBUG = False
 
-ALLOWED_HOSTS = ['.tipp.pulilab.com', 'nginx:9010', 'nginx']
+    ALLOWED_HOSTS = ['.tipp.pulilab.com', 'nginx:9010', 'nginx']
 
-EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
+    EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-    ),
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-    )
-}
+    REST_FRAMEWORK = {
+        'DEFAULT_AUTHENTICATION_CLASSES': (
+            'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        ),
+        'DEFAULT_RENDERER_CLASSES': (
+            'rest_framework.renderers.JSONRenderer',
+        )
+    }
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://{}:6379/1".format(REDIS_URL),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": "redis://{}:6379/1".format(REDIS_URL),
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            }
         }
     }
-}
 
 if SITE_ID in [3]:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
