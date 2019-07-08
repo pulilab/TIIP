@@ -216,7 +216,7 @@ ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_ADAPTER = 'user.adapters.DefaultAccountAdapterCustom'
 ACCOUNT_EMAIL_SUBJECT_PREFIX = ""
 ACCOUNT_EMAIL_CONFIRMATION_HMAC = False  # This is for backwards compat, should move to True to not store it in DB
-DEFAULT_FROM_EMAIL = "Digital Health Atlas <noreply@dhatlas.org>"
+DEFAULT_FROM_EMAIL = "UNICEF T4D & Innovation Inventory Portal <noreply@tiip.org>"
 
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -245,10 +245,10 @@ ODK_SYNC_ENABLED = bool(os.environ.get('ODK_SYNC_ENABLED', False))
 # PRODUCTION SETTINGS
 if SITE_ID in [3, 4]:
     CELERYBEAT_SCHEDULE = {
-        "send_daily_toolkit_digest": {
-            "task": 'send_daily_toolkit_digest',
-            "schedule": datetime.timedelta(hours=TOOLKIT_DIGEST_PERIOD),
-        },
+        # "send_daily_toolkit_digest": {
+        #     "task": 'send_daily_toolkit_digest',
+        #     "schedule": datetime.timedelta(hours=TOOLKIT_DIGEST_PERIOD),
+        # },
         "send_project_approval_digest": {
             "task": 'send_project_approval_digest',
             "schedule": datetime.timedelta(days=1),
@@ -263,7 +263,6 @@ if SITE_ID in [3, 4]:
                 }
             })
 
-    # TODO: Change this for prod/dev
     RAVEN_CONFIG = {
         'dsn': 'https://98baba479feb4b5ba8a4b49d30087045:caef26d719b645a1af65eaf8c156d073@sentry.vidzor.com/20',
     }
@@ -292,20 +291,20 @@ if SITE_ID in [3, 4]:
         }
     }
 
-if SITE_ID in [3]:
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+    if SITE_ID in [3]:
+        SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+        SECURE_SSL_REDIRECT = True
+        SESSION_COOKIE_SECURE = True
+        CSRF_COOKIE_SECURE = True
 
-# Mailgun settings
-EMAIL_USE_TLS = True
-EMAIL_HOST = "smtp.mailgun.org"
-EMAIL_HOST_USER = "postmaster@whomaps.pulilab.com"
-EMAIL_HOST_PASSWORD = "5ede15430fbf90989648a0fe12e379cc"
-EMAIL_PORT = 587
+    # Mailgun settings
+    EMAIL_USE_TLS = True
+    EMAIL_HOST = "smtp.mailgun.org"
+    EMAIL_HOST_USER = "postmaster@whomaps.pulilab.com"
+    EMAIL_HOST_PASSWORD = "5ede15430fbf90989648a0fe12e379cc"
+    EMAIL_PORT = 587
 
-FROM_EMAIL = DEFAULT_FROM_EMAIL
+    FROM_EMAIL = DEFAULT_FROM_EMAIL
 
 
 # Geodata settings
