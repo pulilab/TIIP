@@ -370,8 +370,8 @@ else:
 
 
 if CI_RUN:
-    STATIC_ROOT = "/root/tiip/nginx/site/static/"
-    MEDIA_ROOT = "/root/tiip/django/media/"
+    STATIC_ROOT = "/home/circleci/tiip/nginx/site/static/"
+    MEDIA_ROOT = "/home/circleci/tiip/django/media/"
 
 OSM_MAP_CLI_KEY = 'a9ea45b5-ab37-4323-8263-767aa5896113'
 
