@@ -292,11 +292,10 @@ if SITE_ID in [3, 4]:
         }
     }
 
-    if SITE_ID in [3]:
-        SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-        SECURE_SSL_REDIRECT = True
-        SESSION_COOKIE_SECURE = True
-        CSRF_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
     # Mailgun settings
     EMAIL_USE_TLS = True
