@@ -253,6 +253,10 @@ if SITE_ID in [3, 4]:
         "send_project_approval_digest": {
             "task": 'send_project_approval_digest',
             "schedule": datetime.timedelta(days=1),
+        },
+        "project_still_in_draft_notification": {
+            "task": 'project_still_in_draft_notification',
+            "schedule": datetime.timedelta(days=31),
         }
     }
     if ODK_SYNC_ENABLED:
