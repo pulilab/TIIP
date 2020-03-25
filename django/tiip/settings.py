@@ -257,7 +257,11 @@ if SITE_ID in [3, 4]:
         "project_still_in_draft_notification": {
             "task": 'project_still_in_draft_notification',
             "schedule": datetime.timedelta(days=31),
-        }
+        },
+        "published_projects_updated_long_ago": {
+            "task": 'published_projects_updated_long_ago',
+            "schedule": datetime.timedelta(days=31),
+        },
     }
     if ODK_SYNC_ENABLED:
         CELERYBEAT_SCHEDULE.update(
