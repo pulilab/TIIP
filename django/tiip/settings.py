@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
-    'rest_auth.registration',
     'ordered_model',
     'rosetta',
     'allauth',
