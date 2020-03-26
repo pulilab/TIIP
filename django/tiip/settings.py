@@ -210,6 +210,20 @@ REST_AUTH_REGISTER_SERIALIZERS = {
     'REGISTER_SERIALIZER': 'user.serializers.RegisterWithProfileSerializer'
 }
 
+SOCIALACCOUNT_PROVIDERS = {
+    'azure': {
+        'APP': {
+            'client_id': os.environ.get('AZURE_CLIENT_ID', ''),
+            'secret': os.environ.get('AZURE_SECRET', ''),
+        },
+    }
+}
+SOCIALACCOUNT_ADAPTER = 'user.adapters.MyAzureAccountAdapter'
+SOCIALACCOUNT_AZURE_TENANT = os.environ.get('AZURE_TENANT', '')
+SOCIALACCOUNT_CALLBACK_URL = os.environ.get('AZURE_CALLBACK_URL', 'http://localhost/accounts/azure/login/callback/')
+LOGIN_REDIRECT_URL = '/'
+
+
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_UNIQUE_EMAIL = True
