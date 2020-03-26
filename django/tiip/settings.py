@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'azure',
     'corsheaders',
     'djcelery_email',
     'simple_history',
