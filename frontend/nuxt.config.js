@@ -141,7 +141,7 @@ const config = {
     retry: false
   },
   router: {
-    middleware: ['auth'],
+    middleware: ['auth', 'reset'],
     base: '/',
     scrollBehavior (to, from, savedPosition) {
       if (savedPosition) {
