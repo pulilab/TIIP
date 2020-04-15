@@ -222,6 +222,8 @@ DEFAULT_FROM_EMAIL = "UNICEF T4D & Innovation Inventory Portal <noreply@tiip.org
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+EMAIL_SENDING_PRODUCTION = os.environ.get('EMAIL_SENDING_PRODUCTION', False)
+
 REDIS_URL = os.environ.get('REDIS_URL', 'redis')
 
 # Celery settings
@@ -253,7 +255,15 @@ if SITE_ID in [3, 4]:
         "send_project_approval_digest": {
             "task": 'send_project_approval_digest',
             "schedule": datetime.timedelta(days=1),
-        }
+        },
+        "project_still_in_draft_notification": {
+            "task": 'project_still_in_draft_notification',
+            "schedule": datetime.timedelta(days=31),
+        },
+        "published_projects_updated_long_ago": {
+            "task": 'published_projects_updated_long_ago',
+            "schedule": datetime.timedelta(days=31),
+        },
     }
     if ODK_SYNC_ENABLED:
         CELERYBEAT_SCHEDULE.update(
