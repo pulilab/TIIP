@@ -1,6 +1,7 @@
 import os
 import datetime
 import sys
+from distutils.util import strtobool
 from django.utils.translation import ugettext_lazy as _
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -10,10 +11,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'qu1nafi=f@#w8fz&)(i4h*-1@!gm4)dg^^@vt7!fhwjo!6qh9z'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'qu1nafi=f@#w8fz&)(i4h*-1@!gm4)dg^^@vt7!fhwjo!6qh9z')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(strtobool(os.environ.get('DEBUG', 'False')))
 
 ALLOWED_HOSTS = ['.localhost', '.dev.whomaps.pulilab.com', '*']
 
@@ -35,12 +35,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
-    'rest_auth.registration',
     'ordered_model',
     'rosetta',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'azure',
     'corsheaders',
     'djcelery_email',
     'simple_history',
@@ -210,6 +210,20 @@ REST_AUTH_REGISTER_SERIALIZERS = {
     'REGISTER_SERIALIZER': 'user.serializers.RegisterWithProfileSerializer'
 }
 
+SOCIALACCOUNT_PROVIDERS = {
+    'azure': {
+        'APP': {
+            'client_id': os.environ.get('AZURE_CLIENT_ID', ''),
+            'secret': os.environ.get('AZURE_SECRET', ''),
+        },
+    }
+}
+SOCIALACCOUNT_ADAPTER = 'user.adapters.MyAzureAccountAdapter'
+SOCIALACCOUNT_AZURE_TENANT = os.environ.get('AZURE_TENANT', '')
+SOCIALACCOUNT_CALLBACK_URL = os.environ.get('AZURE_CALLBACK_URL', 'http://localhost/accounts/azure/login/callback/')
+LOGIN_REDIRECT_URL = '/'
+
+
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_UNIQUE_EMAIL = True
@@ -221,6 +235,8 @@ DEFAULT_FROM_EMAIL = "UNICEF T4D & Innovation Inventory Portal <noreply@tiip.org
 
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+EMAIL_SENDING_PRODUCTION = os.environ.get('EMAIL_SENDING_PRODUCTION', False)
 
 REDIS_URL = os.environ.get('REDIS_URL', 'redis')
 
@@ -253,7 +269,15 @@ if SITE_ID in [3, 4]:
         "send_project_approval_digest": {
             "task": 'send_project_approval_digest',
             "schedule": datetime.timedelta(days=1),
-        }
+        },
+        "project_still_in_draft_notification": {
+            "task": 'project_still_in_draft_notification',
+            "schedule": datetime.timedelta(days=31),
+        },
+        "published_projects_updated_long_ago": {
+            "task": 'published_projects_updated_long_ago',
+            "schedule": datetime.timedelta(days=31),
+        },
     }
     if ODK_SYNC_ENABLED:
         CELERYBEAT_SCHEDULE.update(
