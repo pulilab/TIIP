@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'azure',
     'rest_auth',
+    'rest_auth.registration',
     'rest_framework',
     'rest_framework.authtoken',
     'django_extensions',
