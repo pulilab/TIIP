@@ -49,6 +49,7 @@ const config = {
     loginUrl: loginUrl
   },
   plugins: [
+    { src: '~plugins/eventfix.js', ssr: false },
     { src: '~plugins/extends.js', ssr: false },
     { src: '~plugins/axios.js', ssr: true },
     { src: '~plugins/vee-validate.js', ssr: true },
@@ -142,23 +143,7 @@ const config = {
   },
   router: {
     middleware: ['auth', 'reset'],
-    base: '/',
-    scrollBehavior (to, from, savedPosition) {
-      if (savedPosition) {
-        return savedPosition;
-      } else {
-        let position = {};
-        if (to.matched.length < 2) {
-          position = { x: 0, y: 0 };
-        } else if (to.matched.some(r => r.components.default.options.scrollToTop)) {
-          position = { x: 0, y: 0 };
-        }
-        if (to.hash) {
-          position = { selector: to.hash };
-        }
-        return position;
-      }
-    }
+    base: '/'
   },
   // purgeCSS: {
   //   whitelistPatterns: () => [/\b[^\s]*(nuxt|leaflet|vue2-leaflet|el)[^\s]*\b/]
@@ -180,6 +165,11 @@ const config = {
     optimization: {},
     transpile: ['redux', 'redux-async-thunk'],
     extend (config, { isDev }) {
+      config.plugins.forEach(function (plugin) {
+        if (plugin.constructor && plugin.constructor.name === 'ExtractCssChunksPlugin') {
+          plugin.options.ignoreOrder = true;
+        }
+      });
       config.module.rules.push({
         test: /\.html$/,
         loader: 'html-loader',
