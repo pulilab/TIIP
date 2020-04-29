@@ -205,10 +205,7 @@ AUTHENTICATION_BACKENDS = (
 REST_USE_JWT = True
 REST_AUTH_SERIALIZERS = {
     'JWT_SERIALIZER': 'user.serializers.ProfileJWTSerializer',
-    'PASSWORD_RESET_SERIALIZER': 'user.serializers.PasswordResetHTMLEmailSerializer'
-}
-REST_AUTH_REGISTER_SERIALIZERS = {
-    'REGISTER_SERIALIZER': 'user.serializers.RegisterWithProfileSerializer'
+    # 'PASSWORD_RESET_SERIALIZER': 'user.serializers.PasswordResetHTMLEmailSerializer'
 }
 
 SOCIALACCOUNT_PROVIDERS = {
