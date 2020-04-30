@@ -286,12 +286,9 @@ if SITE_ID in [3, 4]:
                 }
             })
 
-    RAVEN_CONFIG = {
-        'dsn': 'https://98baba479feb4b5ba8a4b49d30087045:caef26d719b645a1af65eaf8c156d073@sentry.vidzor.com/20',
-    }
     DEBUG = False
 
-    ALLOWED_HOSTS = ['.tipp.pulilab.com', 'nginx:9010', 'nginx']
+    ALLOWED_HOSTS = ['uni-tiip-dev', '40.113.114.39', 'tiip.unitst.org', '.tipp.pulilab.com', 'nginx:9010', 'nginx']
 
     EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 
