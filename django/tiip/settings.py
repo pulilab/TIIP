@@ -386,10 +386,10 @@ for arg in sys.argv:
     if 'test' in arg:
         DEFAULT_FILE_STORAGE = 'inmemorystorage.InMemoryStorage'
 
-if SITE_ID == 3:
+if SITE_ID == 4:
     ENVIRONMENT_NAME = "PRODUCTION"
     ENVIRONMENT_COLOR = "red"
-elif SITE_ID == 4:
+elif SITE_ID == 3:
     ENVIRONMENT_NAME = "QA / STAGING"
     ENVIRONMENT_COLOR = "orange"
 else:
@@ -402,6 +402,7 @@ if CI_RUN:
     MEDIA_ROOT = "/home/circleci/tiip/django/media/"
 
 OSM_MAP_CLI_KEY = 'a9ea45b5-ab37-4323-8263-767aa5896113'
+CSRF_TRUSTED_ORIGINS = ['uni-tiip-dev', '40.113.114.39', 'tiip.unitst.org', 'tipp.pulilab.com']
 
 # Uncomment these lines if you want to redirect all emails to the forced addresses
 # EMAIL_BACKEND = 'core.middleware.TestCeleryEmailBackend'
