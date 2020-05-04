@@ -259,8 +259,6 @@ ODK_SYNC_ENABLED = bool(os.environ.get('ODK_SYNC_ENABLED', False))
 
 # PRODUCTION SETTINGS
 if SITE_ID in [3, 4]:
-    reminder_schedule_kwargs = dict(days=31)
-
     if SITE_ID == 3:  # QA
         # Mailgun settings
         EMAIL_USE_TLS = True
@@ -274,7 +272,6 @@ if SITE_ID in [3, 4]:
         RAVEN_CONFIG = {
             'dsn': 'https://0b6cb1cc48594b499991547adb024864:f851242c5437437ca866e749c965d8ec@sentry.vidzor.com/29',
         }
-        reminder_schedule_kwargs = dict(hours=1)
     elif SITE_ID == 4:  # PROD AZURE
         EMAIL_HOST = "extmail01.unicef.org"
         EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
@@ -294,11 +291,11 @@ if SITE_ID in [3, 4]:
         },
         "project_still_in_draft_notification": {
             "task": 'project_still_in_draft_notification',
-            "schedule": datetime.timedelta(**reminder_schedule_kwargs),
+            "schedule": datetime.timedelta(days=31),
         },
         "published_projects_updated_long_ago": {
             "task": 'published_projects_updated_long_ago',
-            "schedule": datetime.timedelta(**reminder_schedule_kwargs),
+            "schedule": datetime.timedelta(days=31),
         },
     }
     if ODK_SYNC_ENABLED:
