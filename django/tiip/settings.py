@@ -268,6 +268,8 @@ if SITE_ID in [3, 4]:
         EMAIL_HOST_USER = "postmaster@whomaps.pulilab.com"
         EMAIL_HOST_PASSWORD = "5ede15430fbf90989648a0fe12e379cc"
         EMAIL_PORT = 587
+        EMAIL_BACKEND = 'core.middleware.TestCeleryEmailBackend'
+        TEST_FORCED_TO_ADDRESS = ["t@pulilab.com", "f@pulilab.com"]
 
         RAVEN_CONFIG = {
             'dsn': 'https://0b6cb1cc48594b499991547adb024864:f851242c5437437ca866e749c965d8ec@sentry.vidzor.com/29',
@@ -275,6 +277,8 @@ if SITE_ID in [3, 4]:
         reminder_schedule_kwargs = dict(hours=1)
     elif SITE_ID == 4:  # PROD AZURE
         EMAIL_HOST = "extmail01.unicef.org"
+        EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
+
         RAVEN_CONFIG = {
             'dsn': 'https://bca06cdc7c9545faac1db722363bc313:5e185d21565d453e83667556ad385f92@sentry.vidzor.com/31',
         }
@@ -309,8 +313,6 @@ if SITE_ID in [3, 4]:
     DEBUG = False
 
     ALLOWED_HOSTS = ['uni-tiip-dev', '40.113.114.39', 'tiip.unitst.org', '.tipp.pulilab.com', 'nginx:9010', 'nginx']
-
-    EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 
     REST_FRAMEWORK = {
         'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -406,7 +408,3 @@ if CI_RUN:
 
 OSM_MAP_CLI_KEY = 'a9ea45b5-ab37-4323-8263-767aa5896113'
 CSRF_TRUSTED_ORIGINS = ['uni-tiip-dev', '40.113.114.39', 'tiip.unitst.org', 'tipp.pulilab.com']
-
-# Uncomment these lines if you want to redirect all emails to the forced addresses
-# EMAIL_BACKEND = 'core.middleware.TestCeleryEmailBackend'
-# TEST_FORCED_TO_ADDRESS = ["t@pulilab.com", "nico@pulilab.com", "f@pulilab.com"]
