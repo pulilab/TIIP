@@ -259,6 +259,26 @@ ODK_SYNC_ENABLED = bool(os.environ.get('ODK_SYNC_ENABLED', False))
 
 # PRODUCTION SETTINGS
 if SITE_ID in [3, 4]:
+    reminder_schedule_kwargs = dict(days=31)
+
+    if SITE_ID == 3:  # QA
+        # Mailgun settings
+        EMAIL_USE_TLS = True
+        EMAIL_HOST = "smtp.mailgun.org"
+        EMAIL_HOST_USER = "postmaster@whomaps.pulilab.com"
+        EMAIL_HOST_PASSWORD = "5ede15430fbf90989648a0fe12e379cc"
+        EMAIL_PORT = 587
+
+        RAVEN_CONFIG = {
+            'dsn': 'https://0b6cb1cc48594b499991547adb024864:f851242c5437437ca866e749c965d8ec@sentry.vidzor.com/29',
+        }
+        reminder_schedule_kwargs = dict(hours=1)
+    elif SITE_ID == 4:  # PROD AZURE
+        EMAIL_HOST = "extmail01.unicef.org"
+        RAVEN_CONFIG = {
+            'dsn': 'https://bca06cdc7c9545faac1db722363bc313:5e185d21565d453e83667556ad385f92@sentry.vidzor.com/31',
+        }
+
     CELERYBEAT_SCHEDULE = {
         # "send_daily_toolkit_digest": {
         #     "task": 'send_daily_toolkit_digest',
@@ -270,11 +290,11 @@ if SITE_ID in [3, 4]:
         },
         "project_still_in_draft_notification": {
             "task": 'project_still_in_draft_notification',
-            "schedule": datetime.timedelta(days=31),
+            "schedule": datetime.timedelta(**reminder_schedule_kwargs),
         },
         "published_projects_updated_long_ago": {
             "task": 'published_projects_updated_long_ago',
-            "schedule": datetime.timedelta(days=31),
+            "schedule": datetime.timedelta(**reminder_schedule_kwargs),
         },
     }
     if ODK_SYNC_ENABLED:
@@ -315,23 +335,6 @@ if SITE_ID in [3, 4]:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-
-    if SITE_ID == 3:
-        # Mailgun settings
-        EMAIL_USE_TLS = True
-        EMAIL_HOST = "smtp.mailgun.org"
-        EMAIL_HOST_USER = "postmaster@whomaps.pulilab.com"
-        EMAIL_HOST_PASSWORD = "5ede15430fbf90989648a0fe12e379cc"
-        EMAIL_PORT = 587
-
-        RAVEN_CONFIG = {
-            'dsn': 'https://0b6cb1cc48594b499991547adb024864:f851242c5437437ca866e749c965d8ec@sentry.vidzor.com/29',
-        }
-    elif SITE_ID == 4:
-        EMAIL_HOST = "extmail01.unicef.org"
-        RAVEN_CONFIG = {
-            'dsn': 'https://bca06cdc7c9545faac1db722363bc313:5e185d21565d453e83667556ad385f92@sentry.vidzor.com/31',
-        }
 
 FROM_EMAIL = DEFAULT_FROM_EMAIL
 
