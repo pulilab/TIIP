@@ -243,7 +243,6 @@ BROKER_URL = 'redis://{}:6379/0'.format(REDIS_URL)
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-TOOLKIT_DIGEST_PERIOD = 1  # hours
 
 ODK_SYNC_PERIOD = 1  # hours
 ODK_CREDENTIALS = {
@@ -281,10 +280,6 @@ if SITE_ID in [3, 4]:
         }
 
     CELERYBEAT_SCHEDULE = {
-        # "send_daily_toolkit_digest": {
-        #     "task": 'send_daily_toolkit_digest',
-        #     "schedule": datetime.timedelta(hours=TOOLKIT_DIGEST_PERIOD),
-        # },
         "send_project_approval_digest": {
             "task": 'send_project_approval_digest',
             "schedule": datetime.timedelta(days=1),
