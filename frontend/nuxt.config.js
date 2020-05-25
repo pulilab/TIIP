@@ -1,204 +1,227 @@
-import dotenv from 'dotenv';
-import path from 'path';
+import dotenv from "dotenv";
+import path from "path";
 // import webpack from 'webpack';
 const result = dotenv.config();
 
 // const bundlebuddy = require('bundle-buddy-webpack-plugin');
 
 const features = [
-  'default',
-  'fetch',
-  'Object.entries',
-  'Object.from',
-  'IntersectionObserver',
-  'EventSource'
-].join('%2C');
+  "default",
+  "fetch",
+  "Object.entries",
+  "Object.from",
+  "IntersectionObserver",
+  "EventSource"
+].join("%2C");
 
 if (result.error) {
-  console.log('\x1b[31m%s\x1b[0m', 'Missing .env file, follow the README instructions');
+  console.log(
+    "\x1b[31m%s\x1b[0m",
+    "Missing .env file, follow the README instructions"
+  );
   throw result.error;
 }
 
-const loginUrl = 'https://login.microsoftonline.com/' + (process.env.AZURE_TENANT || '77410195-14e1-4fb8-904b-ab1892023667') +
-  '/oauth2/v2.0/authorize?client_id=' + (process.env.AZURE_CLIENT_ID || '77b9a76e-130b-4847-8345-82841046150f') +
-  '&response_type=code&redirect_uri=' + (process.env.AZURE_REDIRECT_URI || 'http://localhost/accounts/azure/login/callback/') +
-  '&response_mode=fragment&scope=openid offline_access';
+const loginUrl =
+  "https://login.microsoftonline.com/" +
+  (process.env.AZURE_TENANT || "77410195-14e1-4fb8-904b-ab1892023667") +
+  "/oauth2/v2.0/authorize?client_id=" +
+  (process.env.AZURE_CLIENT_ID || "77b9a76e-130b-4847-8345-82841046150f") +
+  "&response_type=code&redirect_uri=" +
+  (process.env.AZURE_REDIRECT_URI ||
+    "http://localhost/accounts/azure/login/callback/") +
+  "&response_mode=fragment&scope=openid offline_access";
 
 const config = {
   head: {
-    title: 'TIP',
+    title: "TIIP",
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'TIP' }
+      { charset: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { hid: "description", name: "description", content: "TIIP" }
     ],
     link: [
-      { rel: 'icon', type: 'image/ico', href: '/favicon.ico' },
-      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i&display=swap' },
-      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' }
+      { rel: "icon", type: "image/ico", href: "/favicon.ico" },
+      {
+        rel: "stylesheet",
+        href:
+          "https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i&display=swap"
+      },
+      {
+        rel: "stylesheet",
+        href:
+          "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons"
+      }
     ],
     script: [
-      { src: `https://polyfill.io/v3/polyfill.min.js?features=${features}`, body: true }
+      {
+        src: `https://polyfill.io/v3/polyfill.min.js?features=${features}`,
+        body: true
+      }
     ]
   },
-  css: [
-    '~assets/style/main.sass',
-    '~assets/style/main.less'
-  ],
+  css: ["~assets/style/main.sass", "~assets/style/main.less"],
   env: {
     loginUrl: loginUrl
   },
   plugins: [
-    { src: '~plugins/eventfix.js', ssr: false },
-    { src: '~plugins/extends.js', ssr: false },
-    { src: '~plugins/axios.js', ssr: true },
-    { src: '~plugins/vee-validate.js', ssr: true },
-    { src: '~plugins/vue-leaflet.js', ssr: false },
-    { src: '~plugins/element.js', ssr: true },
-    { src: '~plugins/i18n.js', ssr: true },
-    { src: '~plugins/watchHead.js', ssr: false },
-    { src: '~plugins/directives.js', ssr: false }
+    { src: "~plugins/eventfix.js", ssr: false },
+    { src: "~plugins/extends.js", ssr: false },
+    { src: "~plugins/axios.js", ssr: true },
+    { src: "~plugins/vee-validate.js", ssr: true },
+    { src: "~plugins/vue-leaflet.js", ssr: false },
+    { src: "~plugins/element.js", ssr: true },
+    { src: "~plugins/i18n.js", ssr: true },
+    { src: "~plugins/watchHead.js", ssr: false },
+    { src: "~plugins/directives.js", ssr: false }
   ],
   modules: [
-    '@nuxtjs/axios',
-    '@nuxtjs/proxy',
-    'nuxt-fontawesome',
-    '@nuxtjs/sentry',
+    "@nuxtjs/axios",
+    "@nuxtjs/proxy",
+    "nuxt-fontawesome",
+    "@nuxtjs/sentry",
     // 'nuxt-purgecss',
-    ['nuxt-i18n', {
-      locales: [
-        {
-          code: 'en',
-          iso: 'en-GB',
-          name: 'English',
-          file: 'en-GB.js'
+    [
+      "nuxt-i18n",
+      {
+        locales: [
+          {
+            code: "en",
+            iso: "en-GB",
+            name: "English",
+            file: "en-GB.js"
+          },
+          {
+            code: "fr",
+            iso: "fr-FR",
+            name: "Français",
+            file: "fr-FR.js"
+          },
+          {
+            code: "es",
+            iso: "es-ES",
+            name: "Español",
+            file: "es-ES.js"
+          },
+          {
+            code: "pt",
+            iso: "pt-PT",
+            name: "Português",
+            file: "pt-PT.js"
+          },
+          {
+            code: "ar",
+            iso: "ar-AR",
+            name: "Arabic",
+            file: "ar-AR.js"
+          }
+        ],
+        lazy: true,
+        langDir: "lang/",
+        strategy: "prefix",
+        rootRedirect: "en/-/",
+        defaultLocale: "en",
+        seo: false,
+        vueI18n: {
+          fallbackLocale: "en",
+          silentTranslationWarn: true
         },
-        {
-          code: 'fr',
-          iso: 'fr-FR',
-          name: 'Français',
-          file: 'fr-FR.js'
+        vuex: {
+          moduleName: "i18n",
+          mutations: {
+            setLocale: "I18N_SET_LOCALE",
+            setMessages: false
+          }
         },
-        {
-          code: 'es',
-          iso: 'es-ES',
-          name: 'Español',
-          file: 'es-ES.js'
-        },
-        {
-          code: 'pt',
-          iso: 'pt-PT',
-          name: 'Português',
-          file: 'pt-PT.js'
-        },
-        {
-          code: 'ar',
-          iso: 'ar-AR',
-          name: 'Arabic',
-          file: 'ar-AR.js'
+        detectBrowserLanguage: {
+          useCookie: true,
+          cookieKey: "i18n_redirected"
         }
-      ],
-      lazy: true,
-      langDir: 'lang/',
-      strategy: 'prefix',
-      rootRedirect: 'en/-/',
-      defaultLocale: 'en',
-      seo: false,
-      vueI18n: {
-        fallbackLocale: 'en',
-        silentTranslationWarn: true
-      },
-      vuex: {
-        moduleName: 'i18n',
-        mutations: {
-          setLocale: 'I18N_SET_LOCALE',
-          setMessages: false
-        }
-      },
-      detectBrowserLanguage: {
-        useCookie: true,
-        cookieKey: 'i18n_redirected'
       }
-    }]
+    ]
   ],
   fontawesome: {
-    component: 'fa',
+    component: "fa",
     imports: [
       {
-        set: '@fortawesome/free-solid-svg-icons',
-        icons: ['fas']
+        set: "@fortawesome/free-solid-svg-icons",
+        icons: ["fas"]
       },
       {
-        set: '@fortawesome/free-regular-svg-icons',
-        icons: ['far']
+        set: "@fortawesome/free-regular-svg-icons",
+        icons: ["far"]
       }
     ]
   },
   proxy: {},
   axios: {
-    baseURL: 'http://nginx:9010/',
-    browserBaseURL: '/',
+    baseURL: "http://nginx:9010/",
+    browserBaseURL: "/",
     credentials: true,
     retry: false
   },
   router: {
-    middleware: ['auth', 'reset'],
-    base: '/'
+    middleware: ["auth", "reset"],
+    base: "/"
   },
   // purgeCSS: {
   //   whitelistPatterns: () => [/\b[^\s]*(nuxt|leaflet|vue2-leaflet|el)[^\s]*\b/]
   // },
-  loading: '~/components/DhaLoader.vue',
+  loading: "~/components/DhaLoader.vue",
   render: {
     resourceHints: false
   },
   build: {
     babel: {
-      presets ({ isServer }) {
-        const targets = isServer ? { node: '10' } : { ie: '11' };
-        return [
-          [require.resolve('@nuxt/babel-preset-app'), { targets }]
-        ];
+      presets({ isServer }) {
+        const targets = isServer ? { node: "10" } : { ie: "11" };
+        return [[require.resolve("@nuxt/babel-preset-app"), { targets }]];
       }
     },
     extractCSS: true,
     optimization: {},
-    transpile: ['redux', 'redux-async-thunk'],
-    extend (config, { isDev }) {
-      config.plugins.forEach(function (plugin) {
-        if (plugin.constructor && plugin.constructor.name === 'ExtractCssChunksPlugin') {
+    transpile: ["redux", "redux-async-thunk"],
+    extend(config, { isDev }) {
+      config.plugins.forEach(function(plugin) {
+        if (
+          plugin.constructor &&
+          plugin.constructor.name === "ExtractCssChunksPlugin"
+        ) {
           plugin.options.ignoreOrder = true;
         }
       });
       config.module.rules.push({
         test: /\.html$/,
-        loader: 'html-loader',
+        loader: "html-loader",
         exclude: /(node_modules)/
       });
       if (isDev && process.client) {
         config.module.rules.push({
-          enforce: 'pre',
+          enforce: "pre",
           test: /\.(js|vue)$/,
-          loader: 'eslint-loader',
+          loader: "eslint-loader",
           exclude: /(node_modules)/
         });
       }
-      config.resolve.alias['leaflet'] = path.join(__dirname, 'node_modules/leaflet');
+      config.resolve.alias["leaflet"] = path.join(
+        __dirname,
+        "node_modules/leaflet"
+      );
       // config.plugins.push(new bundlebuddy());
     }
   }
 };
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== "production") {
   config.axios = {
     proxy: true,
     credentials: true
   };
   config.proxy = {
-    '/api/': { target: 'http://localhost/', secure: false },
-    '/media/': { target: 'http://localhost/', secure: false },
-    '/static/': { target: 'http://localhost/', secure: false },
-    '/translation/': { target: 'http://localhost/', secure: false }
+    "/api/": { target: "http://localhost/", secure: false },
+    "/media/": { target: "http://localhost/", secure: false },
+    "/static/": { target: "http://localhost/", secure: false },
+    "/translation/": { target: "http://localhost/", secure: false }
   };
 }
 module.exports = config;
