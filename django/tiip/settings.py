@@ -15,7 +15,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'qu1nafi=f@#w8fz&)(i4h*-1@!gm4)dg^^@vt
 
 DEBUG = bool(strtobool(os.environ.get('DEBUG', 'False')))
 
-ALLOWED_HOSTS = ['.localhost', '.dev.whomaps.pulilab.com', '*']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
