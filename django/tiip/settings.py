@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_extensions',
     'raven.contrib.django.raven_compat',
+    'drf_yasg',
     'ordered_model',
     'rosetta',
     'corsheaders',
@@ -401,3 +402,16 @@ if CI_RUN:
 
 OSM_MAP_CLI_KEY = 'a9ea45b5-ab37-4323-8263-767aa5896113'
 CSRF_TRUSTED_ORIGINS = ['uni-tiip-dev', '40.113.114.39', 'tiip.unitst.org', 'tipp.pulilab.com']
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    }
+}
+REDOC_SETTINGS = {
+   'LAZY_RENDERING': False
+}
