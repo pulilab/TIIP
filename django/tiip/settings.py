@@ -231,7 +231,7 @@ ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_ADAPTER = 'user.adapters.DefaultAccountAdapterCustom'
 ACCOUNT_EMAIL_SUBJECT_PREFIX = ""
 ACCOUNT_EMAIL_CONFIRMATION_HMAC = False  # This is for backwards compat, should move to True to not store it in DB
-DEFAULT_FROM_EMAIL = "UNICEF T4D & Innovation Inventory Portal <noreply@tiip.unitst.org>"
+DEFAULT_FROM_EMAIL = "UNICEF T4D & Innovation Inventory Portal <noreply@invent.unicef.org>"
 
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
