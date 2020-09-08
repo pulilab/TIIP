@@ -307,7 +307,7 @@ if SITE_ID in [3, 4]:
     DEBUG = False
 
     ALLOWED_HOSTS = ['uni-tiip-dev', '40.113.114.39', 'tiip.unitst.org', 'invent.unicef.org',
-                     '.tipp.pulilab.com', 'nginx:9010', 'nginx']
+                     '.tipp.pulilab.com', 'nginx:9010', 'nginx', 'qa.invent.pulilab.com']
 
     REST_FRAMEWORK = {
         'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -402,7 +402,8 @@ if CI_RUN:
     MEDIA_ROOT = "/home/circleci/tiip/django/media/"
 
 OSM_MAP_CLI_KEY = 'a9ea45b5-ab37-4323-8263-767aa5896113'
-CSRF_TRUSTED_ORIGINS = ['uni-tiip-dev', '40.113.114.39', 'tiip.unitst.org', 'tipp.pulilab.com', 'invent.unicef.org']
+CSRF_TRUSTED_ORIGINS = ['uni-tiip-dev', '40.113.114.39', 'tiip.unitst.org', 'tipp.pulilab.com', 
+                        'invent.unicef.org', 'qa.invent.pulilab.com']
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
