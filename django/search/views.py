@@ -76,6 +76,7 @@ class SearchViewSet(TokenAuthMixin, mixins.ListModelMixin, GenericViewSet):
     portfolio_values = list_values + (
         "project__review_states__portfolio",
         "project__review_states__portfolio__name",
+        "project__review_states__scale_phase",
     )
     filter_backends = (filters.OrderingFilter,)
     ordering_fields = ('project__name', 'project__modified', 'organisation__name',
@@ -120,8 +121,8 @@ class SearchViewSet(TokenAuthMixin, mixins.ListModelMixin, GenericViewSet):
         `cc` Capability Categories overlap eg: cc=1&cc=2  
         `cs` Capability Sucategories overlap eg: cs=1&cs=2  
         `ic` Innovation Categories overlap eg: ic=1&ic=2  
-        `sp` Scale Phase  # TODO: scale phase  
-        `ps` Problem Statement  # TODO: problem statements  
+        `sp` Scale Phase in eg: sp=1  
+        `ps` Problem Statement   in eg: ps=1  
 
         ** FOUND IN FEATURE **
 
@@ -129,7 +130,7 @@ class SearchViewSet(TokenAuthMixin, mixins.ListModelMixin, GenericViewSet):
 
         ** TYPE AND ORDERING **
 
-        `type` map | list (defaults to map) [eg: type=map]  
+        `type` map | list | portfolio (defaults to map) [eg: type=map]  
         `ordering` project__name | organisation__name | country__name | 
                    project__data__government_investor | country__region | 
                    project__modified  
