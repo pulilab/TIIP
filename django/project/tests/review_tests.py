@@ -119,10 +119,27 @@ class ReviewTests(PortfolioSetup):
             'scale_phase': 5
         }
         response = self.user_3_client.post(url, review_data_complete, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {'impact': ['"6" is not a valid choice.']})
+        
+        review_data_complete = {
+            'psa': [ProblemStatement.objects.get(name="PS 1").id],
+            'rnci': 2,
+            'ratp': 4,
+            'ra': 5,
+            'ee': 5,
+            'nst': 5,
+            'nc': 5,
+            'ps': 5,
+            'impact': 5,
+            'scale_phase': 6
+        }
+        response = self.user_3_client.post(url, review_data_complete, format="json")
         self.assertEqual(response.status_code, 200)
         self.pps.refresh_from_db()
         self.assertEqual(self.pps.reviewed, True)
         self.assertEqual(self.pps.approved, False)
+
         # now reviewed, approve project
         url = reverse('portfolio-project-approve', kwargs={'pk': self.portfolio_id})
         project_data = {'project': [self.project_rev_id]}
