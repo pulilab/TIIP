@@ -472,8 +472,8 @@ class ReviewScoreSerializer(serializers.ModelSerializer):
 
 
 class ProjectPortfolioStateManagerSerializer(serializers.ModelSerializer):
-    scale_phase = serializers.IntegerField(required=True)
-    impact = serializers.IntegerField(required=True)
+    impact = serializers.ChoiceField(required=True, choices=ProjectPortfolioState.BASE_CHOICES, allow_blank=False)
+    scale_phase = serializers.ChoiceField(required=True, choices=ProjectPortfolioState.SCALE_CHOICES, allow_blank=False)
     project = serializers.IntegerField(read_only=True, source='project.id')
     portfolio = serializers.IntegerField(read_only=True, source='portfolio.id')
     review_scores = ReviewScoreSerializer(many=True, read_only=True, required=False)
