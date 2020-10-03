@@ -49,3 +49,4 @@ class ListResultSerializer(serializers.Serializer):
 class PortfolioResultSerializer(ListResultSerializer):
     portfolio = serializers.ReadOnlyField(source="project__review_states__portfolio")
     portfolio_name = serializers.ReadOnlyField(source="project__review_states__portfolio__name")
+    scale_phase = serializers.ReadOnlyField(source="project__review_states__scale_phase")
