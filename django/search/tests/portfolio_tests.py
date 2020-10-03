@@ -1,4 +1,6 @@
 from django.urls import reverse
+
+from project.models import ProblemStatement, ProjectPortfolioState
 from project.tests.portfolio_tests import PortfolioSetup
 
 
@@ -86,4 +88,61 @@ class PortfolioSearchTests(PortfolioSetup):
         self.assertEqual(response.json()['count'], 1)
 
     def test_scale_phase_filter_on_portfolio(self):
+        new_project_id, project_data, org, country, *_ = self.create_new_project(
+            self.user_2_client, name="New Project 1")
+
+        # add new project to a Portfolio 1
+        url = reverse("portfolio-project-add", kwargs={"pk": self.portfolio_id})
+        request_data = {"project": [new_project_id]}
+        response = self.user_2_client.post(url, request_data, format="json")
+        self.assertEqual(response.status_code, 201, response.json())
+
+        review_data_complete = {
+            'psa': [ProblemStatement.objects.get(name="PS 1", portfolio_id=self.portfolio_id).id],
+            'rnci': 2,
+            'ratp': 4,
+            'ra': 5,
+            'ee': 5,
+            'nst': 5,
+            'nc': 5,
+            'ps': 5,
+            'impact': 5,
+            'scale_phase': 6
+        }
+        
+        pps = ProjectPortfolioState.objects.get(project_id=new_project_id, portfolio_id=self.portfolio_id)
+        url = reverse('portfolio-project-manager-review', kwargs={'pk': pps.id})
+        response = self.user_2_client.post(url, review_data_complete, format="json")
+        self.assertEqual(response.status_code, 200)
+        pps.refresh_from_db()
+        self.assertEqual(pps.reviewed, True)
+        self.assertEqual(pps.approved, False)
+
+        url = reverse("search-project-list")
+        data = {"portfolio": self.portfolio_id, "type": "portfolio", "sp": ProjectPortfolioState.SCALE_CHOICES[5][0]}
+        response = self.user_2_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['count'], 0)
+
+        # now reviewed, approve project
+        url = reverse('portfolio-project-approve', kwargs={'pk': self.portfolio_id})
+        project_data = {'project': [new_project_id]}
+        response = self.user_2_client.post(url, project_data, format="json")
+        self.assertEqual(response.status_code, 200)
+        pps.refresh_from_db()
+        self.assertEqual(pps.approved, True)
+        
+        url = reverse("search-project-list")
+        data = {"portfolio": self.portfolio_id, "type": "portfolio", "sp": ProjectPortfolioState.SCALE_CHOICES[0][0]}
+        response = self.user_2_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['count'], 0)
+
+        url = reverse("search-project-list")
+        data = {"portfolio": self.portfolio_id, "type": "portfolio", "sp": ProjectPortfolioState.SCALE_CHOICES[5][0]}
+        response = self.user_2_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['count'], 1)
+        self.assertEqual(response.json()['results']['projects'][0]['scale_phase'], 
+                         ProjectPortfolioState.SCALE_CHOICES[5][0])
         pass
