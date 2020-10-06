@@ -289,6 +289,14 @@ class ReviewTests(PortfolioSetup):
         self.assertEqual(resp_data['ra'], 5)
         self.assertEqual(resp_data['rnci_comment'], None)
 
+        # check user reviews
+        url = reverse('project-review-list')
+        response = user_y_client.get(url, format="json")
+        self.assertEqual(response.status_code, 200, response.json())
+        self.assertEqual(response.json()['count'], 1)
+        self.assertEqual(response.json()['results'][0]['portfolio']['name'], 'Test Portfolio 1')
+        self.assertEqual(response.json()['results'][0]['project']['id'], self.project_rev_id)
+
     def test_portfolio_matrix_output(self):
         """
         - Create 5 projects for the portfolio

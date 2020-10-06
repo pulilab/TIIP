@@ -30,7 +30,8 @@ from .serializers import ProjectDraftSerializer, ProjectGroupSerializer, Project
     MapProjectCountrySerializer, CountryCustomAnswerSerializer, DonorCustomAnswerSerializer, \
     ProjectApprovalSerializer, ProjectImportV2Serializer, ImportRowSerializer, PortfolioListSerializer, \
     PortfolioDetailsSerializer, PortfolioUpdateSerializer, PortfolioCreateSerializer, ProjectInPortfolioSerializer, \
-    ReviewScoreSerializer, ReviewScoreFillSerializer, ReviewScoreBriefSerializer, ProjectPortfolioStateManagerSerializer
+    ReviewScoreSerializer, ReviewScoreFillSerializer, ReviewScoreBriefSerializer, \
+    ProjectPortfolioStateManagerSerializer, ReviewScoreMyReviewsSerializer
 
 
 class ProjectPublicViewSet(ViewSet):
@@ -738,3 +739,20 @@ class ProjectPortfolioStateManagerViewSet(ProjectPortfolioStateAccessMixin, Retr
             return ProjectPortfolioState.objects.all()
         else:
             return ProjectPortfolioState.objects.filter(reviewed=False)
+
+
+class MyInitiativesResultsSetPagination(PageNumberPagination):
+    page_size = 25
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+
+class ReviewScoreMyReviewsViewSet(TokenAuthMixin, ListModelMixin, GenericViewSet):
+    serializer_class = ReviewScoreMyReviewsSerializer
+    pagination_class = MyInitiativesResultsSetPagination
+    filter_backends = (OrderingFilter,)
+    ordering_fields = ('portfolio_review__project__name', 'id',)
+    ordering = ('portfolio_review__project__name',)
+
+    def get_queryset(self):
+        return ReviewScore.objects.filter(reviewer=self.request.user.userprofile)

@@ -150,5 +150,9 @@ urlpatterns = [
          view=views.ProjectPortfolioStateManagerViewSet.as_view({
              'get': 'retrieve',
              'post': 'update'
-         }), name='portfolio-project-manager-review')
+         }), name='portfolio-project-manager-review'),
+    path('project-review/reviewer-of/',
+         view=views.ReviewScoreMyReviewsViewSet.as_view({
+             'get': 'list'
+         }), name='project-review-list')
 ]

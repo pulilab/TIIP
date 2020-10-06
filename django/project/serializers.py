@@ -594,6 +594,8 @@ class ProjectInPortfolioSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'review_states', 'project_data')
 
     def get_review_states(self, obj):
+        if 'kwargs' not in self.context:
+            return None
         portfolio = self.context.get('kwargs').get('pk')
         try:
             pps = obj.review_states.get(portfolio=portfolio)
@@ -615,3 +617,12 @@ class ReviewScoreFillSerializer(serializers.ModelSerializer):
         instance.complete = True
         instance = super().update(instance, validated_data)
         return instance
+
+
+class ReviewScoreMyReviewsSerializer(serializers.ModelSerializer):
+    portfolio = PortfolioBaseSerializer(source='portfolio_review.portfolio')
+    project = ProjectInPortfolioSerializer(source='portfolio_review.project')
+
+    class Meta:
+        model = ReviewScore
+        exclude = ('portfolio_review',)  # split into two more detailed fields, portfolio and project
