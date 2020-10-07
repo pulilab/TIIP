@@ -120,7 +120,7 @@ class PortfolioSearchTests(PortfolioSetup):
             'nc': 5,
             'ps': 5,
             'impact': 5,
-            'scale_phase': 6
+            'scale_phase': 2
         }
         
         pps = ProjectPortfolioState.objects.get(project_id=new_project_id, portfolio_id=self.portfolio_id)
@@ -132,7 +132,7 @@ class PortfolioSearchTests(PortfolioSetup):
         self.assertEqual(pps.approved, False)
 
         url = reverse("search-project-list")
-        data = {"portfolio": self.portfolio_id, "type": "portfolio", "sp": ProjectPortfolioState.SCALE_CHOICES[5][0]}
+        data = {"portfolio": self.portfolio_id, "type": "portfolio", "sp": ProjectPortfolioState.SCALE_CHOICES[1][0]}
         response = self.user_2_client.get(url, data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['count'], 0)
@@ -152,22 +152,19 @@ class PortfolioSearchTests(PortfolioSetup):
         self.assertEqual(response.json()['count'], 0)
 
         url = reverse("search-project-list")
-        data = {"portfolio": self.portfolio_id, "type": "portfolio", "sp": ProjectPortfolioState.SCALE_CHOICES[5][0]}
+        data = {"portfolio": self.portfolio_id, "type": "portfolio", "sp": ProjectPortfolioState.SCALE_CHOICES[1][0]}
         response = self.user_2_client.get(url, data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['count'], 1)
         self.assertEqual(response.json()['results']['projects'][0]['scale_phase'], 
-                         ProjectPortfolioState.SCALE_CHOICES[5][0])
+                         ProjectPortfolioState.SCALE_CHOICES[1][0])
 
     def test_problem_statement_filter_on_portfolio(self):
         new_project_id, project_data, org, country, *_ = self.create_new_project(
             self.user_2_client, name="New Project 1")
 
         # add new project to a Portfolio 1
-        url = reverse("portfolio-project-add", kwargs={"pk": self.portfolio_id})
-        request_data = {"project": [new_project_id, self.project2_id]}
-        response = self.user_2_client.post(url, request_data, format="json")
-        self.assertEqual(response.status_code, 201, response.json())
+        self.move_project_to_portfolio(self.portfolio_id, new_project_id, 201, self.user_2_client)
 
         ps1 = ProblemStatement.objects.get(name="PS 1", portfolio_id=self.portfolio_id)
         ps2 = ProblemStatement.objects.get(name="PS 2", portfolio_id=self.portfolio_id)
@@ -192,30 +189,26 @@ class PortfolioSearchTests(PortfolioSetup):
         self.assertEqual(pps1.reviewed, True)
         self.assertEqual(pps1.approved, False)
 
-        review_data_complete['psa'] = [ps1.id]
         pps2 = ProjectPortfolioState.objects.get(project_id=self.project2_id, portfolio_id=self.portfolio_id)
-        url = reverse('portfolio-project-manager-review', kwargs={'pk': pps2.id})
-        response = self.user_2_client.post(url, review_data_complete, format="json")
-        self.assertEqual(response.status_code, 200)
-        pps2.refresh_from_db()
         self.assertEqual(pps2.reviewed, True)
-        self.assertEqual(pps2.approved, False)
+        self.assertEqual(pps2.approved, True)
+        pps4 = ProjectPortfolioState.objects.get(project_id=self.project4_id, portfolio_id=self.portfolio_id)
+        self.assertEqual(pps4.reviewed, True)
+        self.assertEqual(pps4.approved, True)
 
         url = reverse("search-project-list")
         data = {"portfolio": self.portfolio_id, "type": "portfolio", "ps": ps1.id}
         response = self.user_2_client.get(url, data, format="json")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['count'], 0)
+        self.assertEqual(response.json()['count'], 2)
 
         # now reviewed, approve project
         url = reverse('portfolio-project-approve', kwargs={'pk': self.portfolio_id})
-        project_data = {'project': [new_project_id, self.project2_id]}
+        project_data = {'project': [new_project_id]}
         response = self.user_2_client.post(url, project_data, format="json")
         self.assertEqual(response.status_code, 200)
         pps1.refresh_from_db()
-        pps2.refresh_from_db()
         self.assertEqual(pps1.approved, True)
-        self.assertEqual(pps2.approved, True)
 
         url = reverse("search-project-list")
         data = {"portfolio": self.portfolio_id, "type": "portfolio", "ps": 999}
