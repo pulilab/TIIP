@@ -9,8 +9,10 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from core.views import TokenAuthMixin
+from core.views import TokenAuthMixin, get_object_or_400
 from country.models import Donor, Country
+from project.models import Portfolio
+from project.permissions import IsGPOOrManagerPortfolioForSearch
 from .serializers import MapResultSerializer, ListResultSerializer, PortfolioResultSerializer
 from .models import ProjectSearch
 
@@ -84,6 +86,7 @@ class SearchViewSet(TokenAuthMixin, mixins.ListModelMixin, GenericViewSet):
     ordering = ('project_id',)
     pagination_class = ResultsSetPagination
     serializer_class = ListResultSerializer
+    permission_classes = (IsGPOOrManagerPortfolioForSearch,)
 
     def get_queryset(self):
         return ProjectSearch.objects.exclude(project__public_id='')\
@@ -206,7 +209,8 @@ class SearchViewSet(TokenAuthMixin, mixins.ListModelMixin, GenericViewSet):
             if not query_params.get('portfolio'):
                 raise ValidationError("Portfolio ID is missing for portfolio page")
 
-            # TODO: check permissions
+            portfolio = get_object_or_400(Portfolio, "No such portfolio", id=query_params.get('portfolio'))
+            self.check_object_permissions(request, portfolio)
             query_params._mutable = True
             query_params.pop('ps', None)
             query_params.pop('sp', None)
