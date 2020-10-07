@@ -5,9 +5,9 @@ export const nameInventMapping = {
   nontech: 'Non-Technology platforms',
   regional_priorities: 'Regional Priorities',
   innovation_categories: 'Innovation Categories',
-  cpd: 'In Country programme document (CPD)'
+  cpd: 'In Country programme document (CPD)',
   // phases: 'Phase of Initiative'
-};
+}
 
 export const apiNameInvenMapping = {
   functions: 'getFunctions',
@@ -15,8 +15,8 @@ export const apiNameInvenMapping = {
   nontech: 'getNontech',
   regional_priorities: 'getRegionalPriorities',
   innovation_categories: 'getInnovationCategories',
-  cpd: 'getCpd'
-};
+  cpd: 'getCpd',
+}
 
 export const nameMapping = {
   name: 'Project Name',
@@ -35,8 +35,8 @@ export const nameMapping = {
   capability_categories: 'Capability Categories',
   capability_subcategories: 'Capability Subcategories',
   field_office: 'Field Office',
-  ...nameInventMapping
-};
+  ...nameInventMapping,
+}
 
 export const importTemplate = [
   {
@@ -47,9 +47,12 @@ export const importTemplate = [
     'Programme Focal Point Name': 'Nico',
     'Programme Focal Point Email': 'nico@pulilab.com',
     Software: 'Bamboo',
-    'Digital Health Interventions': '3.4.1 Notify birth event|3.4.2 Register birth event',
-    'Health Focus Areas': 'Adolescents and communicable diseases|Other sexual and reproductive health',
-    'Health System Challenges': '1.1 Lack of population denominator|1.2 Delayed reporting of events',
+    'Digital Health Interventions':
+      '3.4.1 Notify birth event|3.4.2 Register birth event',
+    'Health Focus Areas':
+      'Adolescents and communicable diseases|Other sexual and reproductive health',
+    'Health System Challenges':
+      '1.1 Lack of population denominator|1.2 Delayed reporting of events',
     'Goal Area': '21. Survive and Thrive',
     'Result Area': '21-01 Maternal and newborn health',
     'Field Office': 'According to selected country office',
@@ -67,6 +70,7 @@ export const importTemplate = [
     'Field Office': 'According to selected country office',
     'Capability Levels': '4. Interventions for data services',
     'Capability Categories': '1.3 Student to student communication',
-    'Capability Subcategories': '1.1.1 Transmit education event alerts to specific population group(s)',
-  }
-];
+    'Capability Subcategories':
+      '1.1.1 Transmit education event alerts to specific population group(s)',
+  },
+]
