@@ -2,6 +2,7 @@ from django.urls import reverse
 
 from project.models import ProblemStatement, ProjectPortfolioState, Project
 from project.tests.portfolio_tests import PortfolioSetup
+from user.models import UserProfile
 
 
 class PortfolioSearchTests(PortfolioSetup):
@@ -230,6 +231,18 @@ class PortfolioSearchTests(PortfolioSetup):
 
     def test_portfolio_inventory_for_managers(self):
         self.assertEqual(Project.objects.count(), 5)
+        
+        url = reverse("search-project-list")
+        data = {"type": "portfolio", "ps": 99, "sp": 99, "portfolio_page": "inventory"}
+        response = self.user_2_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), ['Portfolio ID is missing for portfolio page'])
+        
+        url = reverse("search-project-list")
+        data = {"portfolio": 999, "type": "portfolio", "ps": 99, "sp": 99, "portfolio_page": "inventory"}
+        response = self.user_2_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {'details': 'No such portfolio'})
         
         url = reverse("search-project-list")
         data = {"portfolio": self.portfolio_id, "type": "portfolio", "ps": 99, "sp": 99, "portfolio_page": "inventory"}
