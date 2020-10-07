@@ -665,6 +665,7 @@ class ProjectInPortfolioResultsSetPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 100
 
+
 # TODO: FLAG THIS MAYBE ITS NOT NEEDED NOW
 class ProjectPortfolioListViewSet(ListModelMixin, GenericViewSet):  # TODO: FLAG THIS PERHAPS MISSING PERMISSIONS
     serializer_class = ProjectInPortfolioSerializer

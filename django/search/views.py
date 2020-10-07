@@ -144,9 +144,9 @@ class SearchViewSet(SearchAccessMixin, mixins.ListModelMixin, GenericViewSet):
         ** VIEW AS **
 
         `view_as` donor | country  
-        
+
         ** PORTFOLIO OPTIONS **  
-        
+
         `portfolio_page` inventory | review | portfolio (defaults to portfolio)  
         `scores`  include if present (defaults to exclude)  
 
@@ -213,7 +213,7 @@ class SearchViewSet(SearchAccessMixin, mixins.ListModelMixin, GenericViewSet):
             query_params._mutable = True
             query_params.pop('ps', None)
             query_params.pop('sp', None)
-            
+
             if portfolio_page == "inventory":
                 qs = qs.exclude(project__review_states__portfolio_id=query_params.get('portfolio'))
                 # edge case scenario where we need to ignore all the portfolio reliant query params from here

@@ -96,7 +96,7 @@ class ReviewTests(PortfolioSetup):
         response = self.user_3_client.post(url, review_data_complete, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {'impact': ['"6" is not a valid choice.']})
-        
+
         review_data_complete = {
             'psa': [ProblemStatement.objects.get(name="PS 1").id],
             'rnci': 2,
