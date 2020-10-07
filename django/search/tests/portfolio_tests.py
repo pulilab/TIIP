@@ -227,4 +227,14 @@ class PortfolioSearchTests(PortfolioSetup):
         response = self.user_2_client.get(url, data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['count'], 1)
+
+    def test_portfolio_inventory_for_managers(self):
+        self.assertEqual(Project.objects.count(), 5)
+        
+        url = reverse("search-project-list")
+        data = {"portfolio": self.portfolio_id, "type": "portfolio", "ps": 99, "sp": 99, "portfolio_page": "inventory"}
+        response = self.user_2_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['count'], 3)
+
         pass
