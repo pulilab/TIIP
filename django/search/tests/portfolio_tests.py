@@ -294,4 +294,26 @@ class PortfolioSearchTests(PortfolioSetup):
         response = self.user_2_client.get(url, data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['count'], 3)
+    
+    def test_permission_for_unapproved_only_for_managers(self):
+        user_id, user_client, user_key = \
+            self.create_user("test_user_22222@unicef.org", "123456hetNYOLC", "123456hetNYOLC")
+        
+        url = reverse("search-project-list")
+        data = {"portfolio": self.portfolio_id, "type": "portfolio", "portfolio_page": "inventory"}
+        response = user_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.json(), {'detail': 'You do not have permission to perform this action.'})
+        
+        # set the userprofile to GMO
+        profile = UserProfile.objects.get(id=user_id)
+        profile.global_portfolio_owner = True
+        profile.save()
+        
+        url = reverse("search-project-list")
+        data = {"portfolio": self.portfolio_id, "type": "portfolio", "portfolio_page": "inventory"}
+        response = user_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['count'], 3)
+
         pass
