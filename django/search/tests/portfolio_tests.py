@@ -237,4 +237,48 @@ class PortfolioSearchTests(PortfolioSetup):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['count'], 3)
 
+    def test_portfolio_review_tab_for_managers(self):
+        new_project_id, project_data, org, country, *_ = self.create_new_project(
+            self.user_2_client, name="New Project 1")
+
+        # add new project to a Portfolio 1
+        self.move_project_to_portfolio(self.portfolio_id, new_project_id, 201, self.user_2_client)
+
+        self.assertEqual(Project.objects.count(), 6)
+
+        url = reverse("search-project-list")
+        data = {"portfolio": self.portfolio_id, "type": "portfolio", "ps": 99, "sp": 99, "portfolio_page": "review"}
+        response = self.user_2_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['count'], 1)
+
+        # now reviewed, approve project
+        pps = ProjectPortfolioState.objects.get(project_id=new_project_id, portfolio_id=self.portfolio_id)
+        self.review_and_approve_project(pps, self.scores, self.user_2_client)
+        
+        url = reverse("search-project-list")
+        data = {"portfolio": self.portfolio_id, "type": "portfolio", "ps": 99, "sp": 99, "portfolio_page": "review"}
+        response = self.user_2_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['count'], 0)
+        
+        # HERE THE PS AND SP FILTERS WILL START WORKING
+        url = reverse("search-project-list")
+        data = {"portfolio": self.portfolio_id, "type": "portfolio", "ps": 99, "sp": 99, "portfolio_page": "portfolio"}
+        response = self.user_2_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['count'], 0)
+        
+        url = reverse("search-project-list")
+        data = {"portfolio": self.portfolio_id, "type": "portfolio", "portfolio_page": "portfolio"}
+        response = self.user_2_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['count'], 3)
+        
+        # you can leave out the optional portfolio_page for the same results
+        url = reverse("search-project-list")
+        data = {"portfolio": self.portfolio_id, "type": "portfolio"}
+        response = self.user_2_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['count'], 3)
         pass
