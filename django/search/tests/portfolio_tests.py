@@ -1,6 +1,6 @@
 from django.urls import reverse
 
-from project.models import ProblemStatement, ProjectPortfolioState
+from project.models import ProblemStatement, ProjectPortfolioState, Project
 from project.tests.portfolio_tests import PortfolioSetup
 
 
@@ -16,12 +16,31 @@ class PortfolioSearchTests(PortfolioSetup):
         response = self.create_portfolio("Test Portfolio 2", "Port-o-folio", [self.user_3_pr_id], self.user_2_client)
         self.assertEqual(response.status_code, 201, response.json())
         self.portfolio2_id = response.json()['id']
+        
+        self.scores = {
+            'psa': [ProblemStatement.objects.get(name="PS 1", portfolio_id=self.portfolio_id).id],
+            'rnci': 2,
+            'ratp': 4,
+            'ra': 5,
+            'ee': 5,
+            'nst': 5,
+            'nc': 5,
+            'ps': 5,
+            'impact': 5,
+            'scale_phase': 6
+        }
 
         # add Project 2, 4 to a Portfolio
         url = reverse("portfolio-project-add", kwargs={"pk": self.portfolio_id})
         request_data = {"project": [self.project2_id, self.project4_id]}
         response = self.user_2_client.post(url, request_data, format="json")
         self.assertEqual(response.status_code, 201, response.json())
+
+        # review and approve Project 2, 4
+        pps2 = ProjectPortfolioState.objects.get(project_id=self.project2_id, portfolio_id=self.portfolio_id)
+        pps4 = ProjectPortfolioState.objects.get(project_id=self.project4_id, portfolio_id=self.portfolio_id)
+        self.review_and_approve_project(pps2, self.scores, self.user_2_client)
+        self.review_and_approve_project(pps4, self.scores, self.user_2_client)
 
     def test_list_all_in_portfolio_for_detail_page(self):
         url = reverse("search-project-list")
