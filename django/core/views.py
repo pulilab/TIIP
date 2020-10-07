@@ -7,8 +7,8 @@ from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
-from project.permissions import InTeamOrReadOnly, IsGPOOrReadOnly, IsGPOOrManagerPortfolio, IsReviewable,\
-    IsReviewerGPOOrManager, IsGPOOrManagerProjectPortfolioState
+from project.permissions import InTeamOrReadOnly, IsGPOOrReadOnly, IsGPOOrManagerPortfolio, IsReviewable, \
+    IsReviewerGPOOrManager, IsGPOOrManagerProjectPortfolioState, IsGPOOrManagerPortfolioForSearch
 from project.models import Project, ProjectPortfolioState
 from project.serializers import PartnerSerializer, LinkSerializer
 from country.models import Country
@@ -24,7 +24,7 @@ from .data.dashboard_columns import DASHBOARD_COLUMNS
 from .data.review_questions import REVIEWER_QUESTIONS
 
 
-class TokenAuthMixin(object):
+class TokenAuthMixin:
     """
     Mixin class for defining general permission and authentication settings on
     REST Framework Class Based Views.
@@ -33,7 +33,7 @@ class TokenAuthMixin(object):
     permission_classes = (IsAuthenticated,)
 
 
-class TeamTokenAuthMixin(object):
+class TeamTokenAuthMixin:
     authentication_classes = (JSONWebTokenAuthentication, BearerTokenAuthentication)
     permission_classes = (IsAuthenticated, InTeamOrReadOnly)
 
@@ -46,6 +46,11 @@ class GPOAccessMixin:
 class PortfolioAccessMixin:
     authentication_classes = (JSONWebTokenAuthentication, BearerTokenAuthentication)
     permission_classes = (IsAuthenticated, IsGPOOrManagerPortfolio)
+
+
+class SearchAccessMixin:
+    authentication_classes = (JSONWebTokenAuthentication, BearerTokenAuthentication)
+    permission_classes = (IsAuthenticated, IsGPOOrManagerPortfolioForSearch)
 
 
 class ProjectPortfolioStateAccessMixin:
