@@ -455,6 +455,13 @@ class ReviewScoreBriefSerializer(serializers.ModelSerializer):
         fields = ('id', 'created', 'modified', 'reviewer', 'portfolio_review', 'complete')
 
 
+class ProjectPortfolioStateBriefSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProjectPortfolioState
+        fields = '__all__'
+
+
 class ProjectPortfolioStateSerializer(serializers.ModelSerializer):
     review_scores = ReviewScoreBriefSerializer(many=True, required=False)
 
@@ -622,7 +629,8 @@ class ReviewScoreFillSerializer(serializers.ModelSerializer):
 class ReviewScoreMyReviewsSerializer(serializers.ModelSerializer):
     portfolio = PortfolioBaseSerializer(source='portfolio_review.portfolio')
     project = ProjectInPortfolioSerializer(source='portfolio_review.project')
+    portfolio_review = ProjectPortfolioStateBriefSerializer
 
     class Meta:
         model = ReviewScore
-        exclude = ('portfolio_review',)  # split into two more detailed fields, portfolio and project
+        fields = '__all__'
