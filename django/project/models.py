@@ -263,15 +263,20 @@ class Portfolio(ExtendedNameOrderedSoftDeletedModel):
             blob['ratio'] = round(len(blob['projects']) / max_blob_size, 2)
         return blob_list
 
-    def get_problem_statement_matrix(self):
+    def get_problem_statement_matrix(self, project_ids: Union[List[int], None] = None):
         tresholds = settings.PORTFOLIO_PROBLEMSTATEMENT_TRESHOLDS
 
         neglected_filter = Q(num_projects__lt=tresholds['MODERATE'])
         moderate_filter = Q(num_projects__gte=tresholds['MODERATE'], num_projects__lt=tresholds['HIGH'])
         high_filter = Q(num_projects__gte=tresholds['HIGH'])
 
-        base_qs = self.problem_statements.annotate(num_projects=Count(Case(When(projectportfoliostate__approved=True,
-                                                                                then=F('projectportfoliostate__id')),
+        when_statement = dict(
+            projectportfoliostate__approved=True,
+            then=F('projectportfoliostate__id'))
+        if project_ids:
+            when_statement.update(dict(projectportfoliostate__project_id__in=project_ids))
+
+        base_qs = self.problem_statements.annotate(num_projects=Count(Case(When(**when_statement),
                                                    output_field=IntegerField()), distinct=True))
 
         neglected_qs = base_qs.filter(neglected_filter)
