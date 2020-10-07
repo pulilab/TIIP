@@ -213,6 +213,7 @@ class SearchViewSet(SearchAccessMixin, mixins.ListModelMixin, GenericViewSet):
             query_params._mutable = True
             query_params.pop('ps', None)
             query_params.pop('sp', None)
+            
             if portfolio_page == "inventory":
                 qs = qs.exclude(project__review_states__portfolio_id=query_params.get('portfolio'))
                 # edge case scenario where we need to ignore all the portfolio reliant query params from here
@@ -245,6 +246,13 @@ class SearchViewSet(SearchAccessMixin, mixins.ListModelMixin, GenericViewSet):
         elif results_type == 'portfolio':
             page = self.paginate_queryset(qs.values(*portfolio_values))
             data = PortfolioResultSerializer(page, many=True, context={"donor": donor, "country": country}).data
+            if 'scores' in query_params:
+                portfolio = get_object_or_400(Portfolio, "No such portfolio", id=query_params.get('portfolio'))
+                project_ids = qs.values_list('project_id', flat=True)
+                results.update(
+                    ambition_matrix=portfolio.get_ambition_matrix(project_ids),
+                    risk_impact_matrix=portfolio.get_risk_impact_matrix(project_ids),
+                    problem_statement_matrix=portfolio.get_problem_statement_matrix(project_ids))
         else:
             page = self.paginate_queryset(qs.values(*map_values))
             data = MapResultSerializer(page, many=True).data
