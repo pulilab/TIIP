@@ -154,9 +154,10 @@ import { mapActions, mapState } from 'vuex';
 import CountryOfficeSelect from '@/components/common/CountryOfficeSelect';
 import FormHint from '@/components/common/FormHint';
 import { XlsxRead, XlsxSheets, XlsxJson, XlsxWorkbook, XlsxSheet, XlsxDownload } from 'vue-xlsx';
-import { importTemplate, nameMapping } from '@/utilities/import';
+import { importTemplate, nameMapping, nameInventMapping } from '@/utilities/import';
 import { draftRules } from '@/utilities/projects';
 import get from 'lodash/get';
+import reduce from 'lodash/reduce';
 
 export default {
   components: {
@@ -191,9 +192,14 @@ export default {
     }),
     finalImportTemplate () {
       const unicefCustomQuestions = get(this, 'systemDicts.donorsLibrary.20.donor_questions');
+      const inventFields = reduce(nameInventMapping, (res, val, key) => {
+        res[val] = this.projectDicts[key][0].name;
+        return res;
+      }, {});
       return importTemplate.map(i => {
         const row = {
-          ...i
+          ...i,
+          ...inventFields
         };
         unicefCustomQuestions.forEach(q => {
           row[q.question] = q.options.join('|');
@@ -223,7 +229,23 @@ export default {
       const flatCapabilityLevels = this.projectDicts.capability_levels.map(p => p.name);
       const flatCapabilityCategories = this.projectDicts.capability_categories.map(p => p.name);
       const flatCapabilitySubcategories = this.projectDicts.capability_subcategories.map(p => p.name);
+      // INVENT
+      const flatFunctions = this.projectDicts.functions.map(p => p.name);
+      const flatHardware = this.projectDicts.hardware.map(p => p.name);
+      const flatNontech = this.projectDicts.nontech.map(p => p.name);
+      const flatRegionalPriorities = this.projectDicts.regional_priorities.map(p => p.name);
+      const flatInnovationCategories = this.projectDicts.innovation_categories.map(p => p.name);
+      const flatCpd = this.projectDicts.cpd.map(p => p.name);
+      // const flatPhases = this.projectDicts.phases.map(p => p.name);
+
       return [
+        [nameMapping.functions, ...flatFunctions],
+        [nameMapping.hardware, ...flatHardware],
+        [nameMapping.nontech, ...flatNontech],
+        [nameMapping.regional_priorities, ...flatRegionalPriorities],
+        [nameMapping.innovation_categories, ...flatInnovationCategories],
+        [nameMapping.cpd, ...flatCpd],
+        // [nameMapping.phases, ...flatPhases],
         [nameMapping.health_focus_areas, ...flatHFA],
         [nameMapping.hsc_challenges, ...flatHSC],
         [nameMapping.platforms, ...flatPlatforms],

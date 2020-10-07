@@ -44,7 +44,7 @@
               </import-headers>
               <div class="Rows">
                 <template v-if="showSaved">
-                  <import-row
+                  <import-rowimport-dialog
                     v-for="(row) in saved"
                     :key="row.id"
                     :row="row"
@@ -81,7 +81,7 @@
                         />
                       </template>
                     </template>
-                  </import-row>
+                  </import-rowimport-dialog>
                 </template>
                 <import-row
                   v-for="(row, index) in rows"

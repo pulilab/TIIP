@@ -75,16 +75,19 @@ export const draftRules = () => {
     cbd: {},
     partner_name: {
       required: true,
-      max: 100
+      max: 100,
+      skip: true
     },
     partner_email: {
       email: true,
       required: true,
-      max: 100
+      max: 100,
+      skip: true
     },
     partner_website: {
       url: { require_protocol: true },
-      max: 100
+      max: 100,
+      skip: true
     },
     link_website: {
       url: { require_protocol: true },

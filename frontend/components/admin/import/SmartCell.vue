@@ -182,6 +182,13 @@ export default {
           capability_levels: () => this.findProjectCollectionValue('capability_levels', true),
           capability_categories: () => this.findProjectCollectionValue('capability_categories', true),
           capability_subcategories: () => this.findProjectCollectionValue('capability_subcategories', true),
+          // INVENT
+          functions: () => this.findProjectCollectionValue('functions', true),
+          hardware: () => this.findProjectCollectionValue('hardware', true),
+          nontech: () => this.findProjectCollectionValue('nontech', true),
+          regional_priorities: () => this.findProjectCollectionValue('regional_priorities', true),
+          innovation_categories: () => this.findProjectCollectionValue('innovation_categories', true),
+          cpd: () => this.findProjectCollectionValue('cpd', true),
 
           custom_field: () => {
             const q = this.customFieldsLib[this.type];
@@ -299,7 +306,9 @@ export default {
       return this.toInternalRepresentation(filtered);
     },
     apiValue () {
-      const isMultiple = ['platforms', 'health_focus_areas', 'hsc_challenges', 'dhis', 'capability_levels', 'capability_categories', 'capability_subcategories', 'custom_field'];
+      const isMultiple = ['platforms', 'health_focus_areas', 'hsc_challenges', 'dhis', 'capability_levels',
+        'capability_categories', 'capability_subcategories', 'custom_field', 'functions', 'hardware',
+        'nontech', 'regional_priorities', 'innovation_categories', 'cpd'];
       const isIds = [...isMultiple, 'donors', 'country', 'organisation', 'field_office', 'goal_area', 'result_area'];
       const idsOrNames = isIds.includes(this.column) ? this.parsedValue.ids : this.parsedValue.names;
       return isMultiple.includes(this.column) ? idsOrNames : idsOrNames[0];

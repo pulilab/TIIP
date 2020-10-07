@@ -69,7 +69,8 @@ export default {
       const result = [];
       const draftRequireds = [];
       for (const key in this.validationRules) {
-        if (this.validationRules[key] && this.validationRules[key].required) {
+        const rule = this.validationRules[key];
+        if (rule && rule.required && !rule.skip) {
           draftRequireds.push(key);
         }
       }

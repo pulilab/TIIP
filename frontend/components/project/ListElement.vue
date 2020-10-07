@@ -1,6 +1,6 @@
 <template>
   <span class="Element">
-    {{ selected.name }}
+    {{ selected ? selected.name : '... Missing value ...' }}
   </span>
 </template>
 

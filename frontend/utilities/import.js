@@ -1,3 +1,23 @@
+export const nameInventMapping = {
+  // INVENT
+  functions: 'Function(s) of Platform',
+  hardware: 'Hardware platforms',
+  nontech: 'Non-Technology platforms',
+  regional_priorities: 'Regional Priorities',
+  innovation_categories: 'Innovation Categories',
+  cpd: 'In Country programme document (CPD)'
+  // phases: 'Phase of Initiative'
+};
+
+export const apiNameInvenMapping = {
+  functions: 'getFunctions',
+  hardware: 'getHardware',
+  nontech: 'getNontech',
+  regional_priorities: 'getRegionalPriorities',
+  innovation_categories: 'getInnovationCategories',
+  cpd: 'getCpd'
+};
+
 export const nameMapping = {
   name: 'Project Name',
   implementation_overview: 'Initiative Description',
@@ -14,7 +34,8 @@ export const nameMapping = {
   capability_levels: 'Capability Levels',
   capability_categories: 'Capability Categories',
   capability_subcategories: 'Capability Subcategories',
-  field_office: 'Field Office'
+  field_office: 'Field Office',
+  ...nameInventMapping
 };
 
 export const importTemplate = [
@@ -31,7 +52,7 @@ export const importTemplate = [
     'Health System Challenges': '1.1 Lack of population denominator|1.2 Delayed reporting of events',
     'Goal Area': '21. Survive and Thrive',
     'Result Area': '21-01 Maternal and newborn health',
-    'Field Office': 'According to selected country office'
+    'Field Office': 'According to selected country office',
   },
   {
     'Project Name': 'MyProject2',
@@ -46,6 +67,6 @@ export const importTemplate = [
     'Field Office': 'According to selected country office',
     'Capability Levels': '4. Interventions for data services',
     'Capability Categories': '1.3 Student to student communication',
-    'Capability Subcategories': '1.1.1 Transmit education event alerts to specific population group(s)'
+    'Capability Subcategories': '1.1.1 Transmit education event alerts to specific population group(s)',
   }
 ];
