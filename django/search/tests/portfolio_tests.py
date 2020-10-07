@@ -316,4 +316,56 @@ class PortfolioSearchTests(PortfolioSetup):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['count'], 3)
 
-        pass
+    def test_portfolio_project_list_to_include_scores(self):
+        url = reverse("search-project-list")
+        data = {"portfolio": self.portfolio_id, "type": "portfolio", "scores": ""}
+        response = self.user_2_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['count'], 2)
+        self.assertEqual(response.json()['results']['ambition_matrix'], 
+                         [{'x': 5, 'y': 5, 'projects': [self.project2_id, self.project4_id], 'ratio': 1.0}])
+        self.assertEqual(response.json()['results']['risk_impact_matrix'], 
+                         [{'x': 5, 'y': 5, 'projects': [self.project2_id, self.project4_id], 'ratio': 1.0}])
+        ps1 = ProblemStatement.objects.get(name="PS 1", portfolio_id=self.portfolio_id)
+        ps2 = ProblemStatement.objects.get(name="PS 2", portfolio_id=self.portfolio_id)
+        self.assertEqual(response.json()['results']['problem_statement_matrix'], 
+                         {'neglected': [ps1.id, ps2.id], 'moderate': [], 'high_activity': []})
+        
+        
+        new_project_id, *_ = self.create_new_project(self.user_2_client, name="New Project 1")
+
+        # add new project to a Portfolio 1 and review + approve
+        self.move_project_to_portfolio(self.portfolio_id, new_project_id, 201, self.user_2_client)
+        pps = ProjectPortfolioState.objects.get(project_id=new_project_id, portfolio_id=self.portfolio_id)
+        self.review_and_approve_project(pps, self.scores, self.user_2_client)
+        
+        url = reverse("search-project-list")
+        data = {"portfolio": self.portfolio_id, "type": "portfolio", "scores": ""}
+        response = self.user_2_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['count'], 3)
+        self.assertEqual(response.json()['results']['ambition_matrix'],
+                         [{'x': 5, 'y': 5, 'projects': [self.project2_id, self.project4_id, new_project_id],
+                           'ratio': 1.0}])
+        self.assertEqual(response.json()['results']['risk_impact_matrix'],
+                         [{'x': 5, 'y': 5, 'projects': [self.project2_id, self.project4_id, new_project_id],
+                           'ratio': 1.0}])
+        ps1 = ProblemStatement.objects.get(name="PS 1", portfolio_id=self.portfolio_id)
+        ps2 = ProblemStatement.objects.get(name="PS 2", portfolio_id=self.portfolio_id)
+        self.assertEqual(response.json()['results']['problem_statement_matrix'],
+                         {'neglected': [ps1.id, ps2.id], 'moderate': [], 'high_activity': []})
+
+        # include search criteria
+        url = reverse("search-project-list")
+        data = {"q": "New", "in": "name", "portfolio": self.portfolio_id, "type": "portfolio", "scores": ""}
+        response = self.user_2_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['count'], 1)
+        self.assertEqual(response.json()['results']['ambition_matrix'],
+                         [{'x': 5, 'y': 5, 'projects': [new_project_id], 'ratio': 1.0}])
+        self.assertEqual(response.json()['results']['risk_impact_matrix'],
+                         [{'x': 5, 'y': 5, 'projects': [new_project_id], 'ratio': 1.0}])
+        ps1 = ProblemStatement.objects.get(name="PS 1", portfolio_id=self.portfolio_id)
+        ps2 = ProblemStatement.objects.get(name="PS 2", portfolio_id=self.portfolio_id)
+        self.assertEqual(response.json()['results']['problem_statement_matrix'],
+                         {'neglected': [ps1.id, ps2.id], 'moderate': [], 'high_activity': []})
