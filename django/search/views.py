@@ -143,6 +143,11 @@ class SearchViewSet(TokenAuthMixin, mixins.ListModelMixin, GenericViewSet):
         ** VIEW AS **
 
         `view_as` donor | country  
+        
+        ** PORTFOLIO OPTIONS **  
+        
+        `portfolio_page` inventory | review | portfolio (defaults to portfolio)  
+
         """
         results = {}
         search_fields = set()
@@ -157,6 +162,7 @@ class SearchViewSet(TokenAuthMixin, mixins.ListModelMixin, GenericViewSet):
 
         search_term = query_params.get('q')
         view_as = query_params.get('view_as')
+        portfolio_page = query_params.get('portfolio_page')
 
         if view_as and view_as == 'donor':
             donor_list = query_params.getlist('donor')
