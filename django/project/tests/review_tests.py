@@ -13,31 +13,6 @@ class ReviewTests(PortfolioSetup):
                       kwargs={"pk": portfolio_id})
         return client.get(url).json()
 
-    def move_project_to_portfolio(self, portfolio_id, project_id, expected_response_status=201, client=None):
-        if client is None:
-            client = self.user_3_client
-        url = reverse("portfolio-project-add", kwargs={"pk": portfolio_id})
-        request_data = {"project": [project_id]}
-
-        # check permissions with user_1_client, which is not allowed
-        response = client.post(url, request_data, format="json")
-        self.assertEqual(response.status_code, expected_response_status, response.json())
-        return response.json()
-
-    def review_and_approve_project(self, pps, scores, client=None):
-        if client is None:
-            client = self.user_3_client  # pragma: no cover
-        url = reverse('portfolio-project-manager-review', kwargs={'pk': pps.id})
-        response = client.post(url, scores, format="json")
-        self.assertEqual(response.status_code, 200, f'{response.json()}')
-
-        project_id = pps.project.id
-
-        url = reverse('portfolio-project-approve', kwargs={'pk': pps.portfolio.id})
-        response = self.user_3_client.post(url, {'project': [project_id]}, format="json")
-        self.assertEqual(response.status_code, 200, f'{response.json()}')
-        return response.json()
-
     def setUp(self):
         super(ReviewTests, self).setUp()
         # User roles: User 1 (normal user), User 2 (global portfolio owner), User 3 (manager of portfolio 1)
