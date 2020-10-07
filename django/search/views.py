@@ -9,7 +9,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from core.views import TokenAuthMixin, get_object_or_400, SearchAccessMixin
+from core.views import get_object_or_400, SearchAccessMixin
 from country.models import Donor, Country
 from project.models import Portfolio
 from .serializers import MapResultSerializer, ListResultSerializer, PortfolioResultSerializer
@@ -148,6 +148,7 @@ class SearchViewSet(SearchAccessMixin, mixins.ListModelMixin, GenericViewSet):
         ** PORTFOLIO OPTIONS **  
         
         `portfolio_page` inventory | review | portfolio (defaults to portfolio)  
+        `scores`  include if present (defaults to exclude)  
 
         """
         results = {}
