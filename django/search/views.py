@@ -9,10 +9,9 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from core.views import TokenAuthMixin, get_object_or_400
+from core.views import TokenAuthMixin, get_object_or_400, SearchAccessMixin
 from country.models import Donor, Country
 from project.models import Portfolio
-from project.permissions import IsGPOOrManagerPortfolioForSearch
 from .serializers import MapResultSerializer, ListResultSerializer, PortfolioResultSerializer
 from .models import ProjectSearch
 
@@ -38,7 +37,7 @@ class ResultsSetPagination(PageNumberPagination):
         ]))
 
 
-class SearchViewSet(TokenAuthMixin, mixins.ListModelMixin, GenericViewSet):
+class SearchViewSet(SearchAccessMixin, mixins.ListModelMixin, GenericViewSet):
     search = ProjectSearch.search
     filter = ProjectSearch.filter
     found_in = ProjectSearch.found_in
@@ -86,7 +85,6 @@ class SearchViewSet(TokenAuthMixin, mixins.ListModelMixin, GenericViewSet):
     ordering = ('project_id',)
     pagination_class = ResultsSetPagination
     serializer_class = ListResultSerializer
-    permission_classes = (IsGPOOrManagerPortfolioForSearch,)
 
     def get_queryset(self):
         return ProjectSearch.objects.exclude(project__public_id='')\
