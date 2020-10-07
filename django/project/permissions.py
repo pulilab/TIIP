@@ -52,6 +52,15 @@ class IsGPOOrManagerPortfolio(permissions.BasePermission):
         return request.user.userprofile.global_portfolio_owner or obj.managers.filter(id=request.user.userprofile.id)
 
 
+class IsGPOOrManagerPortfolioForSearch(permissions.BasePermission):
+    """
+    GPOs and managers have access to portfolios
+    """
+
+    def has_object_permission(self, request, view, obj: Portfolio):
+        return request.user.userprofile.global_portfolio_owner or obj.managers.filter(id=request.user.userprofile.id)
+
+
 class IsGPOOrManagerProjectPortfolioState(permissions.BasePermission):
     """
     GPOs and managers have full access to portfolios, others only read access
