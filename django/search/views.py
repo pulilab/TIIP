@@ -202,6 +202,26 @@ class SearchViewSet(TokenAuthMixin, mixins.ListModelMixin, GenericViewSet):
         elif view_as:
             raise ValidationError("You can only view as country or donor.")
 
+        if portfolio_page in ["inventory", "review"]:
+            if not query_params.get('portfolio'):
+                raise ValidationError("Portfolio ID is missing for portfolio page")
+
+            # TODO: check permissions
+            query_params._mutable = True
+            query_params.pop('ps', None)
+            query_params.pop('sp', None)
+            if portfolio_page == "inventory":
+                qs = qs.exclude(project__review_states__portfolio_id=query_params.get('portfolio'))
+                # edge case scenario where we need to ignore all the portfolio reliant query params from here
+                query_params.pop('portfolio', None)
+            elif portfolio_page == "review":
+                qs = qs.exclude(project__review_states__approved=True)
+
+            query_params._mutable = False
+        elif query_params.get('portfolio'):
+            # portfolio_page = "portfolio"
+            qs = qs.filter(project__review_states__approved=True)
+
         if search_term:
             if len(search_term) < 2:
                 raise ValidationError("Search term must be at least two characters long.")
