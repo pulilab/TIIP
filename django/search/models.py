@@ -114,10 +114,7 @@ class ProjectSearch(ExtendedModel):
                     elif field == "approved":
                         lookup_param = "exact"
                         lookup = query_params.get(field) == '1'
-                    elif field == "portfolio":
-                        lookup_param = "exact"
-                        lookup = query_params.get(field)
-                    elif field in ["sp", "ps"]:
+                    elif field in ["portfolio", "sp", "ps"]:
                         lookup_param = "exact"
                         lookup = query_params.get(field)
 
