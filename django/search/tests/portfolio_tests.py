@@ -220,7 +220,7 @@ class PortfolioSearchTests(PortfolioSetup):
         data = {"portfolio": self.portfolio_id, "type": "portfolio", "ps": ps1.id}
         response = self.user_2_client.get(url, data, format="json")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['count'], 2)
+        self.assertEqual(response.json()['count'], 3)
         
         url = reverse("search-project-list")
         data = {"portfolio": self.portfolio_id, "type": "portfolio", "ps": ps2.id}
