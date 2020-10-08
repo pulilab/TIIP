@@ -738,7 +738,7 @@ class ReviewScoreAnswerViewSet(ReviewScoreReviewerAccessMixin, UpdateModelMixin,
 class ProjectPortfolioStateManagerViewSet(ProjectPortfolioStateAccessMixin, RetrieveModelMixin, UpdateModelMixin,
                                           GenericViewSet):
     serializer_class = ProjectPortfolioStateManagerSerializer
-    
+
     def get_object(self):
         pps = get_object_or_400(ProjectPortfolioState, pk=self.kwargs.get('pk'))
         self.check_object_permissions(self.request, pps)
@@ -747,6 +747,7 @@ class ProjectPortfolioStateManagerViewSet(ProjectPortfolioStateAccessMixin, Retr
             raise PermissionDenied("Approved project reviews may not be edited")
 
         return pps
+
 
 class MyInitiativesResultsSetPagination(PageNumberPagination):
     page_size = 25
