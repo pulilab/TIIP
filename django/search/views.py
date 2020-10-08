@@ -12,7 +12,7 @@ from rest_framework.viewsets import GenericViewSet
 from core.views import get_object_or_400, PortfolioAccessMixin
 from country.models import Donor, Country
 from project.models import Portfolio
-from .serializers import MapResultSerializer, ListResultSerializer, PortfolioResultSerializer
+from .serializers import MapResultSerializer, ListResultSerializer, PortfolioResultSerializer, PortfolioReviewSerializer
 from .models import ProjectSearch
 
 
@@ -41,15 +41,15 @@ class SearchViewSet(PortfolioAccessMixin, mixins.ListModelMixin, GenericViewSet)
     search = ProjectSearch.search
     filter = ProjectSearch.filter
     found_in = ProjectSearch.found_in
-    map_values = (
+    map_values = [
         "project_id",
         "project__name",
         "organisation_id",
         "country_id",
         "country_office_id",
-        "project__approval__approved",
-    )
-    list_values = (
+        "project__approval__approved"
+    ]
+    list_values = [
         "project_id",
         "project__name",
         "project__modified",
@@ -72,13 +72,14 @@ class SearchViewSet(PortfolioAccessMixin, mixins.ListModelMixin, GenericViewSet)
         "project__data__capability_levels",
         "project__data__capability_categories",
         "project__data__capability_subcategories",
-        "project__data__innovation_categories",
-    )
-    portfolio_values = list_values + (
+        "project__data__innovation_categories"
+    ]
+    portfolio_values = list_values + [
         "project__review_states__portfolio",
         "project__review_states__portfolio__name",
         "project__review_states__scale_phase",
-    )
+        "project__review_states__id"
+    ]
     filter_backends = (filters.OrderingFilter,)
     ordering_fields = ('project__name', 'project__modified', 'organisation__name',
                        'country__name', 'country_office__region')
@@ -156,9 +157,6 @@ class SearchViewSet(PortfolioAccessMixin, mixins.ListModelMixin, GenericViewSet)
         donor = country = None
 
         query_params = request.query_params
-        list_values = list(self.list_values)
-        map_values = list(self.map_values)
-        portfolio_values = list(self.portfolio_values)
 
         qs = self.get_queryset()
 
@@ -179,8 +177,8 @@ class SearchViewSet(PortfolioAccessMixin, mixins.ListModelMixin, GenericViewSet)
                 raise ValidationError("No such donor.")
 
             if request.user.is_superuser or donor.user_in_groups(request.user.userprofile):
-                list_values.append('project__data__donor_custom_answers')
-                list_values.append('project__data__donor_custom_answers_private')
+                self.list_values.append('project__data__donor_custom_answers')
+                self.list_values.append('project__data__donor_custom_answers_private')
             else:
                 raise ValidationError("No access to donor.")
 
@@ -197,8 +195,8 @@ class SearchViewSet(PortfolioAccessMixin, mixins.ListModelMixin, GenericViewSet)
                 raise ValidationError("No such country.")
 
             if request.user.is_superuser or country.user_in_groups(request.user.userprofile):
-                list_values.append('project__data__country_custom_answers')
-                list_values.append('project__data__country_custom_answers_private')
+                self.list_values.append('project__data__country_custom_answers')
+                self.list_values.append('project__data__country_custom_answers_private')
             else:
                 raise ValidationError("No access to country.")
         elif view_as:
@@ -241,11 +239,9 @@ class SearchViewSet(PortfolioAccessMixin, mixins.ListModelMixin, GenericViewSet)
         results_type = query_params.get('type', 'map')
 
         if results_type == 'list':
-            page = self.paginate_queryset(qs.values(*list_values))
+            page = self.paginate_queryset(qs.values(*self.list_values))
             data = ListResultSerializer(page, many=True, context={"donor": donor, "country": country}).data
         elif results_type == 'portfolio':
-            page = self.paginate_queryset(qs.values(*portfolio_values))
-            data = PortfolioResultSerializer(page, many=True, context={"donor": donor, "country": country}).data
             if 'scores' in query_params and portfolio_page not in ["inventory", "review"]:
                 portfolio = get_object_or_400(Portfolio, "No such portfolio", id=query_params.get('portfolio'))
                 project_ids = qs.values_list('project_id', flat=True)
