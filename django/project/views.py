@@ -583,21 +583,16 @@ class PortfolioUserListViewSet(TokenAuthMixin, ListModelMixin, GenericViewSet):
 
 
 class PortfolioCreateViewSet(GPOAccessMixin, CreateModelMixin, GenericViewSet):
-    serializer_class = PortfolioCreateSerializer
+    serializer_class = PortfolioSerializer
 
 
 class PortfolioUpdateViewSet(PortfolioAccessMixin, UpdateModelMixin, GenericViewSet):
-    serializer_class = PortfolioUpdateSerializer
-    queryset = Portfolio.objects.all()
-
-
-class PortfolioDetailedViewSet(TokenAuthMixin, RetrieveModelMixin, GenericViewSet):
-    serializer_class = PortfolioDetailsSerializer
+    serializer_class = PortfolioSerializer
     queryset = Portfolio.objects.all()
 
 
 class PortfolioProjectChangeReviewStatusViewSet(PortfolioAccessMixin, GenericViewSet):
-    serializer_class = PortfolioDetailsSerializer
+    serializer_class = PortfolioStateChangeSerializer
 
     def _check_input_and_permissions(self, request, *args, **kwargs):
         # check if portfolio exists
@@ -617,7 +612,7 @@ class PortfolioProjectChangeReviewStatusViewSet(PortfolioAccessMixin, GenericVie
         for project in projects:
             ProjectPortfolioState.objects.get_or_create(portfolio=portfolio, project=project)
 
-        return Response(PortfolioDetailsSerializer(portfolio).data, status=status.HTTP_201_CREATED)
+        return Response(PortfolioStateChangeSerializer(portfolio).data, status=status.HTTP_201_CREATED)
 
     def move_to_inventory(self, request, *args, **kwargs):
         portfolio = self._check_input_and_permissions(request, *args, **kwargs)
@@ -629,7 +624,7 @@ class PortfolioProjectChangeReviewStatusViewSet(PortfolioAccessMixin, GenericVie
         # Remove each review_state from portfolio
         for rev_state in review_states:
             rev_state.delete()
-        return Response(PortfolioDetailsSerializer(portfolio).data, status=status.HTTP_200_OK)
+        return Response(PortfolioStateChangeSerializer(portfolio).data, status=status.HTTP_200_OK)
 
     def approve(self, request, *args, **kwargs):
         portfolio = self._check_input_and_permissions(request, *args, **kwargs)
@@ -644,7 +639,7 @@ class PortfolioProjectChangeReviewStatusViewSet(PortfolioAccessMixin, GenericVie
             rev_state.approved = True
             rev_state.save()
 
-        return Response(PortfolioDetailsSerializer(portfolio).data, status=status.HTTP_200_OK)
+        return Response(PortfolioStateChangeSerializer(portfolio).data, status=status.HTTP_200_OK)
 
     def disapprove(self, request, *args, **kwargs):
         portfolio = self._check_input_and_permissions(request, *args, **kwargs)
