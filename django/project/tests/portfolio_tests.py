@@ -191,7 +191,7 @@ class PortfolioTests(PortfolioSetup):
         # create a brand new user to be a new manager
         user_4_pr_id, user_4_client, user_4_key = \
             self.create_user("the_new_guy@unicef.org", "123456hetNYOLC", "123456hetNYOLC")
-        
+
         portfolio = Portfolio.objects.get(id=self.portfolio_id)
         managers = list(portfolio.managers.values_list('id', flat=True))
         managers.append(user_4_pr_id)
