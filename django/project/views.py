@@ -653,44 +653,7 @@ class PortfolioProjectChangeReviewStatusViewSet(PortfolioAccessMixin, GenericVie
             rev_state.approved = False
             rev_state.save()
 
-        return Response(PortfolioDetailsSerializer(portfolio).data, status=status.HTTP_200_OK)
-
-
-class ProjectInPortfolioResultsSetPagination(PageNumberPagination):
-    page_size = 25
-    page_size_query_param = 'page_size'
-    max_page_size = 100
-
-
-# TODO: FLAG THIS MAYBE ITS NOT NEEDED NOW
-class ProjectPortfolioListViewSet(ListModelMixin, GenericViewSet):  # TODO: FLAG THIS PERHAPS MISSING PERMISSIONS
-    serializer_class = ProjectInPortfolioSerializer
-    pagination_class = ProjectInPortfolioResultsSetPagination
-    filter_backends = (OrderingFilter,)
-    ordering_fields = ('id', 'name',)
-    ordering = ('id',)
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['kwargs'] = self.kwargs
-        return context
-
-    def get_queryset(self):
-        """
-        This view should return a list of all the projects in the current portfolio with the filtered review status
-        """
-        filter_param = self.kwargs.get('project_filter')
-        review_states = ProjectPortfolioState.objects.filter(portfolio=self.kwargs.get('pk'))
-        if filter_param == 'inventory':
-            return Project.objects.exclude(review_states__portfolio__id=self.kwargs.get('pk'))
-        elif filter_param == 'review':
-            not_approved_reviews = review_states.exclude(approved=True)
-            return Project.objects.filter(review_states__in=not_approved_reviews)
-        elif filter_param == 'approved':
-            approved_reviews = review_states.filter(approved=True)
-            return Project.objects.filter(review_states__in=approved_reviews)
-        else:
-            raise ValidationError({'project_filter': 'Allowed values are: [inventory|review|approved]'})
+        return Response(PortfolioStateChangeSerializer(portfolio).data, status=status.HTTP_200_OK)
 
 
 class PortfolioReviewAssignQuestionnaireViewSet(PortfolioAccessMixin, GenericViewSet):
