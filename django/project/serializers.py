@@ -502,28 +502,7 @@ class ProjectPortfolioStateManagerSerializer(serializers.ModelSerializer):
         }
 
 
-class PortfolioBaseSerializer(serializers.ModelSerializer):
-    problem_statements = ProblemStatementSerializer(many=True, required=False, read_only=True)
-
-    class Meta:
-        model = Portfolio
-        fields = ('id', 'name', 'description', 'icon', 'status', 'managers', 'problem_statements')
-
-
-class PortfolioDetailsSerializer(PortfolioBaseSerializer):
-    problem_statements = ProblemStatementSerializer(many=True, required=False, read_only=True)
-    review_states = ProjectPortfolioStateSerializer(many=True, required=False, read_only=True)
-    ambition_matrix = serializers.ReadOnlyField(source='get_ambition_matrix')
-    risk_impact_matrix = serializers.ReadOnlyField(source='get_risk_impact_matrix')
-    problem_statement_matrix = serializers.ReadOnlyField(source='get_problem_statement_matrix')
-
-    class Meta:
-        model = Portfolio
-        fields = ('id', 'name', 'description', 'icon', 'status', 'managers', 'problem_statements',
-                  'review_states', 'ambition_matrix', 'risk_impact_matrix', 'problem_statement_matrix')
-
-
-class PortfolioCreateSerializer(PortfolioBaseSerializer):
+class PortfolioSerializer(serializers.ModelSerializer):
     problem_statements = ProblemStatementSerializer(many=True, required=False)
 
     class Meta:
@@ -545,13 +524,6 @@ class PortfolioCreateSerializer(PortfolioBaseSerializer):
         self._create_problem_statements(instance, problem_statements)
         instance.save()
         return instance
-
-
-class PortfolioUpdateSerializer(PortfolioBaseSerializer):
-    """
-    Used for update ONLY
-    """
-    problem_statements = ProblemStatementUpdateSerializer(many=True, required=False)
 
     def update(self, instance, validated_data):
         """
