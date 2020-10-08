@@ -32,10 +32,10 @@ class ReviewTests(PortfolioSetup):
         project_id, project_data, org, country, country_office, d1, d2 = \
             self.create_new_project(self.user_1_client)
 
-        portfolio_data = self.get_portfolio_data(portfolio_id=self.portfolio_id, client=self.user_3_client)
-        pps_data = portfolio_data['review_states']
+        portfolio = Portfolio.objects.get(id=self.portfolio_id)
+        pps_data = portfolio.review_states.all()
         self.assertEqual(len(pps_data), 1)
-        self.assertEqual(pps_data[0]['project'], self.project_rev_id)
+        self.assertEqual(pps_data[0].project.id, self.project_rev_id)
         # Moving project from inventory to review state
         # Try the API with incorrect data
         url = reverse('portfolio-project-add', kwargs={'pk': self.portfolio_id})
