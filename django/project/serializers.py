@@ -585,21 +585,12 @@ class PortfolioUpdateSerializer(PortfolioBaseSerializer):
         return instance
 
 
-class ProjectInPortfolioSerializer(serializers.ModelSerializer):
-    review_states = serializers.SerializerMethodField()
-    project_data = serializers.JSONField(source='data')
+class PortfolioStateChangeSerializer(PortfolioSerializer):
+    review_states = ProjectPortfolioStateSerializer(many=True, required=False, read_only=True)
 
     class Meta:
-        model = Project
-        fields = ('id', 'name', 'review_states', 'project_data')
-
-    def get_review_states(self, obj):
-        portfolio = self.context.get('kwargs').get('pk')
-        try:
-            pps = obj.review_states.get(portfolio=portfolio)
-            return ProjectPortfolioStateSerializer(pps).data
-        except ProjectPortfolioState.DoesNotExist:
-            return None
+        model = Portfolio
+        fields = ('id', 'name', 'description', 'icon', 'status', 'managers', 'review_states')
 
 
 class ReviewScoreFillSerializer(serializers.ModelSerializer):
