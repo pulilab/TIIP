@@ -301,16 +301,16 @@ class ReviewTests(PortfolioSetup):
             self.review_and_approve_project(pps, scores, self.user_2_client)
             i += 1
 
-        portfolio_details = self.get_portfolio_data(portfolio_id, self.user_2_client)
-        impact_data = portfolio_details['risk_impact_matrix']
-        ambition_data = portfolio_details['ambition_matrix']
+        portfolio = Portfolio.objects.get(id=portfolio_id)
+        impact_data = portfolio.get_risk_impact_matrix()
+        ambition_data = portfolio.get_ambition_matrix()
         self.assertEqual(len(impact_data), 2)
         self.assertEqual(len(ambition_data), 2)
         impact_ratios = {x['ratio'] for x in impact_data}
         ambition_ratios = {x['ratio'] for x in ambition_data}
         self.assertEqual(impact_ratios, {0.67, 1.0})
         self.assertEqual(ambition_ratios, {0.67, 1.0})
-        problem_statement_matrix = portfolio_details['problem_statement_matrix']
+        problem_statement_matrix = portfolio.get_problem_statement_matrix()
 
         self.assertEqual(len(problem_statement_matrix['high_activity']), 0)
         self.assertEqual(len(problem_statement_matrix['moderate']), 3)
