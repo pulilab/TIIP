@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from project.permissions import InTeamOrReadOnly, IsGPOOrReadOnly, IsGPOOrManagerPortfolio, IsReviewable, \
-    IsReviewerGPOOrManager, IsGPOOrManagerProjectPortfolioState, IsGPOOrManagerPortfolioForSearch
+    IsReviewerGPOOrManager, IsGPOOrManagerProjectPortfolioState
 from project.models import Project, ProjectPortfolioState
 from project.serializers import PartnerSerializer, LinkSerializer
 from country.models import Country
@@ -46,11 +46,6 @@ class GPOAccessMixin:
 class PortfolioAccessMixin:
     authentication_classes = (JSONWebTokenAuthentication, BearerTokenAuthentication)
     permission_classes = (IsAuthenticated, IsGPOOrManagerPortfolio)
-
-
-class SearchAccessMixin:
-    authentication_classes = (JSONWebTokenAuthentication, BearerTokenAuthentication)
-    permission_classes = (IsAuthenticated, IsGPOOrManagerPortfolioForSearch)
 
 
 class ProjectPortfolioStateAccessMixin:
