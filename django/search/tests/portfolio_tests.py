@@ -264,6 +264,7 @@ class PortfolioSearchTests(PortfolioSetup):
         response = self.user_2_client.get(url, data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['count'], 1)
+        self.assertFalse(response.json()['results']['projects'][0]['review_states']['approved'])
 
         # now reviewed, approve project
         pps = ProjectPortfolioState.objects.get(project_id=new_project_id, portfolio_id=self.portfolio_id)

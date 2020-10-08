@@ -249,8 +249,15 @@ class SearchViewSet(PortfolioAccessMixin, mixins.ListModelMixin, GenericViewSet)
                     ambition_matrix=portfolio.get_ambition_matrix(project_ids),
                     risk_impact_matrix=portfolio.get_risk_impact_matrix(project_ids),
                     problem_statement_matrix=portfolio.get_problem_statement_matrix(project_ids))
+                
+            page = self.paginate_queryset(qs.values(*self.portfolio_values))
+            
+            if portfolio_page == "review":
+                data = PortfolioReviewSerializer(page, many=True, context={"donor": donor, "country": country}).data
+            else:
+                data = PortfolioResultSerializer(page, many=True, context={"donor": donor, "country": country}).data
         else:
-            page = self.paginate_queryset(qs.values(*map_values))
+            page = self.paginate_queryset(qs.values(*self.map_values))
             data = MapResultSerializer(page, many=True).data
 
         results.update(projects=data, type=results_type, search_term=search_term, search_in=search_fields)
