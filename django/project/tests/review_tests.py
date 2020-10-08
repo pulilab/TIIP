@@ -6,13 +6,6 @@ from random import randint
 
 
 class ReviewTests(PortfolioSetup):
-
-    @staticmethod
-    def get_portfolio_data(portfolio_id, client):
-        url = reverse('portfolio-detailed',
-                      kwargs={"pk": portfolio_id})
-        return client.get(url).json()
-
     def setUp(self):
         super(ReviewTests, self).setUp()
         # User roles: User 1 (normal user), User 2 (global portfolio owner), User 3 (manager of portfolio 1)
