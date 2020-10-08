@@ -158,39 +158,6 @@ class ReviewTests(PortfolioSetup):
         self.assertEqual(len(pps_data), 1)
         self.assertEqual(pps_data[0]['project'], self.project_rev_id)
 
-    def test_get_project_states(self):
-        # Test 0: incorrect filter
-        url = reverse("portfolio-project-list",
-                      kwargs={"pk": self.portfolio_id, 'project_filter': 'wanna_ponies'})
-        response = self.user_3_client.get(url, format="json")
-        self.assertEqual(response.status_code, 400)
-        # Test 1: inventory
-        url = reverse("portfolio-project-list",
-                      kwargs={"pk": self.portfolio_id, 'project_filter': 'inventory'})
-        response = self.user_3_client.get(url, format="json")
-        self.assertEqual(response.status_code, 200)
-        resp_data = response.json()
-        self.assertEqual(resp_data['count'], 1)
-        self.assertEqual(resp_data['results'][0]['id'], self.project_1_id)
-        self.assertEqual(resp_data['results'][0]['review_states'], None)
-        # Test 2: review
-        url = reverse("portfolio-project-list",
-                      kwargs={"pk": self.portfolio_id, 'project_filter': 'review'})
-        response = self.user_3_client.get(url, format="json")
-        self.assertEqual(response.status_code, 200)
-        resp_data = response.json()
-        self.assertEqual(resp_data['count'], 1)
-        self.assertEqual(resp_data['results'][0]['id'], self.project_rev_id)
-        self.assertEqual(resp_data['results'][0]['review_states']['id'], self.pps.id)
-        self.assertEqual(resp_data['results'][0]['review_states']['review_scores'], [])  # no questionnaire sent yet
-        # Test 3: complete
-        url = reverse("portfolio-project-list",
-                      kwargs={"pk": self.portfolio_id, 'project_filter': 'approved'})
-        response = self.user_3_client.get(url, format="json")
-        self.assertEqual(response.status_code, 200)
-        resp_data = response.json()
-        self.assertEqual(resp_data['count'], 0)
-
     def test_review_assign_questions(self):
         url = reverse("portfolio-assign-questionnaire",
                       kwargs={"portfolio_id": self.portfolio_id, 'project_id': self.project_rev.id})
