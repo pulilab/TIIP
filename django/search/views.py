@@ -246,7 +246,7 @@ class SearchViewSet(SearchAccessMixin, mixins.ListModelMixin, GenericViewSet):
         elif results_type == 'portfolio':
             page = self.paginate_queryset(qs.values(*portfolio_values))
             data = PortfolioResultSerializer(page, many=True, context={"donor": donor, "country": country}).data
-            if 'scores' in query_params:
+            if 'scores' in query_params and portfolio_page not in ["inventory", "review"]:
                 portfolio = get_object_or_400(Portfolio, "No such portfolio", id=query_params.get('portfolio'))
                 project_ids = qs.values_list('project_id', flat=True)
                 results.update(
