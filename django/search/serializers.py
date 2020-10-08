@@ -61,7 +61,7 @@ class PortfolioReviewSerializer(PortfolioResultSerializer):
     def get_review_states(self, obj):
         try:
             pps = ProjectPortfolioState.objects.get(id=obj.get('project__review_states__id'))
-        except ProjectPortfolioState.DoesNotExist:
+        except ProjectPortfolioState.DoesNotExist:  # pragma: no cover
             return
         else:
             return ProjectPortfolioStateSerializer(pps).data
