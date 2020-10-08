@@ -153,21 +153,6 @@ class PortfolioTests(PortfolioSetup):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()), 1)
 
-    def test_detailed_portfolio_view(self):
-        """
-        Any user should be able to view portfolio details
-        """
-        url = reverse('portfolio-detailed',
-                      kwargs={"pk": self.portfolio_id})
-        response = self.user_1_client.get(url)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['id'], self.portfolio_id)
-        self.assertEqual(response.json()['managers'], [self.user_3_pr_id])
-        response_ps_ids = {ps['id'] for ps in response.json()['problem_statements']}
-        expected_ps_ids = {ps.id for ps in Portfolio.objects.get(id=self.portfolio_id).problem_statements.all()}
-        self.assertEqual(response_ps_ids, expected_ps_ids)
-
     def test_problem_statement_handling(self):
         """
         Managers need to be able to add, update and remove Problem Statements to existing portfolios
