@@ -430,15 +430,9 @@ class PortfolioListSerializer(serializers.ModelSerializer):
 
 
 class ProblemStatementSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = ProblemStatement
         fields = ('id', 'name', 'description')
-
-
-class ProblemStatementUpdateSerializer(ProblemStatementSerializer):
-
-    class Meta(ProblemStatementSerializer.Meta):
         extra_kwargs = {
             "id": {
                 "read_only": False,
