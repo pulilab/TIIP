@@ -95,7 +95,6 @@ export default {
       const filled = this.$children.filter(
         (sc) => sc.column && !['custom_fields'].includes(sc.column)
       )
-
       const countryCustom = this.$children
         .filter((sc) => sc.type && sc.type.startsWith('MOH'))
         .map((c) => ({
@@ -122,20 +121,21 @@ export default {
       result.country_office = office
       result.donors = [donor]
       const parsed = apiWriteParser(result, countryCustom, donorCustom)
-      const { data } = await this.$axios.post(
-        `api/projects/draft/${office}/`,
-        parsed
-      )
-      if (publish) {
-        await this.$axios.put(
-          `api/projects/publish/${data.id}/${office}/`,
-          parsed
-        )
-      }
-      const dataRow = this.row
-      dataRow.project = data.id
-      this.$emit('update:row', dataRow)
-      return dataRow
+      console.log(parsed)
+      // const { data } = await this.$axios.post(
+      //   `api/projects/draft/${office}/`,
+      //   parsed
+      // )
+      // if (publish) {
+      //   await this.$axios.put(
+      //     `api/projects/publish/${data.id}/${office}/`,
+      //     parsed
+      //   )
+      // }
+      // const dataRow = this.row
+      // dataRow.project = data.id
+      // this.$emit('update:row', dataRow)
+      return this.row
     },
   },
 }

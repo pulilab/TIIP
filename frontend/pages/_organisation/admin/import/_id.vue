@@ -350,8 +350,10 @@ export default {
     async doSingleRowSave(doSave, nested) {
       try {
         const { country, country_office, donor, draft } = this.rawImport
+        // console.log({ country, country_office, donor, draft })
         const newRow = await doSave(country, donor, !draft, country_office)
-        await this.patchRow(newRow)
+        // TODO remove comment !!!
+        // await this.patchRow(newRow)
         return newRow
       } catch (e) {
         console.error(e)

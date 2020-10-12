@@ -63,6 +63,8 @@
 import DateField from '@/components/admin/import/DateField'
 import { Validator } from 'vee-validate'
 import { mapState } from 'vuex'
+import chunk from 'lodash/chunk'
+import find from 'lodash/find'
 
 export default {
   components: {
@@ -219,6 +221,25 @@ export default {
           capability_subcategories: () =>
             this.findProjectCollectionValue('capability_subcategories', true),
           // INVENT
+          partners: () => {
+            const indexList = []
+            const valueList = chunk(this.stringToArray(this.value), 4).map(
+              (list) => {
+                const type = find(
+                  this.systemDicts.partner_types,
+                  (type) => type.name.substr(0, 3) === list[0].substr(0, 3)
+                )
+                if (type) {
+                  indexList.push(type.id)
+                }
+                return list.join(', ')
+              }
+            )
+            return {
+              names: valueList,
+              ids: indexList.length === valueList.length ? indexList : [],
+            }
+          },
           functions: () => this.findProjectCollectionValue('functions', true),
           hardware: () => this.findProjectCollectionValue('hardware', true),
           nontech: () => this.findProjectCollectionValue('nontech', true),
@@ -391,6 +412,22 @@ export default {
         'goal_area',
         'result_area',
       ]
+      if (
+        this.column === 'partners' &&
+        this.parsedValue.ids &&
+        this.parsedValue.ids.length
+      ) {
+        const { names } = this.parsedValue
+        return this.parsedValue.ids.map(function (id, index) {
+          const data = names[index].split(', ')
+          return {
+            partner_type: id,
+            partner_name: data[1],
+            partner_email: data[2],
+            partner_website: data[3],
+          }
+        })
+      }
       const idsOrNames = isIds.includes(this.column)
         ? this.parsedValue.ids
         : this.parsedValue.names

@@ -146,6 +146,7 @@ import {
   importTemplate,
   nameMapping,
   nameInventMapping,
+  apiNameInvenMapping,
 } from '@/utilities/import'
 import { draftRules } from '@/utilities/projects'
 import get from 'lodash/get'
@@ -188,9 +189,9 @@ export default {
         'systemDicts.donorsLibrary.20.donor_questions'
       )
       const inventFields = reduce(
-        nameInventMapping,
+        apiNameInvenMapping,
         (res, val, key) => {
-          res[val] = this.projectDicts[key][0].name
+          res[nameInventMapping[key]] = this.projectDicts[key][0].name
           return res
         },
         {}

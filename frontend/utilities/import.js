@@ -7,6 +7,16 @@ export const nameInventMapping = {
   innovation_categories: 'Innovation Categories',
   cpd: 'In Country programme document (CPD)',
   // phases: 'Phase of Initiative'
+  overview: 'Overview',
+  program_targets: 'Program Targets',
+  program_targets_achieved: 'Program Targets Achieved',
+  current_achievements: 'Current Achievements',
+  awp: 'Annual Work Plan',
+  total_budget_narrative: 'Total Budget (Narrative)',
+  funding_needs: 'Funding Needs',
+  partnership_needs: 'Partnership Needs',
+  // partner
+  partners: 'Partners',
 }
 
 export const apiNameInvenMapping = {
@@ -56,6 +66,16 @@ export const importTemplate = [
     'Goal Area': '21. Survive and Thrive',
     'Result Area': '21-01 Maternal and newborn health',
     'Field Office': 'According to selected country office',
+    Overview: 'text',
+    'Program Targets': 'text',
+    'Program Targets Achieved': 'text',
+    'Current Achievements': 'text',
+    'Annual Work Plan': 'text',
+    'Total Budget (Narrative)': 'text',
+    'Funding Needs': 'text',
+    'Partnership Needs': 'text',
+    Partners:
+      'Investor Partner|Investor Name|partner@investor.com|www.investor.com|Technology Partner|Partner Name|partner@technology.com|www.technology.com',
   },
   {
     'Project Name': 'MyProject2',
@@ -72,5 +92,13 @@ export const importTemplate = [
     'Capability Categories': '1.3 Student to student communication',
     'Capability Subcategories':
       '1.1.1 Transmit education event alerts to specific population group(s)',
+    Overview: '',
+    'Program Targets': '',
+    'Program Targets Achieved': '',
+    'Current Achievements': '',
+    'Annual Work Plan': '',
+    'Total Budget (Narrative)': '',
+    'Funding Needs': '',
+    'Partnership Needs': '',
   },
 ]
