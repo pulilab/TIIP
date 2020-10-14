@@ -294,8 +294,8 @@ if SITE_ID in [3, 4]:
             "task": 'published_projects_updated_long_ago',
             "schedule": datetime.timedelta(days=31),
         },
-        "project_review_requested_notification": {
-            "task": 'project_review_requested_notification',
+        "project_review_requested_monthly_notification": {
+            "task": 'project_review_requested_monthly_notification',
             "schedule": datetime.timedelta(days=30),
         },
     }
