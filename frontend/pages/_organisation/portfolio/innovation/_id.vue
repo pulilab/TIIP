@@ -108,6 +108,7 @@
             <table-top-actions />
           </el-row>
           <el-row>
+            <!-- {{ matrix }} -->
             <main-table />
           </el-row>
         </div>
@@ -120,9 +121,11 @@
 </template>
 
 <script>
-import TableTopActions from '@/components/portfolio/dashboard/TableTopActions'
+import { mapState } from 'vuex'
+
 import MainTable from '@/components/portfolio/dashboard/MainTable'
-import AdvancedSearch from '@/components/dashboard/AdvancedSearch'
+import TableTopActions from '@/components/portfolio/dashboard/TableTopActions'
+import AdvancedSearch from '@/components/search/AdvancedSearch'
 import Matrix from '@/components/portfolio/Matrix'
 import Radio from '@/components/portfolio/form/inputs/Radio'
 import groupBy from 'lodash/groupBy'
@@ -179,6 +182,28 @@ export default {
     store.dispatch('portfolio/getPortfolioDetails', params.id)
     store.dispatch('matrixes/getPortfolioMatrix', params.id)
   },
+  async fetch({ store, query, error, params }) {
+    // setup search
+    store.dispatch('search/resetSearch')
+    store.commit('search/SET_SEARCH', { key: 'portfolio', val: params.id })
+    store.commit('search/SET_SEARCH', {
+      key: 'portfolio_page',
+      val: 'portfolio',
+    })
+    store.commit('search/SET_SEARCH', { key: 'scores', val: true })
+    // set portfolio details
+    store.commit('portfolio/SET_VALUE', {
+      key: 'currentPortfolioId',
+      val: params.id,
+    })
+    // actual search
+    await Promise.all([
+      store.dispatch('projects/loadProjectStructure'),
+      store.dispatch('portfolio/getPortfolioDetails', params.id),
+      store.dispatch('search/getSearch'),
+    ])
+  },
+
   computed: {
     ...mapGetters({
       ambitionMatrix: 'matrixes/getAmbitionMatrix',
