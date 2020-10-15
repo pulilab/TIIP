@@ -104,6 +104,7 @@ export const getters = {
   getStatements: (state) => state.statements,
   getLoading: (state) => state.loading,
   getTotal: (state) => state.projects.length,
+  getPortfolios: (state) => state.portfolios,
 }
 
 export const actions = {
