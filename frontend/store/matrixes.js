@@ -1,55 +1,58 @@
 import map from 'lodash/map'
 import find from 'lodash/find'
+import compact from 'lodash/compact'
 
 export const state = {
   ambitionMatrix: [],
   riskImpactMatrix: [],
   problemStatementMatrix: [],
-  projects: [],
 }
 
 export const actions = {
-  async getPortfolioMatrix({ commit }, id) {
-    const { data } = await this.$axios.get(
-      `/api/search/?portfolio=${id}&portfolio_page=portfolio&type=portfolio&scores`
-    )
+  setPortfolioMatrix({ commit }, data) {
     const {
       ambition_matrix,
       risk_impact_matrix,
       problem_statement_matrix,
-      projects,
-    } = data.results
+    } = data
     commit('SET_VALUE', { key: 'ambitionMatrix', val: ambition_matrix })
     commit('SET_VALUE', { key: 'riskImpactMatrix', val: risk_impact_matrix })
     commit('SET_VALUE', {
       key: 'problemStatementMatrix',
       val: problem_statement_matrix,
     })
-    commit('SET_VALUE', { key: 'projects', val: projects })
   },
 }
 
 function processMatrix(matrix, projects) {
+  if (!projects || projects.length === 0) {
+    return []
+  }
   return map(matrix, function (element) {
     return {
       ...element,
-      projects: map(element.projects, function (projectId) {
-        const project = find(projects, ({ id }) => projectId)
-        return {
-          id: projectId,
-          title: project.name,
-        }
-      }),
+      projects: compact(
+        map(element.projects, function (projectId) {
+          const project = find(projects, ({ id }) => projectId)
+          if (!project) {
+            return null
+          }
+          return {
+            id: projectId,
+            title: project.name,
+          }
+        })
+      ),
     }
   })
 }
 
 export const getters = {
-  getAmbitionMatrix(state) {
-    return processMatrix(state.ambitionMatrix, state.projects)
+  getAmbitionMatrix(state, getters, rootState) {
+    return processMatrix(state.ambitionMatrix, rootState.portfolio.projects)
   },
-  getRiskImpactMatrix(state) {
-    return processMatrix(state.riskImpactMatrix, state.projects)
+  getRiskImpactMatrix(state, getters, rootState) {
+    return processMatrix(state.riskImpactMatrix, rootState.portfolio.projects)
   },
   getProblemStatementMatrix(state, getters, rootState) {
     const { problemStatements } = rootState.portfolio

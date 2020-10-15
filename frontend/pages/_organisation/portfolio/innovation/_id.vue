@@ -121,14 +121,11 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 import MainTable from '@/components/portfolio/dashboard/MainTable'
 import TableTopActions from '@/components/portfolio/dashboard/TableTopActions'
 import AdvancedSearch from '@/components/search/AdvancedSearch'
 import Matrix from '@/components/portfolio/Matrix'
 import Radio from '@/components/portfolio/form/inputs/Radio'
-import groupBy from 'lodash/groupBy'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -177,11 +174,6 @@ export default {
       },
     }
   },
-  fetch({ store, params }) {
-    store.dispatch('portfolio/getPortfolios')
-    store.dispatch('portfolio/getPortfolioDetails', params.id)
-    store.dispatch('matrixes/getPortfolioMatrix', params.id)
-  },
   async fetch({ store, query, error, params }) {
     // setup search
     store.dispatch('search/resetSearch')
@@ -198,6 +190,7 @@ export default {
     })
     // actual search
     await Promise.all([
+      store.dispatch('portfolio/getPortfolios'),
       store.dispatch('projects/loadProjectStructure'),
       store.dispatch('portfolio/getPortfolioDetails', params.id),
       store.dispatch('search/getSearch'),
@@ -216,6 +209,7 @@ export default {
   },
   methods: {
     navigate(id) {
+      this.$store.dispatch('search/resetSearch')
       this.$refs.ambitionMatrix.clear()
       this.$refs.riskMatrix.clear()
       this.selectedProblem = -1
@@ -229,11 +223,12 @@ export default {
     select(id, value) {
       if (value) {
         this.selectedProblem = id
-        return
-      }
-      if (this.selectedProblem === id) {
+      } else if (this.selectedProblem === id) {
         this.selectedProblem = -1
       }
+      const ps = this.selectedProblem === -1 ? [] : [this.selectedProblem]
+      this.$store.commit('search/SET_SEARCH', { key: 'ps', val: ps })
+      this.$store.dispatch('search/getSearch')
     },
   },
 }

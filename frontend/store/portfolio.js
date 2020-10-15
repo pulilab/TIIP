@@ -113,8 +113,6 @@ export const state = () => ({
   ],
   // pagination
   total: 0,
-  // matrix
-  matrix: {},
 })
 
 export const getters = {
@@ -294,14 +292,6 @@ export const actions = {
           ...i.project_data,
         }
       }),
-    })
-  },
-  // matrix info
-  setMatrix({ state, commit, dispatch }, matrix) {
-    // set matrix
-    commit('SET_VALUE', {
-      key: 'matrix',
-      val: matrix,
     })
   },
   // move action
