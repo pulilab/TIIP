@@ -427,4 +427,4 @@ PORTFOLIO_PROBLEMSTATEMENT_TRESHOLDS = {
     'HIGH': 10
 }
 
-NOTIFICATION_PROJECT_REVIEW_DAYS = 30  # subject to change, TODO: Check with client
+NOTIFICATION_PROJECT_REVIEW_DAYS = 30  # subject to change, check with client
