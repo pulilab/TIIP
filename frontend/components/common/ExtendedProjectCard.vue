@@ -1,7 +1,10 @@
 <template>
   <el-card :body-style="{ padding: '0px' }" class="ExtendedProjectCard rounded">
     <div>
-      <review-card-stripe v-if="type === 'review'" />
+      <review-card-stripe
+        v-if="type === 'review'"
+        :item="{ ...projectData, portfolioName: `Portfolio ${project.id}` }"
+      />
       <el-row
         type="flex"
         align="middle"
@@ -66,14 +69,13 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import { format } from 'date-fns'
 
 import ReviewCardStripe from '@/components/review/ReviewCardStripe'
-import CountryItem from './CountryItem'
-import OrganisationItem from './OrganisationItem'
-import ProjectCardActions from './ProjectCardActions'
-import ProjectLegend from './ProjectLegend'
+import CountryItem from '@/components/common/CountryItem'
+import OrganisationItem from '@/components/common/OrganisationItem'
+import ProjectCardActions from '@/components/common/ProjectCardActions'
+import ProjectLegend from '@/components/common/ProjectLegend'
 
 export default {
   components: {
@@ -92,14 +94,12 @@ export default {
       type: String,
       default: 'regular',
     },
+    project: {
+      type: Object,
+      required: true,
+    },
   },
   computed: {
-    ...mapGetters({
-      getUserProjectDetails: 'projects/getUserProjectDetails',
-    }),
-    project() {
-      return this.getUserProjectDetails(this.id)
-    },
     projectData() {
       return this.project.isPublished
         ? this.project.published
@@ -114,7 +114,6 @@ export default {
       return format(this.projectData.modified, 'DD/MM/YYYY')
     },
   },
-  methods: {},
 }
 </script>
 

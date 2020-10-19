@@ -10,9 +10,9 @@ export const state = () => ({
   currentProjectCoverageVersions: [],
   // initiatives tabs
   tabs: [
-    { id: 1, name: 'My initiatives', icon: 'star', total: 18 },
-    { id: 2, name: 'My reviews', icon: 'comment-alt', total: 50 },
-    { id: 3, name: 'My favorites', icon: 'heart', total: 25 },
+    { id: 1, name: 'My initiatives', icon: 'star', total: 1 },
+    { id: 2, name: 'My reviews', icon: 'comment-alt', total: 1 },
+    { id: 3, name: 'My favorites', icon: 'heart', total: 1 },
   ],
   tab: 1,
   // project review
@@ -254,6 +254,71 @@ export const actions = {
       return Promise.reject(error)
     }
   },
+  async getInitiatives({ state, commit, dispatch, rootGetters }) {
+    const user = rootGetters['user/getProfile']
+    try {
+      const results = await Promise.all([
+        this.$axios.get(`/api/projects/member-of/`),
+        this.$axios.get(`/api/projects/member-of/`),
+        this.$axios.get(`/api/projects/member-of/`),
+      ])
+
+      let { data } = results[state.tab - 1]
+      data.sort((a, b) => b.id - a.id)
+      data = data.map((p) => {
+        return {
+          ...p,
+          isMember: user ? user.member.includes(p.id) : undefined,
+          isViewer: user ? user.viewer.includes(p.id) : undefined,
+          isPublished: !!(p.published && p.published.name),
+        }
+      })
+      commit('SET_VALUE', { key: 'userProjects', val: data })
+
+      // update tab counts
+      commit('SET_VALUE', {
+        key: 'tabs',
+        val: [
+          {
+            id: 1,
+            name: 'My initiatives',
+            icon: 'star',
+            total: results[0].data.length,
+          },
+          {
+            id: 2,
+            name: 'My reviews',
+            icon: 'comment-alt',
+            total: results[1].data.length,
+          },
+          {
+            id: 3,
+            name: 'My favorites',
+            icon: 'heart',
+            total: results[2].data.length,
+          },
+        ],
+      })
+    } catch (e) {
+      // console.log(e.response.data);
+      console.error('portfolio/loadPortfolioProjects failed')
+    }
+  },
+  async addReview({ state, commit, dispatch }, { id, ...score }) {
+    try {
+      commit('SET_VALUE', { key: 'loadingReview', val: true })
+      await this.$axios.post(`/api/project-review/${id}/fill/`, {
+        ...score,
+      })
+      // update initiatives
+      dispatch('getInitiatives')
+      // interface setters
+      commit('SET_VALUE', { key: 'loadingReview', val: false })
+      commit('SET_VALUE', { key: 'dialogReview', val: false })
+    } catch (e) {
+      console.log(e.response.data)
+    }
+  },
   async setCurrentProject({ commit, dispatch }, id) {
     id = parseInt(id, 10)
     try {
@@ -309,85 +374,23 @@ export const actions = {
     commit('RESET_PROJECTS_DATA')
   },
   // get every project or initiative
-  getProjects({ state, commit, dispatch }, id) {
-    try {
-      commit('SET_VALUE', {
-        key: 'problemStatements',
-        val: [
-          { id: 1, name: 'statement 1' },
-          { id: 2, name: 'statement 2' },
-        ],
-      })
-      // const { data } = await this.$axios.get(`api/portfolio/${id}/`)
-      // commit('SET_VALUE', {
-      //   key: 'problemStatements',
-      //   val: data.problem_statements,
-      // })
-      // commit('SET_NAME', data.name)
-      // const results = await Promise.all([
-      //   this.$axios.get(`api/portfolio/${id}/projects/inventory/`),
-      //   this.$axios.get(`api/portfolio/${id}/projects/review/`),
-      //   this.$axios.get(`api/portfolio/${id}/projects/approved/`),
-      // ])
-      // // todo: pagination
-      // commit('SET_VALUE', {
-      //   key: 'currentPortfolioId',
-      //   val: id,
-      // })
-      // // set the projects of the portfolio by tab filter
-      // // console.log(results[1].data.results);
-      // commit('SET_VALUE', {
-      //   key: 'projects',
-      //   val: results[state.tab - 1].data.results.map((i) => {
-      //     // todo: set this attributes from api
-      //     return {
-      //       ...i,
-      //       favorite: Math.random() >= 0.5,
-      //       ...i.project_data,
-      //     }
-      //   }),
-      // })
-      // // update tab counts
-      // commit('SET_VALUE', {
-      //   key: 'tabs',
-      //   val: [
-      //     {
-      //       id: 1,
-      //       name: 'Inventory',
-      //       icon: 'folder',
-      //       total: results[0].data.count,
-      //     },
-      //     {
-      //       id: 2,
-      //       name: 'For review',
-      //       icon: 'eye',
-      //       total: results[1].data.count,
-      //     },
-      //     {
-      //       id: 3,
-      //       name: 'Portfolio',
-      //       icon: 'briefcase',
-      //       total: results[2].data.count,
-      //     },
-      //   ],
-      // })
-    } catch (e) {
-      // console.log(e.response.data);
-      console.error('portfolio/loadPortfolioProjects failed')
-    }
-  },
   setTab({ state, commit, dispatch }, val) {
-    console.log(`moving to ${val}`)
     commit('SET_VALUE', { key: 'tab', val })
     // update initiatives/projects by tab click
-    // dispatch('getProjects', state.currentPortfolioId)
+    dispatch('getInitiatives')
   },
   // state interaction handlers
-  setCurrentProjectReviewer({ commit }, val) {
+  setCurrentProjectReview({ commit }, val) {
+    commit('SET_VALUE', {
+      key: 'problemStatements',
+      val: [
+        { id: 1, name: 'statement 1' },
+        { id: 2, name: 'statement 2' },
+      ],
+    })
     commit('SET_VALUE', { key: 'currentProjectReview', val })
   },
   setReviewDialog({ commit }, val) {
-    console.log('hola')
     commit('SET_VALUE', { key: 'dialogReview', val })
   },
 }

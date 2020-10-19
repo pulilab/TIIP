@@ -11,11 +11,11 @@
     <!-- header -->
     <template slot="title">
       <div class="dialog-header">
-        <p class="title"><translate>New reviewer</translate></p>
+        <p class="title">{{ currentProjectReview.name }}</p>
         <div class="info-wrapper">
           <review-state-info
             :complete="currentProjectReview.reviewed"
-            portfolio="Portfolio Name B"
+            :portfolio="currentProjectReview.portfolioName || ''"
           />
         </div>
       </div>
@@ -72,49 +72,51 @@
         :key="question"
         class="question"
       >
-        <p class="label">
-          {{ `${idx + 1}/A: ` }}
-          <translate>{{ reviewQuestions[question].name }}</translate>
-        </p>
-        <p class="sub-label">
-          <translate>{{ reviewQuestions[question].text }}</translate>
-        </p>
-        <div class="select-box">
-          <el-select
-            v-if="question === 'psa'"
-            v-model="score[question]"
-            class="select-psa"
-            multiple
-            filterable
-            clearable
-          >
-            <el-option
-              v-for="i in problemStatements"
-              :key="i.id"
-              :label="i.name"
-              :value="i.id"
-            />
-          </el-select>
-          <el-select v-else v-model="score[question]" clearable>
-            <el-option v-for="i in points" :key="i" :label="i" :value="i" />
-          </el-select>
-          <info-popover
-            placement="right"
-            :title="$gettext('Scoring Guidance') | translate"
-            width="360"
-          >
-            <p>{{ reviewQuestions[question].guidance }}</p>
-          </info-popover>
-        </div>
-        <p class="label">
-          {{ `${idx + 1}/B: ` }}<translate>Add comment (optional)</translate>
-        </p>
-        <el-input
-          v-model="score[`${question}_comment`]"
-          type="textarea"
-          :rows="3"
-          :placeholder="$gettext('Type here...') | translate"
-        />
+        <template v-if="!(question === 'impact' || question === 'scale_phase')">
+          <p class="label">
+            {{ `${idx + 1}/A: ` }}
+            <translate>{{ reviewQuestions[question].name }}</translate>
+          </p>
+          <p class="sub-label">
+            <translate>{{ reviewQuestions[question].text }}</translate>
+          </p>
+          <div class="select-box">
+            <el-select
+              v-if="question === 'psa'"
+              v-model="score[question]"
+              class="select-psa"
+              multiple
+              filterable
+              clearable
+            >
+              <el-option
+                v-for="i in problemStatements"
+                :key="i.id"
+                :label="i.name"
+                :value="i.id"
+              />
+            </el-select>
+            <el-select v-else v-model="score[question]" clearable>
+              <el-option v-for="i in points" :key="i" :label="i" :value="i" />
+            </el-select>
+            <info-popover
+              placement="right"
+              :title="$gettext('Scoring Guidance') | translate"
+              width="360"
+            >
+              <p>{{ reviewQuestions[question].guidance }}</p>
+            </info-popover>
+          </div>
+          <p class="label">
+            {{ `${idx + 1}/B: ` }}<translate>Add comment (optional)</translate>
+          </p>
+          <el-input
+            v-model="score[`${question}_comment`]"
+            type="textarea"
+            :rows="3"
+            :placeholder="$gettext('Type here...') | translate"
+          />
+        </template>
       </div>
     </template>
     <!-- footer -->
@@ -161,8 +163,6 @@ export default {
         nst: null,
         nc: null,
         ps: null,
-        impact: null,
-        scale_phase: null,
         psa_comment: '',
         rnci_comment: '',
         ratp_comment: '',
@@ -171,8 +171,6 @@ export default {
         nst_comment: '',
         nc_comment: '',
         ps_comment: '',
-        impact_comment: '',
-        scale_phase_comment: '',
       },
     }
   },
@@ -213,24 +211,23 @@ export default {
   methods: {
     ...mapActions({
       setReviewDialog: 'projects/setReviewDialog',
-      getProjects: 'projects/getProjects',
-      // addReview: 'projects/addReview',
+      // getProjects: 'projects/getProjects',
+      addReview: 'projects/addReview',
     }),
     resetForm(val) {
       this.setReviewDialog(val)
-      this.reviewers = []
-      this.message = ''
+      // this.reviewers = []
+      // this.message = ''
     },
     handleSubmit() {
-      // this.addReview({
-      //   id: this.currentProjectId,
-      //   reviewers: this.reviewers,
-      //   message: this.message,
-      // })
+      this.addReview({
+        ...this.score,
+        id: this.currentProjectReview.id,
+      })
     },
     handleReviewFeed() {
       // todo: use dynamic portfolio to get data
-      this.getProjects(1)
+      // this.getProjects(1)
       this.score = {
         psa: [2],
         rnci: 3,
@@ -240,8 +237,6 @@ export default {
         nst: 4,
         nc: 1,
         ps: 2,
-        impact: 3,
-        scale_phase: 4,
         psa_comment: 'new comment',
         rnci_comment: '',
         ratp_comment:
@@ -252,8 +247,6 @@ export default {
         nst_comment: 'new comment',
         nc_comment: 'new comment',
         ps_comment: 'new comment',
-        impact_comment: 'new comment',
-        scale_phase_comment: 'new comment',
       }
     },
   },

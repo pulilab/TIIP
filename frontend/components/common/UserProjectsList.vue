@@ -9,17 +9,18 @@
       :id="project.id"
       :key="project.id"
       :type="cardType"
+      :project="project"
     />
     <review-dialog />
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 
 import ReviewDialog from '@/components/review/ReviewDialog'
-import ExtendedProjectCard from '../common/ExtendedProjectCard'
-import EmptyProjects from './EmptyProjects'
+import ExtendedProjectCard from '@/components/common/ExtendedProjectCard'
+import EmptyProjects from '@/components/common/EmptyProjects'
 
 export default {
   components: {
@@ -50,18 +51,16 @@ export default {
   },
   computed: {
     ...mapState({
+      projects: (state) => state.projects.userProjects,
       tab: (state) => state.projects.tab,
     }),
-    ...mapGetters({
-      userProjecList: 'projects/getUserProjectList',
-    }),
     limited() {
-      return this.limit && this.userProjecList.length > 3
-        ? this.userProjecList.slice(0, this.limit)
-        : this.userProjecList
+      return this.limit && this.projects.length > 3
+        ? this.projects.slice(0, this.limit)
+        : this.projects
     },
     hasProjects() {
-      return this.userProjecList.length > 0
+      return this.projects.length > 0
     },
     cardType() {
       return this.tab === 2 ? 'review' : 'regular'

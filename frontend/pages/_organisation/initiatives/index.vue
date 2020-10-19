@@ -22,6 +22,9 @@ export default {
     UserProjectList,
     Tabs,
   },
+  fetch({ store, params }) {
+    store.dispatch('projects/getInitiatives')
+  },
   computed: {
     ...mapState({
       tabs: (state) => state.projects.tabs,
