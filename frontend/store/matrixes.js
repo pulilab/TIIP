@@ -2,11 +2,11 @@ import map from 'lodash/map'
 import find from 'lodash/find'
 import compact from 'lodash/compact'
 
-export const state = {
+export const state = () => ({
   ambitionMatrix: [],
   riskImpactMatrix: [],
   problemStatementMatrix: [],
-}
+})
 
 export const actions = {
   setPortfolioMatrix({ commit }, data) {
@@ -33,7 +33,7 @@ function processMatrix(matrix, projects) {
       ...element,
       projects: compact(
         map(element.projects, function (projectId) {
-          const project = find(projects, ({ id }) => projectId)
+          const project = find(projects, ({ id }) => id === projectId)
           if (!project) {
             return null
           }
@@ -70,8 +70,8 @@ function processProblemStatement(list, statements) {
     const statement = find(statements, ({ id }) => id === statementId)
     return {
       id: statementId,
-      title: statement.name,
-      description: statement.description,
+      title: statement && statement.name,
+      description: statement && statement.description,
     }
   })
 }
