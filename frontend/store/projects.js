@@ -248,7 +248,7 @@ export const actions = {
   async loadUserProjects({ commit }) {
     try {
       const { data } = await this.$axios.get(
-        '/api/projects/user-list/member-of'
+        '/api/projects/user-list/member-of/'
       )
       data.sort((a, b) => b.id - a.id)
       commit('SET_USER_PROJECT_LIST', data)
