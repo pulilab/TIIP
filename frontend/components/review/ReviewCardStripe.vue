@@ -1,19 +1,14 @@
 <template>
   <div class="project-review">
-    <review-state-info :complete="complete" :portfolio="item.portfolioName">
+    <review-state-info
+      :complete="item.complete"
+      :portfolio="item.portfolio ? item.portfolio.name : ''"
+    >
       <template slot="actions">
-        <p
-          v-if="complete"
-          class="completed"
-          @click="handleReview({ ...item, reviewed: true })"
-        >
+        <p v-if="item.complete" class="completed" @click="handleReview(item)">
           <fa icon="comment-alt" /><translate>View Review</translate>
         </p>
-        <p
-          v-else
-          class="not-completed"
-          @click="handleReview({ ...item, reviewed: false })"
-        >
+        <p v-else class="not-completed" @click="handleReview(item)">
           <fa icon="comment-alt" /><translate>Complete Review</translate>
         </p>
       </template>
@@ -33,11 +28,6 @@ export default {
     item: {
       type: Object,
       required: true,
-    },
-  },
-  computed: {
-    complete() {
-      return Math.random() >= 0.5
     },
   },
   methods: {

@@ -3,14 +3,18 @@
     <p class="headline">
       {{ headline[tab - 1] }}
     </p>
-    <empty-projects v-if="!hasProjects" />
-    <extended-project-card
-      v-for="project in limited"
-      :id="project.id"
-      :key="project.id"
-      :type="cardType"
-      :project="project"
-    />
+    <div v-loading="loadingProject" class="loading-mask">
+      <template v-if="!loadingProject">
+        <empty-projects v-if="!hasProjects" />
+        <extended-project-card
+          v-for="project in limited"
+          :id="project.id"
+          :key="project.id"
+          :type="cardType"
+          :project="project"
+        />
+      </template>
+    </div>
     <review-dialog />
   </div>
 </template>
@@ -53,6 +57,7 @@ export default {
     ...mapState({
       projects: (state) => state.projects.userProjects,
       tab: (state) => state.projects.tab,
+      loadingProject: (state) => state.projects.loadingProject,
     }),
     limited() {
       return this.limit && this.projects.length > 3
@@ -73,6 +78,10 @@ export default {
 @import '~assets/style/variables.less';
 @import '~assets/style/mixins.less';
 
+.loading-mask {
+  width: 100%;
+  min-height: 500px;
+}
 .user-projects-list {
   padding: 50px 80px 60px;
   .headline {

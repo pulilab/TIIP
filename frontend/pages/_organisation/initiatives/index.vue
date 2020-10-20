@@ -31,6 +31,9 @@ export default {
       tab: (state) => state.projects.tab,
     }),
   },
+  mounted() {
+    this.setTab(1)
+  },
   methods: {
     ...mapActions({
       setTab: 'projects/setTab',

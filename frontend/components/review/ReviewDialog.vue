@@ -14,43 +14,49 @@
         <p class="title">{{ currentProjectReview.name }}</p>
         <div class="info-wrapper">
           <review-state-info
-            :complete="currentProjectReview.reviewed"
-            :portfolio="currentProjectReview.portfolioName || ''"
+            :complete="currentProjectReview.complete"
+            :portfolio="
+              currentProjectReview.portfolio
+                ? currentProjectReview.portfolio.name
+                : ''
+            "
           />
         </div>
       </div>
     </template>
     <!-- content -->
     <!-- review view -->
-    <template v-if="currentProjectReview.reviewed">
+    <template v-if="currentProjectReview.complete">
       <div
         v-for="question in questionType"
         :key="question"
         class="question question-info"
       >
-        <div class="score-line">
-          <p key="label" class="label">
-            <translate>{{ reviewQuestions[question].name }}</translate>
+        <template v-if="!(question === 'impact' || question === 'scale_phase')">
+          <div class="score-line">
+            <p key="label" class="label">
+              <translate>{{ reviewQuestions[question].name }}</translate>
+            </p>
+            <div class="divider"></div>
+            <p v-if="question !== 'psa'" class="label">{{ score[question] }}</p>
+          </div>
+          <div v-if="question === 'psa'" class="statements-wrapper">
+            <psa-list
+              :items="score[question]"
+              :problem-statements="problemStatements"
+              big
+            />
+          </div>
+          <p key="comment" class="comment">
+            <template v-if="score[`${question}_comment`] === ''">
+              <translate>(no comment)</translate>
+            </template>
+            <template v-else>
+              <fa :icon="['fas', 'comment-alt']" />
+              <translate>{{ score[`${question}_comment`] }}</translate>
+            </template>
           </p>
-          <div class="divider"></div>
-          <p v-if="question !== 'psa'" class="label">{{ score[question] }}</p>
-        </div>
-        <div v-if="question === 'psa'" class="statements-wrapper">
-          <psa-list
-            :items="score[question]"
-            :problem-statements="problemStatements"
-            big
-          />
-        </div>
-        <p key="comment" class="comment">
-          <template v-if="score[`${question}_comment`] === ''">
-            <translate>(no comment)</translate>
-          </template>
-          <template v-else>
-            <fa :icon="['fas', 'comment-alt']" />
-            <translate>{{ score[`${question}_comment`] }}</translate>
-          </template>
-        </p>
+        </template>
       </div>
     </template>
     <!-- review form -->
@@ -121,7 +127,7 @@
     </template>
     <!-- footer -->
     <span
-      v-if="!currentProjectReview.reviewed"
+      v-if="!currentProjectReview.complete"
       slot="footer"
       class="dialog-footer"
     >
@@ -180,7 +186,6 @@ export default {
       currentProjectReview: (state) => state.projects.currentProjectReview,
       loadingReview: (state) => state.projects.loadingReview,
       questionType: (state) => state.portfolio.questionType,
-      problemStatements: (state) => state.projects.problemStatements,
       reviewQuestions: (state) => state.system.review_questions,
     }),
     ...mapGetters({
@@ -207,46 +212,80 @@ export default {
       }
       return disabled
     },
+    problemStatements() {
+      return this.currentProjectReview.portfolio
+        ? this.currentProjectReview.portfolio.problem_statements
+        : []
+    },
   },
   methods: {
     ...mapActions({
       setReviewDialog: 'projects/setReviewDialog',
-      // getProjects: 'projects/getProjects',
       addReview: 'projects/addReview',
     }),
     resetForm(val) {
       this.setReviewDialog(val)
-      // this.reviewers = []
-      // this.message = ''
+      this.score = {
+        psa: [],
+        rnci: null,
+        ratp: null,
+        ra: null,
+        ee: null,
+        nst: null,
+        nc: null,
+        ps: null,
+        psa_comment: '',
+        rnci_comment: '',
+        ratp_comment: '',
+        ra_comment: '',
+        ee_comment: '',
+        nst_comment: '',
+        nc_comment: '',
+        ps_comment: '',
+      }
     },
     handleSubmit() {
       this.addReview({
         ...this.score,
-        id: this.currentProjectReview.id,
+        id: this.currentProjectReview.reviewId,
       })
     },
     handleReviewFeed() {
-      // todo: use dynamic portfolio to get data
-      // this.getProjects(1)
+      const {
+        psa,
+        rnci,
+        ratp,
+        ra,
+        ee,
+        nst,
+        nc,
+        ps,
+        psa_comment,
+        rnci_comment,
+        ratp_comment,
+        ra_comment,
+        ee_comment,
+        nst_comment,
+        nc_comment,
+        ps_comment,
+      } = this.currentProjectReview
       this.score = {
-        psa: [2],
-        rnci: 3,
-        ratp: 5,
-        ra: 1,
-        ee: 2,
-        nst: 4,
-        nc: 1,
-        ps: 2,
-        psa_comment: 'new comment',
-        rnci_comment: '',
-        ratp_comment:
-          'Contra legem facit qui id facit quod lex prohibet. Me non paenitet nullum festiviorem excogitasse ad hoc. Nihilne te nocturnum praesidium Palati, nihil urbis vigiliae. Sed haec quis possit intrepidus aestimare tellus. Idque Caesaris facere voluntate liceret: sese habere.',
-        ra_comment: 'new comment',
-        ee_comment:
-          'Contra legem facit qui id facit quod lex prohibet. Me non paenitet nullum festiviorem excogitasse ad hoc. Nihilne te nocturnum praesidium Palati, nihil urbis vigiliae. Sed haec quis possit intrepidus aestimare tellus. Idque Caesaris facere voluntate liceret: sese habere.',
-        nst_comment: 'new comment',
-        nc_comment: 'new comment',
-        ps_comment: 'new comment',
+        psa,
+        rnci,
+        ratp,
+        ra,
+        ee,
+        nst,
+        nc,
+        ps,
+        psa_comment,
+        rnci_comment,
+        ratp_comment,
+        ra_comment,
+        ee_comment,
+        nst_comment,
+        nc_comment,
+        ps_comment,
       }
     },
   },
