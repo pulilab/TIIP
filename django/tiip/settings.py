@@ -423,8 +423,8 @@ REDOC_SETTINGS = {
 }
 
 PORTFOLIO_PROBLEMSTATEMENT_TRESHOLDS = {
-    'MODERATE': 5,
-    'HIGH': 10
+    'MODERATE': 1,
+    'HIGH': 6
 }
 
 NOTIFICATION_PROJECT_REVIEW_DAYS = 30  # subject to change, check with client
