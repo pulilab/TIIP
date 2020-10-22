@@ -4,47 +4,66 @@
       <div class="portfolio">
         <div class="PHeader">
           <h2>
-            <translate>Portfolio:</translate>
-            <el-dropdown trigger="click" placement="bottom-start">
+            <translate>Portfolio</translate>:
+            <el-dropdown
+              trigger="click"
+              placement="bottom-start"
+              @command="navigate"
+            >
               <span class="Title el-dropdown-link">
-                Learning<i class="el-icon-caret-bottom el-icon--right" />
+                {{ name }} <i class="el-icon-caret-bottom el-icon--right" />
               </span>
               <el-dropdown-menu slot="dropdown" class="PDropdown">
-                <el-dropdown-item>Action 1</el-dropdown-item>
-                <el-dropdown-item>Action 2</el-dropdown-item>
-                <el-dropdown-item>Action 3</el-dropdown-item>
+                <el-dropdown-item
+                  v-for="portfolio in portfolios"
+                  :key="portfolio.id"
+                  :command="portfolio.id"
+                >
+                  {{ portfolio.name }}
+                </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </h2>
         </div>
         <el-tabs v-model="activeName">
-          <el-tab-pane label="AMBITION MATRIX" name="ambition">
+          <el-tab-pane
+            :label="$gettext('AMBITION MATRIX') | translate"
+            name="ambition"
+          >
             <Matrix
+              ref="ambitionMatrix"
               bg-image="/bg-ambition_matrix.svg"
-              :elements="elements"
-              :left="['existing', 'challenge', 'new']"
-              :bottom="['existing', 'solution (tools)', 'new']"
+              :description="description"
+              :elements="ambitionMatrix"
+              :left="matrixLabels.ambition.left"
+              :bottom="matrixLabels.ambition.bottom"
             />
           </el-tab-pane>
-          <el-tab-pane label="RISK-IMPACT MATRIX" name="risk">
+          <el-tab-pane
+            :label="$gettext('RISK-IMPACT MATRIX') | translate"
+            name="risk"
+          >
             <Matrix
+              ref="riskMatrix"
               bg-color="#FCEFE8"
               color="#F26A21"
-              top
-              :elements="elements"
-              :left="['high', 'risk', 'low']"
-              :bottom="['low', 'impact (total global need)', 'high']"
+              noarrow
+              :description="description"
+              :elements="riskImpactMatrix"
+              :left="matrixLabels.riskImpact.left"
+              :bottom="matrixLabels.riskImpact.bottom"
+              extra-bottom="Quid securi etiam tamquam eu fugiat nulla pariatur. Vivamus sagittis lacus vel augue laoreet rutrum faucibus. Contra legem facit qui id facit quod lex prohibet."
+              extra-left="Quid securi etiam tamquam eu fugiat nulla pariatur. Vivamus sagittis lacus vel augue laoreet rutrum faucibus. Contra legem facit qui id facit quod lex prohibet."
             />
           </el-tab-pane>
-          <el-tab-pane label="PROBLEM STATEMENT MATRIX" name="problem">
+          <el-tab-pane
+            :label="$gettext('PROBLEM STATEMENT MATRIX') | translate"
+            name="problem"
+          >
             <div class="Problems">
               <el-row type="flex">
                 <el-col
-                  v-for="(col, index) in [
-                    'Neglected',
-                    'Moderate',
-                    'High activity',
-                  ]"
+                  v-for="(col, index) in matrixLabels.problemStatement"
                   :key="col"
                   :span="8"
                 >
@@ -54,9 +73,9 @@
                     </div>
                     <div>
                       <radio
-                        v-for="statement in problemColumns[index]"
+                        v-for="statement in problemStatementMatrix[index]"
                         :key="statement.id"
-                        :value="selectedProblem === statement.id"
+                        :value="ps === statement.id"
                         :disabled="
                           disabledProblems.indexOf(statement.id) !== -1
                         "
@@ -71,13 +90,17 @@
               <el-row>
                 <div class="Info">
                   <i class="fas fa-info-circle" />
-                  By clicking on a problem statement you can add or remove it
-                  from your current filter settings.
+                  <translate>
+                    By clicking on a problem statement you can add or remove it
+                    from your current filter settings.
+                  </translate>
                 </div>
               </el-row>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="MAP VIEW" name="map"> MAP </el-tab-pane>
+          <el-tab-pane :label="$gettext('MAP VIEW') | translate" name="map">
+            TODO
+          </el-tab-pane>
         </el-tabs>
 
         <div class="DashboardListView">
@@ -97,12 +120,12 @@
 </template>
 
 <script>
-import TableTopActions from '@/components/portfolio/dashboard/TableTopActions'
 import MainTable from '@/components/portfolio/dashboard/MainTable'
-import AdvancedSearch from '@/components/dashboard/AdvancedSearch'
+import TableTopActions from '@/components/portfolio/dashboard/TableTopActions'
+import AdvancedSearch from '@/components/search/AdvancedSearch'
 import Matrix from '@/components/portfolio/Matrix'
 import Radio from '@/components/portfolio/form/inputs/Radio'
-import groupBy from 'lodash/groupBy'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -115,89 +138,91 @@ export default {
   data() {
     return {
       activeName: 'ambition',
-      selectedProblem: -1,
-      disabledProblems: [3, 9],
-      problems: [
-        {
-          id: 1,
-          col: 0,
-          title:
-            'Learners and Language of Instruction Learners and Language of Instruction ',
-        },
-        { id: 2, col: 0, title: 'Learners and Language of Instruction' },
-        { id: 3, col: 0, title: 'Learners and Language of Instruction' },
-        { id: 4, col: 0, title: 'Learners and Language of Instruction' },
-        { id: 5, col: 1, title: 'Learners and Language of Instruction' },
-        { id: 6, col: 1, title: 'Learners and Language of Instruction' },
-        { id: 7, col: 1, title: 'Learners and Language of Instruction' },
-        { id: 8, col: 2, title: 'Learners and Language of Instruction' },
-        { id: 9, col: 2, title: 'Learners and Language of Instruction' },
-      ],
-      elements: [
-        {
-          x: 5,
-          y: 5,
-          ratio: 0.5,
-          projects: [
-            {
-              id: 1,
-              title:
-                'Hoji Mobile Data Collection and Analysis Platform Hoji Mobile Data Collection and Analysis Platform',
-            },
-            {
-              id: 2,
-              title:
-                'Hoji Mobile Data Collection and Analysis Platform Hoji Mobile Data Collection and Analysis Platform',
-            },
-            {
-              id: 3,
-              title:
-                'Hoji Mobile Data Collection and Analysis Platform Hoji Mobile Data Collection and Analysis Platform',
-            },
-            {
-              id: 4,
-              title:
-                'Hoji Mobile Data Collection and Analysis Platform Hoji Mobile Data Collection and Analysis Platform',
-            },
-            {
-              id: 5,
-              title:
-                'Hoji Mobile Data Collection and Analysis Platform Hoji Mobile Data Collection and Analysis Platform',
-            },
-            {
-              id: 6,
-              title:
-                'Hoji Mobile Data Collection and Analysis Platform Hoji Mobile Data Collection and Analysis Platform',
-            },
-            {
-              id: 7,
-              title:
-                'Hoji Mobile Data Collection and Analysis Platform Hoji Mobile Data Collection and Analysis Platform',
-            },
+      disabledProblems: [],
+      matrixLabels: {
+        problemStatement: [
+          this.$gettext('Neglected'),
+          this.$gettext('Moderate'),
+          this.$gettext('High activity'),
+        ],
+        riskImpact: {
+          left: [
+            this.$gettext('high'),
+            this.$gettext('risk'),
+            this.$gettext('low'),
+          ],
+          bottom: [
+            this.$gettext('low'),
+            this.$gettext('impact (total global need)'),
+            this.$gettext('high'),
           ],
         },
-        { x: 1, y: 4, ratio: 0.1, projects: [] },
-        { x: 3, y: 4, ratio: 0.1, projects: [] },
-        { x: 4, y: 4, ratio: 0.9, projects: [] },
-        { x: 3, y: 3, ratio: 0.7, projects: [] },
-        { x: 1, y: 1, ratio: 0.3, projects: [] },
-      ],
+        ambition: {
+          left: [
+            this.$gettext('existing'),
+            this.$gettext('challenge'),
+            this.$gettext('new'),
+          ],
+          bottom: [
+            this.$gettext('existing'),
+            this.$gettext('solution (tools)'),
+            this.$gettext('new'),
+          ],
+        },
+      },
     }
   },
+  async fetch({ store, query, error, params }) {
+    // setup search
+    store.dispatch('search/resetSearch')
+    store.commit('search/SET_SEARCH', { key: 'portfolio', val: params.id })
+    store.commit('search/SET_SEARCH', {
+      key: 'portfolio_page',
+      val: 'portfolio',
+    })
+    store.commit('search/SET_SEARCH', { key: 'scores', val: true })
+    // set portfolio details
+    store.commit('portfolio/SET_VALUE', {
+      key: 'currentPortfolioId',
+      val: params.id,
+    })
+    // actual search
+    await Promise.all([
+      store.dispatch('portfolio/getPortfolios'),
+      store.dispatch('projects/loadProjectStructure'),
+      store.dispatch('portfolio/getPortfolioDetails', params.id),
+      store.dispatch('search/getSearch'),
+    ])
+  },
+
   computed: {
-    problemColumns() {
-      return groupBy(this.problems, 'col')
-    },
+    ...mapState({
+      ps: (state) => state.search.filter.ps,
+    }),
+    ...mapGetters({
+      ambitionMatrix: 'matrixes/getAmbitionMatrix',
+      riskImpactMatrix: 'matrixes/getRiskImpactMatrix',
+      problemStatementMatrix: 'matrixes/getProblemStatementMatrix',
+      name: 'portfolio/getName',
+      description: 'portfolio/getDescription',
+      portfolios: 'portfolio/getActivePortfolios',
+    }),
   },
   methods: {
-    select(id, value) {
-      if (value) {
-        this.selectedProblem = id
-        return
-      }
-      if (this.selectedProblem === id) {
-        this.selectedProblem = -1
-      }
+    navigate(id) {
+      this.$store.dispatch('search/resetSearch')
+      this.$refs.ambitionMatrix.clear()
+      this.$refs.riskMatrix.clear()
+      this.$router.push(
+        this.localePath({
+          name: 'organisation-portfolio-innovation-id',
+          params: { organisation: '-', id },
+        })
+      )
+    },
+    select(val) {
+      this.$store.commit('search/SET_SEARCH', { key: 'ps', val })
+      this.$store.dispatch('search/getSearch')
     },
   },
 }

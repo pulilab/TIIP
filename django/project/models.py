@@ -34,6 +34,9 @@ class ProjectManager(models.Manager):
         return self.filter(Q(team=user.userprofile)
                            | Q(viewers=user.userprofile)).distinct().order_by('id')
 
+    def favorited_by(self, user):
+        return self.filter(favorited_by=user.userprofile)
+
     # WARNING: this method is used in migration project.0016_auto_20160601_0928
     def by_organisation(self, organisation_id):  # pragma: no cover
         return self.filter(data__organisation=organisation_id)
@@ -67,6 +70,8 @@ class Project(SoftDeleteModel, ExtendedModel):
 
     projects = ProjectManager  # deprecated, use objects instead
     objects = ProjectQuerySet.as_manager()
+    # added here to avoid circular imports
+    favorited_by = models.ManyToManyField(UserProfile, related_name='favorite_projects', blank=True)
 
     def __str__(self):  # pragma: no cover
         return self.name
@@ -236,6 +241,7 @@ class Portfolio(ExtendedNameOrderedSoftDeletedModel):
         max_blob_size = max([len(x['projects']) for x in blob_list])
         for blob in blob_list:
             blob['ratio'] = round(len(blob['projects']) / max_blob_size, 2)
+            blob['projects'].sort()
         return blob_list
 
     def get_risk_impact_matrix(self, project_ids: Union[List[int], None] = None):
@@ -261,6 +267,7 @@ class Portfolio(ExtendedNameOrderedSoftDeletedModel):
         max_blob_size = max([len(x['projects']) for x in blob_list])
         for blob in blob_list:
             blob['ratio'] = round(len(blob['projects']) / max_blob_size, 2)
+            blob['projects'].sort()
         return blob_list
 
     def get_problem_statement_matrix(self, project_ids: Union[List[int], None] = None):
@@ -556,12 +563,12 @@ class BaseScore(ExtendedModel):
 
 class ProjectPortfolioState(BaseScore):
     SCALE_CHOICES = (
-        (1, _('Ideation')),
-        (2, _('Research & Development')),
-        (3, _('Proof of Concept')),
-        (4, _('Transition to Scale')),
-        (5, _('Scaling')),
-        (6, _('Sustainable Scale'))
+        (1, _('1 - Ideation')),
+        (2, _('2 - Research & Development')),
+        (3, _('3 - Proof of Concept')),
+        (4, _('4 - Transition to Scale')),
+        (5, _('5 - Scaling')),
+        (6, _('6 - Sustainable Scale'))
     )
 
     impact = models.IntegerField(choices=BaseScore.BASE_CHOICES, null=True, blank=True)
@@ -606,3 +613,9 @@ class ReviewScore(BaseScore):
 
     class Meta:
         unique_together = ('reviewer', 'portfolio_review')
+
+    def get_project_data(self):
+        return self.portfolio_review.project.to_representation()
+
+    def get_portfolio(self):
+        return self.portfolio_review.portfolio

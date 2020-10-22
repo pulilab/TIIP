@@ -1,3 +1,5 @@
+import find from 'lodash/find'
+
 export const state = () => ({
   profiles: [],
   search_filters: [],
@@ -17,6 +19,7 @@ export const state = () => ({
   link_types: [],
   donorsLibrary: {},
   review_questions: {},
+  scalePhases: [],
 })
 
 export const getters = {
@@ -105,6 +108,10 @@ export const getters = {
   getUnicefRegions: (state) => state.unicef_regions,
   getLinkTypes: (state) => state.link_types,
   getPartnerTypes: (state) => state.partner_types,
+  getUnicefDonor: (state) =>
+    find(state.donors, ({ name }) => name === 'UNICEF'),
+  getUnicefOrganisation: (state) =>
+    find(state.organisations, ({ name }) => name === 'UNICEF'),
 }
 
 export const actions = {
@@ -137,6 +144,7 @@ export const actions = {
       commit('SET_SUB_LEVEL_TYPES', data.sub_level_types)
       commit('SET_REGIONS', data.unicef_regions)
       commit('SET_DATA', { key: 'unicef_regions', value: data.unicef_regions })
+      commit('SET_DATA', { key: 'scalePhases', value: data.scale_phases })
       dispatch('dashboard/setDashboardColumns', data.dashboard_columns, {
         root: true,
       })

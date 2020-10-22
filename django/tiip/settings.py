@@ -294,6 +294,10 @@ if SITE_ID in [3, 4]:
             "task": 'published_projects_updated_long_ago',
             "schedule": datetime.timedelta(days=31),
         },
+        "project_review_requested_monthly_notification": {
+            "task": 'project_review_requested_monthly_notification',
+            "schedule": datetime.timedelta(days=30),
+        },
     }
     if ODK_SYNC_ENABLED:
         CELERYBEAT_SCHEDULE.update(
@@ -419,6 +423,8 @@ REDOC_SETTINGS = {
 }
 
 PORTFOLIO_PROBLEMSTATEMENT_TRESHOLDS = {
-    'MODERATE': 5,
-    'HIGH': 10
+    'MODERATE': 1,
+    'HIGH': 6
 }
+
+NOTIFICATION_PROJECT_REVIEW_DAYS = 30  # subject to change, check with client

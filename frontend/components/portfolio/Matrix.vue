@@ -1,14 +1,32 @@
 <template>
-  <div :class="`Matrix ${top !== false ? 'ShowOnTop' : ''}`">
+  <div
+    :class="`Matrix ${top !== false ? 'ShowOnTop' : ''} ${
+      noarrow !== false ? 'HideArrow' : ''
+    }`"
+  >
     <div class="ArrowRight" />
     <div class="ArrowTop" />
     <div class="MColumns">
       <div class="MColumn">
-        <div class="Yaxis">
-          <span v-for="text in left" :key="text">{{ text }}</span>
-        </div>
-        <div class="Xaxis">
-          <span v-for="text in bottom" :key="text">{{ text }}</span>
+        <div
+          v-for="{ labels, extra, name } in allAxis"
+          :key="name"
+          :class="name"
+        >
+          <span v-for="(text, index) in labels" :key="text">
+            {{ text }}
+            <el-tooltip
+              v-if="index === 1 && extra"
+              :content="extra"
+              effect="dark"
+              placement="bottom"
+              popper-class="SearchBoxTooltip"
+            >
+              <el-button type="text" class="MutedButton">
+                <fa icon="question-circle" />
+              </el-button>
+            </el-tooltip>
+          </span>
         </div>
         <div class="Elements" :style="matrixStyle">
           <matrix-element
@@ -24,9 +42,13 @@
       </div>
       <div class="MColumn">
         <div v-if="active" class="Overlay">
-          <div class="el-icon-close" @click="activeIndex = undefined" />
+          <div class="el-icon-close" @click="clear" />
           <div class="ListTitle">
-            <h4>List of initiatives ({{ active.projects.length }})</h4>
+            <h4>
+              <translate :parameters="{ num: active.projects.length }">
+                List of initiatives ({num})
+              </translate>
+            </h4>
             <p>
               {{ leftText }}: {{ active.y }}&nbsp; &nbsp; {{ bottomText }}:
               {{ active.x }}
@@ -47,24 +69,19 @@
           </div>
         </div>
         <div class="Content">
-          <h4>Summary</h4>
+          <h4><translate>Summary</translate></h4>
           <p>
-            Quid securi etiam tamquam eu fugiat nulla pariatur. Vivamus sagittis
-            lacus vel augue laoreet rutrum faucibus. Contra legem facit qui id
-            facit quod lex prohibet. Gallia est omnis divisa in partes tres,
-            quarum. Pellentesque habitant morbi tristique senectus et netus.
-            Donec sed odio operae, eu vulputate felis rhoncus. Curabitur est
-            gravida et libero vitae dictum. Cum ceteris in veneratione tui
-            montes, nascetur mus. Ab illo tempore, ab est sed immemorabili.
-            Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod
-            tempor incidunt ut labore et dolore magna aliqua. Qui ipsorum lingua
-            Celtae, nostra Galli appellantur.
+            {{ description }}
           </p>
-          <h4>Contact Person</h4>
-          <p>
-            Edson Monterio <br />
-            <a href="mailto:emonterio@unicef.org">emonterio@unicef.org</a>
-          </p>
+          <template v-if="contactEmail">
+            <h4>
+              <translate>Contact Person</translate>
+            </h4>
+            <p>
+              {{ contactName }} <br />
+              <a :href="`mailto:${contactEmail}`">emonterio@unicef.org</a>
+            </p>
+          </template>
         </div>
       </div>
     </div>
@@ -91,11 +108,23 @@ export default {
       type: Array,
       required: true,
     },
+    extraBottom: {
+      type: String,
+      default: '',
+    },
+    extraLeft: {
+      type: String,
+      default: '',
+    },
     color: {
       type: String,
       default: '',
     },
     top: {
+      type: Boolean,
+      default: false,
+    },
+    noarrow: {
       type: Boolean,
       default: false,
     },
@@ -107,6 +136,18 @@ export default {
       type: String,
       default: '',
     },
+    description: {
+      type: String,
+      default: '',
+    },
+    contactEmail: {
+      type: String,
+      default: '',
+    },
+    contactName: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -114,6 +155,20 @@ export default {
     }
   },
   computed: {
+    allAxis() {
+      return [
+        {
+          labels: this.left,
+          extra: this.extraLeft,
+          name: 'Yaxis',
+        },
+        {
+          labels: this.bottom,
+          extra: this.extraBottom,
+          name: 'Xaxis',
+        },
+      ]
+    },
     leftText() {
       return this.removeBracets(this.left[1])
     },
@@ -136,6 +191,9 @@ export default {
     },
   },
   methods: {
+    clear() {
+      this.activeIndex = undefined
+    },
     removeBracets(text) {
       return text.replace(/.\(.*\)/, '')
     },
@@ -169,6 +227,12 @@ export default {
   &::v-deep .el-scrollbar__wrap {
     overflow-y: scroll;
     overflow-x: hidden;
+  }
+  &.HideArrow {
+    .ArrowRight,
+    .ArrowTop {
+      display: none !important;
+    }
   }
   &.ShowOnTop {
     .Elements {
@@ -209,6 +273,7 @@ export default {
       border-bottom: 1px solid #a8a8a9;
     }
     .MColumn + .MColumn {
+      flex: 1;
       position: relative;
       h4 {
         font-size: 18px;
@@ -324,6 +389,9 @@ export default {
     height: 540px;
     writing-mode: vertical-lr;
     transform: rotate(180deg);
+    .MutedButton {
+      transform: rotate(90deg);
+    }
   }
   .Xaxis {
     padding: 0 10px;

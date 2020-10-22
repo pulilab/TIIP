@@ -1,24 +1,36 @@
 <template>
-  <div class="UserProjectsList">
-    <empty-projects v-if="!hasProjects" />
-    <extended-project-card
-      v-for="project in limited"
-      :id="project.id"
-      :key="project.id"
-    />
+  <div class="user-projects-list">
+    <p class="headline">
+      {{ headline[tab - 1] }}
+    </p>
+    <div v-loading="loadingProject" class="loading-mask">
+      <template v-if="!loadingProject">
+        <empty-projects v-if="!hasProjects" />
+        <extended-project-card
+          v-for="project in limited"
+          :id="project.id"
+          :key="project.id"
+          :type="cardType"
+          :project="project"
+        />
+      </template>
+    </div>
+    <review-dialog />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 
-import ExtendedProjectCard from '../common/ExtendedProjectCard'
-import EmptyProjects from './EmptyProjects'
+import ReviewDialog from '@/components/review/ReviewDialog'
+import ExtendedProjectCard from '@/components/common/ExtendedProjectCard'
+import EmptyProjects from '@/components/common/EmptyProjects'
 
 export default {
   components: {
     EmptyProjects,
     ExtendedProjectCard,
+    ReviewDialog,
   },
   props: {
     limit: {
@@ -26,29 +38,58 @@ export default {
       default: null,
     },
   },
+  data() {
+    return {
+      headline: [
+        this.$gettext(
+          'Please specify headline copy text for each tabs, thank you.'
+        ),
+        this.$gettext(
+          'Please complete portfolio review process for any projects marked “unscored” below.'
+        ),
+        this.$gettext(
+          'Please specify headline copy text for each tabs, thank you.'
+        ),
+      ],
+    }
+  },
   computed: {
-    ...mapGetters({
-      userProjecList: 'projects/getUserProjectList',
+    ...mapState({
+      projects: (state) => state.projects.userProjects,
+      tab: (state) => state.projects.tab,
+      loadingProject: (state) => state.projects.loadingProject,
     }),
     limited() {
-      return this.limit && this.userProjecList.length > 3
-        ? this.userProjecList.slice(0, this.limit)
-        : this.userProjecList
+      return this.limit && this.projects.length > 3
+        ? this.projects.slice(0, this.limit)
+        : this.projects
     },
     hasProjects() {
-      return this.userProjecList.length > 0
+      return this.projects.length > 0
+    },
+    cardType() {
+      return this.tab === 2 ? 'review' : 'regular'
     },
   },
 }
 </script>
 
 <style lang="less">
-@import '../../assets/style/variables.less';
-@import '../../assets/style/mixins.less';
+@import '~assets/style/variables.less';
+@import '~assets/style/mixins.less';
 
-.UserProjectsList {
-  padding: 40px 40px 20px;
-  background: url('~assets/img/squares.svg') no-repeat;
-  background-position: center 0px;
+.loading-mask {
+  width: 100%;
+  min-height: 500px;
+}
+.user-projects-list {
+  padding: 50px 80px 60px;
+  .headline {
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 20px;
+    text-align: center;
+    margin-bottom: 52px;
+  }
 }
 </style>

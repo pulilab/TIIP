@@ -30,14 +30,23 @@
       >
         <template slot-scope="scope">
           <project-card :project="scope.row" hide-borders show-verified />
-          <el-tooltip :content="favorite" placement="top">
-            <div class="favorite" @click="handleFavorite(scope.row.id)">
+          <el-tooltip
+            :content="scope.row.favorite ? removeFavoriteText : addFavoriteText"
+            placement="bottom"
+          >
+            <div class="favorite">
               <fa
                 v-if="scope.row.favorite"
                 class="heart-full"
                 :icon="['fas', 'heart']"
+                @click="removeFavorite({ id: scope.row.id, type: 'table' })"
               />
-              <fa v-else class="heart-empty" :icon="['far', 'heart']" />
+              <fa
+                v-else
+                class="heart-empty"
+                :icon="['far', 'heart']"
+                @click="addFavorite({ id: scope.row.id, type: 'table' })"
+              />
             </div>
           </el-tooltip>
         </template>
@@ -80,7 +89,6 @@
         </template>
       </el-table-column>
 
-      <!-- todo -->
       <el-table-column
         v-if="selectedColumns.includes('5')"
         :resizable="false"
@@ -328,11 +336,14 @@
 
     <div class="Pagination">
       <el-pagination
-        :current-page.sync="currentPage"
-        :page-size.sync="pageSize"
+        :current-page="page"
+        :page-size="pageSize"
         :page-sizes="pageSizeOption"
         :total="total"
         :layout="paginationOrderStr"
+        @size-change="sizeChange"
+        @prev-click="pagClick"
+        @next-click="pagClick"
       >
         <current-page />
       </el-pagination>
@@ -346,8 +357,9 @@
 <script>
 import { setTimeout } from 'timers'
 import { format } from 'date-fns'
-import { mapGetters, mapActions, mapState } from 'vuex'
+import { mapGetters, mapActions, mapState, mapMutations } from 'vuex'
 import { mapGettersActions } from '@/utilities/form.js'
+import debounce from 'lodash/debounce'
 
 import ProjectCard from '@/components/common/ProjectCard'
 import CountryItem from '@/components/common/CountryItem'
@@ -391,7 +403,8 @@ export default {
       pageSizeOption: [10, 20, 50, 100],
       tableMaxHeight: 200,
       localSort: null,
-      favorite: this.$gettext('Add to Favorites'),
+      addFavoriteText: this.$gettext('Add to Favorites'),
+      removeFavoriteText: this.$gettext('Remove from Favorites'),
     }
   },
   computed: {
@@ -399,13 +412,15 @@ export default {
       offices: (state) => state.offices.offices,
       projects: (state) => state.portfolio.projects,
       tab: (state) => state.portfolio.tab,
+      // pagination
+      total: (state) => state.portfolio.total,
+      pageSize: (state) => state.search.filter.page_size,
+      page: (state) => state.search.filter.page,
     }),
     ...mapGetters({
-      projectsList: 'dashboard/getProjectsList',
       selectedColumns: 'dashboard/getSelectedColumns',
       selectedRows: 'dashboard/getSelectedRows',
       selectAll: 'dashboard/getSelectAll',
-      total: 'dashboard/getTotal',
       countryColumns: 'dashboard/getCountryColumns',
       donorColumns: 'dashboard/getDonorColumns',
       getCapabilityLevels: 'projects/getCapabilityLevels',
@@ -413,8 +428,6 @@ export default {
       getCapabilitySubcategories: 'projects/getCapabilitySubcategories',
     }),
     ...mapGettersActions({
-      pageSize: ['dashboard', 'getPageSize', 'setPageSize', 0],
-      currentPage: ['dashboard', 'getCurrentPage', 'setCurrentPage', 0],
       sorting: ['dashboard', 'getSorting', 'setSorting', 0],
     }),
     paginationOrderStr() {
@@ -473,9 +486,15 @@ export default {
     }, 500)
   },
   methods: {
+    ...mapMutations({
+      setSearch: 'search/SET_SEARCH',
+    }),
     ...mapActions({
       setSelectedRows: 'dashboard/setSelectedRows',
       loadOffices: 'offices/loadOffices',
+      getSearch: 'search/getSearch',
+      addFavorite: 'projects/addFavorite',
+      removeFavorite: 'projects/removeFavorite',
     }),
     customHeaderRenderer(h, { column, $index }) {
       return h('span', { attrs: { title: column.label } }, column.label)
@@ -545,6 +564,17 @@ export default {
     handleFavorite(id) {
       console.log(`this will mark or unmark ${id}`)
     },
+    sizeChange(val) {
+      this.setSearch({ key: 'page_size', val })
+      this.getSearchResults()
+    },
+    pagClick(val) {
+      this.setSearch({ key: 'page', val })
+      this.getSearchResults()
+    },
+    getSearchResults: debounce(function () {
+      this.getSearch()
+    }, 350),
   },
 }
 </script>

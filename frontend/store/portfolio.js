@@ -1,3 +1,6 @@
+import { toInteger } from 'lodash'
+import filter from 'lodash/filter'
+
 export const state = () => ({
   loading: false,
   name: '',
@@ -60,11 +63,29 @@ export const state = () => ({
   loadingScore: false,
   // add reviewer
   loadingAddReviewers: false,
-  // dashboard of portfolio manager interctions
+  // dashboard of portfolio manager interactions
   tabs: [
-    { id: 1, name: 'Inventory', icon: 'folder', total: 18 },
-    { id: 2, name: 'For review', icon: 'eye', total: 50 },
-    { id: 3, name: 'Portfolio', icon: 'briefcase', total: 25 },
+    {
+      id: 1,
+      name: 'Inventory',
+      icon: 'folder',
+      total: 1,
+      portfolio_page: 'inventory',
+    },
+    {
+      id: 2,
+      name: 'For review',
+      icon: 'eye',
+      total: 1,
+      portfolio_page: 'review',
+    },
+    {
+      id: 3,
+      name: 'Portfolio',
+      icon: 'briefcase',
+      total: 1,
+      portfolio_page: 'portfolio',
+    },
   ],
   tab: 1,
   dialogReview: false,
@@ -91,6 +112,8 @@ export const state = () => ({
     'impact',
     'scale_phase',
   ],
+  // pagination
+  total: 0,
 })
 
 export const getters = {
@@ -99,9 +122,15 @@ export const getters = {
   getStatus: (state) => state.status,
   getIcon: (state) => state.icon,
   getManagers: (state) => state.managers,
-  getStatements: (state) => state.statements,
+  getStatements: (state) => state.problemStatements,
   getLoading: (state) => state.loading,
-  getTotal: (state) => state.projects.length,
+  getPortfolios: (state) => state.portfolios,
+  getActivePortfolios: (state) => {
+    return filter(
+      state.portfolios,
+      (portfolio) => portfolio.status === 'active'
+    )
+  },
 }
 
 export const actions = {
@@ -127,14 +156,22 @@ export const actions = {
     commit('SET_LOADING', value)
   },
   setTab({ state, commit, dispatch }, val) {
-    // todo: integrate and handle projects filters for table
     commit('SET_TAB', val)
     commit('SET_VALUE', { key: 'back', val: state.tab - 2 })
     commit('SET_VALUE', { key: 'forward', val: state.tab })
+    commit(
+      'search/SET_SEARCH',
+      {
+        key: 'portfolio_page',
+        val: state.tabs.find((i) => i.id === val).portfolio_page,
+      },
+      { root: true }
+    )
     // update portfolio
-    dispatch('getProjects', state.currentPortfolioId)
+    dispatch('getPortfolioProjects')
     // reset on tab change the status selection
     dispatch('dashboard/setSelectedRows', [], { root: true })
+    dispatch('search/resetSearch', [], { root: true })
   },
   // portfolio actions
   async createPortfolio({ state, getters, dispatch }) {
@@ -145,7 +182,7 @@ export const actions = {
       status: state.status,
       icon: state.icon.id,
       managers: state.managers,
-      problem_statements: state.statements.filter((i) => i.name !== ''),
+      problem_statements: state.problemStatements.filter((i) => i.name !== ''),
     })
     dispatch('setLoading', false)
   },
@@ -157,7 +194,7 @@ export const actions = {
       status: state.status,
       icon: state.icon.id,
       managers: state.managers,
-      problem_statements: state.statements.filter((i) => i.name !== ''),
+      problem_statements: state.problemStatements.filter((i) => i.name !== ''),
     })
     dispatch('setLoading', false)
   },
@@ -170,54 +207,54 @@ export const actions = {
         name: i.name,
         total: i.project_count,
         status: status(i.status),
+        description: i.description,
+        ps: i.problem_statements,
         icon,
       }
     })
-    commit('SET_PORTFOLIOS', portfolios)
+    commit('SET_VALUE', { key: 'portfolios', val: portfolios })
   },
   async getPortfolioDetails({ state, commit, dispatch }, id) {
-    const { data } = await this.$axios.get(`api/portfolio/${id}/`)
-    commit('SET_NAME', data.name)
-    commit('SET_DESCRIPTION', data.description)
-    commit('SET_STATUS', data.status)
-    commit(
-      'SET_ICON',
-      state.icons.find((item) => item.id === data.icon)
-    )
-    commit('SET_MANAGERS', data.managers)
-    commit('SET_STATEMENTS', data.problem_statements)
+    const { data } = await this.$axios.get(`api/portfolio/manager-of/`)
+    const {
+      name,
+      description,
+      status,
+      icon,
+      managers,
+      problem_statements,
+    } = data.find((i) => i.id === toInteger(id, 10))
+
+    commit('SET_VALUE', { key: 'name', val: name })
+    commit('SET_VALUE', { key: 'description', val: description })
+    commit('SET_VALUE', { key: 'status', val: status })
+    commit('SET_VALUE', {
+      key: 'icon',
+      val: state.icons.find((item) => item.id === icon),
+    })
+    commit('SET_VALUE', { key: 'managers', val: managers })
+    commit('SET_VALUE', {
+      key: 'problemStatements',
+      val: problem_statements,
+    })
   },
-  async getProjects({ state, commit, dispatch }, id) {
+  async getPortfolioProjects({ state, commit, dispatch }) {
     try {
-      const { data } = await this.$axios.get(`api/portfolio/${id}/`)
-      commit('SET_VALUE', {
-        key: 'problemStatements',
-        val: data.problem_statements,
-      })
-      commit('SET_NAME', data.name)
+      dispatch('getPortfolioDetails', state.currentPortfolioId)
+      const baseUrl = `api/search?portfolio=${state.currentPortfolioId}&type=portfolio&portfolio_page=`
       const results = await Promise.all([
-        this.$axios.get(`api/portfolio/${id}/projects/inventory/`),
-        this.$axios.get(`api/portfolio/${id}/projects/review/`),
-        this.$axios.get(`api/portfolio/${id}/projects/approved/`),
+        this.$axios.get(`${baseUrl}inventory`),
+        this.$axios.get(`${baseUrl}review`),
+        this.$axios.get(`${baseUrl}portfolio`),
       ])
-      // todo: pagination
-      commit('SET_VALUE', {
-        key: 'currentPortfolioId',
-        val: id,
-      })
+      const {
+        data: {
+          count,
+          results: { projects },
+        },
+      } = results[state.tab - 1]
       // set the projects of the portfolio by tab filter
-      // console.log(results[1].data.results);
-      commit('SET_VALUE', {
-        key: 'projects',
-        val: results[state.tab - 1].data.results.map((i) => {
-          // todo: set this attributes from api
-          return {
-            ...i,
-            favorite: Math.random() >= 0.5,
-            ...i.project_data,
-          }
-        }),
-      })
+      dispatch('setProjects', { projects, count })
       // update tab counts
       commit('SET_VALUE', {
         key: 'tabs',
@@ -227,25 +264,49 @@ export const actions = {
             name: 'Inventory',
             icon: 'folder',
             total: results[0].data.count,
+            portfolio_page: 'inventory',
           },
           {
             id: 2,
             name: 'For review',
             icon: 'eye',
             total: results[1].data.count,
+            portfolio_page: 'review',
           },
           {
             id: 3,
             name: 'Portfolio',
             icon: 'briefcase',
             total: results[2].data.count,
+            portfolio_page: 'portfolio',
           },
         ],
       })
     } catch (e) {
       // console.log(e.response.data);
-      console.error('portfolio/loadPortfolioProjects failed')
+      console.error('portfolio/getPortfolioProjects failed')
     }
+  },
+  async setProjects(
+    { state, commit, dispatch, rootGetters },
+    { projects, count }
+  ) {
+    // set favorite
+    await dispatch('user/refreshProfile', {}, { root: true })
+    const user = rootGetters['user/getProfile']
+    // pagination
+    commit('SET_VALUE', { key: 'total', val: count })
+    // projects
+    commit('SET_VALUE', {
+      key: 'projects',
+      val: projects.map((i) => {
+        return {
+          ...i,
+          favorite: user ? user.favorite.includes(i.id) : undefined,
+          ...i.project_data,
+        }
+      }),
+    })
   },
   // move action
   async moveToState({ state, commit, dispatch }, { type, project, tab }) {
@@ -276,7 +337,7 @@ export const actions = {
         }
       )
       // update portfolio
-      dispatch('getProjects', state.currentPortfolioId)
+      dispatch('getPortfolioProjects')
       // interface setters
       commit('SET_VALUE', { key: 'loadingAddReviewers', val: false })
       commit('SET_VALUE', { key: 'dialogReview', val: false })
@@ -297,7 +358,7 @@ export const actions = {
         ...officialScore,
       })
       // update portfolio
-      dispatch('getProjects', state.currentPortfolioId)
+      dispatch('getPortfolioProjects')
       // interface setters
       commit('SET_VALUE', { key: 'loadingScore', val: false })
       commit('SET_VALUE', { key: 'dialogScore', val: false })
@@ -334,28 +395,15 @@ export const actions = {
     commit('SET_VALUE', { key: 'dialogError', val })
   },
   resetPortfolio({ commit }) {
-    commit('SET_NAME', '')
-    commit('SET_DESCRIPTION', '')
-    commit('SET_STATUS', 'DR')
-    commit('SET_ICON', null)
-    commit('SET_MANAGERS', [])
-    commit('SET_STATEMENTS', [])
+    commit('SET_VALUE', { key: 'name', val: '' })
+    commit('SET_VALUE', { key: 'description', val: '' })
+    commit('SET_VALUE', { key: 'status', val: 'DR' })
+    commit('SET_VALUE', { key: 'icon', val: null })
+    commit('SET_VALUE', { key: 'managers', val: [] })
+    commit('SET_VALUE', { key: 'statements', val: [] })
   },
   // general pre portfolio setup
   // todo: change to portfolios API
-}
-
-const status = (status) => {
-  switch (status) {
-    case 'ACT':
-      return 'active'
-    case 'DR':
-      return 'draft'
-    case 'ARC':
-      return 'archived'
-    default:
-      break
-  }
 }
 
 export const mutations = {
@@ -378,13 +426,10 @@ export const mutations = {
     state.managers = managers
   },
   SET_STATEMENTS: (state, statements) => {
-    state.statements = statements
+    state.problemStatements = statements
   },
   SET_LOADING: (state, loading) => {
     state.loading = loading
-  },
-  SET_PORTFOLIOS: (state, portfolios) => {
-    state.portfolios = portfolios
   },
   SET_PORTFOLIO: (state, portfolio) => {
     state.portfolio = portfolio
@@ -392,4 +437,17 @@ export const mutations = {
   SET_TAB: (state, tab) => {
     state.tab = tab
   },
+}
+
+const status = (status) => {
+  switch (status) {
+    case 'ACT':
+      return 'active'
+    case 'DR':
+      return 'draft'
+    case 'ARC':
+      return 'archived'
+    default:
+      break
+  }
 }

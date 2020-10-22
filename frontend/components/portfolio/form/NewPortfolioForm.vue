@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 import { publishRules, draftRules } from '@/utilities/portfolio'
 import GeneralSettings from '@/components/portfolio/form/GeneralSettings'
 import Managers from '@/components/portfolio/form/Managers'
@@ -82,9 +82,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
-      portfolio: 'portfolio/getProjectData',
-    }),
     draftRules,
     publishRules,
     rules() {
@@ -172,7 +169,7 @@ export default {
         const general = await this.$refs.generalSettings.validateDraft()
         if (general) {
           try {
-            // const id = await this.createPortfolio()
+            await this.createPortfolio()
             const localised = this.localePath({
               name: 'organisation-portfolio-management',
             })
@@ -205,6 +202,7 @@ export default {
         if (general) {
           try {
             // const id = await this.editPortfolio(this.$route.params.id)
+            await this.editPortfolio(this.$route.params.id)
             const localised = this.localePath({
               name: 'organisation-portfolio-management',
             })

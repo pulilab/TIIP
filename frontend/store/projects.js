@@ -8,6 +8,19 @@ export const state = () => ({
   projectStructure: {},
   currentProjectToolkitVersions: [],
   currentProjectCoverageVersions: [],
+  // initiatives tabs
+  tabs: [
+    { id: 1, name: 'My initiatives', icon: 'star', total: 1 },
+    { id: 2, name: 'My reviews', icon: 'comment-alt', total: 1 },
+    { id: 3, name: 'My favorites', icon: 'heart', total: 1 },
+  ],
+  tab: 1,
+  loadingProject: false,
+  // project review
+  loadingReview: false,
+  dialogReview: false,
+  currentProjectReview: {},
+  problemStatements: [],
 })
 
 const getTodayString = () => {
@@ -234,12 +247,105 @@ export const getters = {
 export const actions = {
   async loadUserProjects({ commit }) {
     try {
-      const { data } = await this.$axios.get('/api/projects/member-of/')
+      const { data } = await this.$axios.get(
+        '/api/projects/user-list/member-of/'
+      )
       data.sort((a, b) => b.id - a.id)
       commit('SET_USER_PROJECT_LIST', data)
     } catch (error) {
       console.error('projects/loadUserProjects failed')
       return Promise.reject(error)
+    }
+  },
+  async getInitiatives({ state, commit, dispatch, rootGetters }) {
+    commit('SET_VALUE', { key: 'loadingProject', val: true })
+    commit('SET_VALUE', { key: 'userProjects', val: [] })
+    await dispatch('user/refreshProfile', {}, { root: true })
+    const user = rootGetters['user/getProfile']
+    try {
+      const results = await Promise.all([
+        this.$axios.get(`/api/projects/user-list/member-of/`),
+        this.$axios.get(`/api/projects/user-list/review/`),
+        this.$axios.get(`/api/projects/user-list/favorite/`),
+      ])
+      // for review case
+      if (state.tab === 2) {
+        let { data } = results[state.tab - 1]
+        data.sort((a, b) => b.id - a.id)
+        data = data.map((p) => {
+          const project = p.project
+          return {
+            reviewId: p.id,
+            ...p,
+            ...project,
+            favorite: user ? user.favorite.includes(p.project.id) : undefined,
+            isMember: user ? user.member.includes(p.id) : undefined,
+            isViewer: user ? user.viewer.includes(p.id) : undefined,
+            isPublished: true,
+          }
+        })
+        commit('SET_VALUE', { key: 'userProjects', val: data })
+      } else {
+        let { data } = results[state.tab - 1]
+        data.sort((a, b) => b.id - a.id)
+        data = data.map((p) => {
+          const project =
+            p.published && p.published.name ? p.published : p.draft
+          return {
+            ...p,
+            ...project,
+            favorite: user ? user.favorite.includes(p.id) : undefined,
+            isMember: user ? user.member.includes(p.id) : undefined,
+            isViewer: user ? user.viewer.includes(p.id) : undefined,
+            isPublished: !!(p.published && p.published.name),
+          }
+        })
+        commit('SET_VALUE', { key: 'userProjects', val: data })
+      }
+      // update tab counts
+      commit('SET_VALUE', {
+        key: 'tabs',
+        val: [
+          {
+            id: 1,
+            name: 'My initiatives',
+            icon: 'star',
+            total: results[0].data.length,
+          },
+          {
+            id: 2,
+            name: 'My reviews',
+            icon: 'comment-alt',
+            total: results[1].data.length,
+          },
+          {
+            id: 3,
+            name: 'My favorites',
+            icon: 'heart',
+            total: results[2].data.length,
+          },
+        ],
+      })
+      commit('SET_VALUE', { key: 'loadingProject', val: false })
+    } catch (e) {
+      // console.log(e.response.data);
+      commit('SET_VALUE', { key: 'loadingProject', val: false })
+      console.error('portfolio/loadPortfolioProjects failed')
+    }
+  },
+  async addReview({ state, commit, dispatch }, { id, ...score }) {
+    try {
+      commit('SET_VALUE', { key: 'loadingReview', val: true })
+      await this.$axios.post(`/api/project-review/${id}/fill/`, {
+        ...score,
+      })
+      // update initiatives
+      dispatch('getInitiatives')
+      // interface setters
+      commit('SET_VALUE', { key: 'loadingReview', val: false })
+      commit('SET_VALUE', { key: 'dialogReview', val: false })
+    } catch (e) {
+      console.log(e.response.data)
     }
   },
   async setCurrentProject({ commit, dispatch }, id) {
@@ -296,9 +402,50 @@ export const actions = {
   resetProjectsData({ commit }) {
     commit('RESET_PROJECTS_DATA')
   },
+  // get every project or initiative
+  setTab({ state, commit, dispatch }, val) {
+    commit('SET_VALUE', { key: 'tab', val })
+    // update initiatives/projects by tab click
+    dispatch('getInitiatives')
+  },
+  addFavorite({ state, commit, dispatch }, { id, type }) {
+    dispatch('setFavorite', { id, type, action: 'add' })
+  },
+  removeFavorite({ state, commit, dispatch }, { id, type }) {
+    dispatch('setFavorite', { id, type, action: 'remove' })
+  },
+  async setFavorite({ state, commit, dispatch }, { id, type, action }) {
+    try {
+      await this.$axios.put(`/api/projects/favorites/${action}/${id}`)
+      switch (type) {
+        case 'initiatives':
+          await dispatch('getInitiatives')
+          break
+        case 'table':
+          await dispatch('portfolio/getPortfolioProjects', {}, { root: true })
+          break
+        case 'detail':
+          await dispatch('user/refreshProfile', {}, { root: true })
+          break
+      }
+    } catch (e) {
+      console.log(e.response.data)
+    }
+  },
+
+  // state interaction handlers
+  setCurrentProjectReview({ commit }, val) {
+    commit('SET_VALUE', { key: 'currentProjectReview', val })
+  },
+  setReviewDialog({ commit }, val) {
+    commit('SET_VALUE', { key: 'dialogReview', val })
+  },
 }
 
 export const mutations = {
+  SET_VALUE(state, { key, val }) {
+    state[key] = val
+  },
   SET_USER_PROJECT_LIST: (state, projects) => {
     state.userProjects = projects
   },

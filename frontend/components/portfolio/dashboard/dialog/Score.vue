@@ -64,6 +64,7 @@
                 scope.row[reviewer][scope.row.type].length
               "
               :items="scope.row[reviewer][scope.row.type]"
+              :problem-statements="problemStatements"
             />
             <p v-else class="na psa">N/A</p>
           </template>
@@ -83,7 +84,9 @@
             <fa
               v-if="scope.row[reviewer][`${scope.row.type}_comment`]"
               slot="reference"
-              class="comment-icon"
+              :class="`comment-icon ${
+                scope.row.type === 'psa' && 'comment-psa'
+              }`"
               :icon="['fas', 'comment-alt']"
             />
           </el-popover>
@@ -93,19 +96,14 @@
       <el-table-column
         v-for="example in examples"
         :key="example"
-        :label="$gettext(example) | translate"
+        label=""
         width="240"
         label-class-name="score-general-header"
         class-name="user-row"
       >
-        <template slot-scope="scope">
-          <template v-if="scope.row.type === 'psa'">
-            <p class="na psa">N/A</p>
-          </template>
-          <p v-else class="na">N/A</p>
-        </template>
+        <p class="na"></p>
       </el-table-column>
-      <!-- reviewers -->
+      <!-- average -->
       <el-table-column
         prop="average"
         label="Average"
@@ -127,16 +125,13 @@
           <div :class="`content ${scope.row.type === 'psa' ? '' : 'center'}`">
             <template v-if="review.reviewed">
               <template v-if="scope.row.type === 'psa'">
-                <psa-list :items="score[scope.row.type]" />
+                <psa-list
+                  :items="score[scope.row.type]"
+                  :problem-statements="problemStatements"
+                />
               </template>
               <template v-else>
-                <p class="statement">
-                  {{
-                    score[scope.row.type] === null
-                      ? 'N/A'
-                      : score[scope.row.type]
-                  }}
-                </p>
+                <p class="statement">{{ reviewScoreText(scope.row.type) }}</p>
               </template>
             </template>
             <template v-else>
@@ -164,6 +159,20 @@
                   :key="i.id"
                   :label="i.name"
                   :value="i.id"
+                />
+              </el-select>
+              <el-select
+                v-else-if="scope.row.type === 'scale_phase'"
+                v-model="score[scope.row.type]"
+                class="select-psa"
+                clearable
+                :disabled="review.reviewed"
+              >
+                <el-option
+                  v-for="sp in scalePhases"
+                  :key="sp.id"
+                  :label="sp.name"
+                  :value="sp.id"
                 />
               </el-select>
               <el-select
@@ -236,6 +245,7 @@ export default {
       loadingScore: (state) => state.portfolio.loadingScore,
       problemStatements: (state) => state.portfolio.problemStatements,
       questionType: (state) => state.portfolio.questionType,
+      scalePhases: (state) => state.system.scalePhases,
     }),
     disabled() {
       if (this.review.reviewed) {
@@ -285,9 +295,9 @@ export default {
     examples() {
       switch (this.reviewersName.length) {
         case 0:
-          return ['example user 1', 'example user 2']
+          return ['user example 1', 'user example 2']
         case 1:
-          return ['example user 1']
+          return ['user example 1']
         default:
           return []
       }
@@ -314,6 +324,12 @@ export default {
         impact: this.review.impact,
         scale_phase: this.review.scale_phase,
       }
+    },
+    reviewScoreText(type) {
+      if (type === 'scale_phase') {
+        return this.scalePhases.find((i) => i.id === this.score[type]).name
+      }
+      return this.score[type] === null ? 'N/A' : this.score[type]
     },
   },
 }
@@ -457,6 +473,11 @@ export default {
         font-size: 18px;
         &:hover {
           color: @colorTextPrimary;
+        }
+        &.comment-psa {
+          position: relative;
+          top: 0;
+          right: 0;
         }
       }
     }

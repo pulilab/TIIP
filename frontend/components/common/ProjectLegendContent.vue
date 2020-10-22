@@ -141,12 +141,13 @@ export default {
 </script>
 
 <style lang="less">
-@import '../../assets/style/variables.less';
-@import '../../assets/style/mixins.less';
+@import '~assets/style/variables.less';
+@import '~assets/style/mixins.less';
 
 .ProjectLegendContent {
   svg {
-    font-size: 13px !important;
+    font-size: 16px !important;
+    margin-left: 12px;
   }
   .OwnerIcon {
     color: @colorOwner;

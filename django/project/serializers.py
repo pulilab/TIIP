@@ -134,7 +134,6 @@ class ProjectPublishedSerializer(serializers.Serializer):
         instance.data = validated_data
         instance.draft = validated_data
         instance.make_public_id(validated_data['country'])
-
         instance.save()
 
         return instance
@@ -412,23 +411,6 @@ class ProjectImportV2Serializer(serializers.ModelSerializer):
         return instance
 
 
-class PortfolioListSerializer(serializers.ModelSerializer):
-    project_count = serializers.SerializerMethodField()
-    managers = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Portfolio
-        fields = ('id', 'name', 'description', 'icon', 'project_count', 'managers', 'status')
-
-    @staticmethod
-    def get_project_count(obj):
-        return len(Project.objects.published_only().filter(is_active=True, review_states__in=obj.review_states.all()))
-
-    @staticmethod
-    def get_managers(obj):
-        return obj.managers.all().values_list('id', flat=True)
-
-
 class ProblemStatementSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProblemStatement
@@ -439,6 +421,24 @@ class ProblemStatementSerializer(serializers.ModelSerializer):
                 "required": False,
             },
         }
+
+
+class PortfolioListSerializer(serializers.ModelSerializer):
+    project_count = serializers.SerializerMethodField()
+    managers = serializers.SerializerMethodField()
+    problem_statements = ProblemStatementSerializer(many=True)
+
+    class Meta:
+        model = Portfolio
+        fields = ('id', 'name', 'description', 'icon', 'project_count', 'managers', 'status', 'problem_statements')
+
+    @staticmethod
+    def get_project_count(obj):
+        return len(Project.objects.published_only().filter(is_active=True, review_states__in=obj.review_states.all()))
+
+    @staticmethod
+    def get_managers(obj):
+        return obj.managers.all().values_list('id', flat=True)
 
 
 class ReviewScoreBriefSerializer(serializers.ModelSerializer):
@@ -498,7 +498,8 @@ class ProjectPortfolioStateManagerSerializer(serializers.ModelSerializer):
             'ra': calc_avg([score.ra for score in complete_scores if score.ra]),
             'ee': calc_avg([score.ee for score in complete_scores if score.ee]),
             'nst': calc_avg([score.nst for score in complete_scores if score.nst]),
-            'ps': calc_avg([score.ps for score in complete_scores if score.ps])
+            'ps': calc_avg([score.ps for score in complete_scores if score.ps]),
+            'nc': calc_avg([score.nc for score in complete_scores if score.nc])
         }
 
 
@@ -572,3 +573,13 @@ class ReviewScoreFillSerializer(serializers.ModelSerializer):
         instance.complete = True
         instance = super().update(instance, validated_data)
         return instance
+
+
+class ReviewScoreDetailedSerializer(serializers.ModelSerializer):
+    project = serializers.ReadOnlyField(source='get_project_data')
+    portfolio = PortfolioSerializer(read_only=True, source='get_portfolio')
+    portfolio_review = ProjectPortfolioStateSerializer(read_only=True)
+
+    class Meta:
+        model = ReviewScore
+        fields = '__all__'

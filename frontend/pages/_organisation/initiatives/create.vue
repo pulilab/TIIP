@@ -23,6 +23,11 @@ export default {
     ProjectForm,
   },
   async fetch({ store }) {
+    await Promise.all([
+      store.dispatch('projects/loadProjectStructure'),
+      store.dispatch('system/loadDonors'),
+      store.dispatch('system/loadOrganisations'),
+    ])
     await store.dispatch('project/resetProjectState')
     store.dispatch('landing/resetSearch')
   },

@@ -197,6 +197,7 @@ class ReviewTests(PortfolioSetup):
         partial_data = {
             'ee': 1,
             'ra': 5,
+            'nc': 4,
             'nst_comment': 'I do not know how to set this'
         }
         url = reverse('review-score-fill', kwargs={"pk": question_id})
@@ -228,6 +229,7 @@ class ReviewTests(PortfolioSetup):
             'ee': 2,
             'ra': 4,
             'nst': 1,
+            'nc': 2,
             'nst_comment': 'Neither do I'
         }
         url = reverse('review-score-fill', kwargs={"pk": question_id_y})
@@ -242,6 +244,7 @@ class ReviewTests(PortfolioSetup):
         self.assertEqual(response.json()['averages']['ra'], 4.5)
         self.assertEqual(response.json()['averages']['nst'], 1.0)
         self.assertEqual(response.json()['averages']['rnci'], None)
+        self.assertEqual(response.json()['averages']['nc'], 3)
         self.assertEqual(len(response.json()['review_scores']), 2)
 
         # Try to modify the answers - should not be allowed
@@ -257,6 +260,11 @@ class ReviewTests(PortfolioSetup):
         self.assertEqual(resp_data['ee'], 1)
         self.assertEqual(resp_data['ra'], 5)
         self.assertEqual(resp_data['rnci_comment'], None)
+        url_rev_list = reverse("project-list", kwargs={'list_name': 'review'})
+        response = self.user_1_client.get(url_rev_list)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['project']['id'], self.project_rev_id)
 
     def test_portfolio_matrix_output(self):
         """
@@ -313,5 +321,5 @@ class ReviewTests(PortfolioSetup):
         problem_statement_matrix = portfolio.get_problem_statement_matrix()
 
         self.assertEqual(len(problem_statement_matrix['high_activity']), 0)
-        self.assertEqual(len(problem_statement_matrix['moderate']), 3)
-        self.assertEqual(len(problem_statement_matrix['neglected']), 4)
+        self.assertEqual(len(problem_statement_matrix['moderate']), 5)
+        self.assertEqual(len(problem_statement_matrix['neglected']), 2)

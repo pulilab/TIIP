@@ -27,6 +27,7 @@ class Command(BaseCommand, TestProjectData):
                                                  code=data_dict['d1'].lower().replace(' ', '_'))
         self.d2, _ = Donor.objects.get_or_create(name=data_dict['d2'],
                                                  code=data_dict['d2'].lower().replace(' ', '_'))
+        self.country, self.country_office = self.create_new_country_and_office(project_approval=False)
 
     @staticmethod
     def create_users(users):
@@ -47,13 +48,22 @@ class Command(BaseCommand, TestProjectData):
     def create_projects(self, projects):
         projects_list = []
         for project_data in projects:
-            data = self.create_test_data(name=project_data['name'], new_country_only=True)
-            parsed_data = (data[0], data[1].id, data[2].id, data[3].id, data[4].id)
+            project_gen_data, org, country, country_office, d1, d2 = \
+                self.create_test_data(name=project_data['name'], new_country_only=True)
 
-            parsed_data[0]['project'].pop('date')
+            project_gen_data = project_gen_data['project']
+            project_gen_data['date'] = project_gen_data['date'].strftime("%m/%d/%Y, %H:%M:%S")
+            project_gen_data['country'] = country.id
+            project_gen_data['organisation'] = org.id
+            project_gen_data['country_office'] = country_office.id
 
             project, created = Project.objects.get_or_create(name=project_data['name'])
-            project.data = parsed_data
+            project_team = UserProfile.objects.filter(name__in=project_data['team'])
+
+            project.team.set(project_team)
+            project.data = project_gen_data
+            project.make_public_id(self.country.id)
+            project.approve()
             project.save()
 
             projects_list.append(project)
@@ -61,7 +71,7 @@ class Command(BaseCommand, TestProjectData):
         return projects_list
 
     @staticmethod
-    def parse_review_data(portfolio, pps, proj_data, approved: bool = False):
+    def parse_review_data(portfolio, pps, proj_data, approved=False):
         if 'reviews' in proj_data:
             for review in proj_data['reviews']:
                 user = UserProfile.objects.get(name=review['name'])
@@ -71,7 +81,7 @@ class Command(BaseCommand, TestProjectData):
                 pp.pprint(f'{user_score}, created: {created}')
                 user_score.complete = review['complete'] if 'complete' in review else False
                 user_score.rnci = review['rnci'] if 'rnci' in review else None
-                user_score.rnci_comment = review['rnci'] if 'rnci_comment' in review else None
+                user_score.rnci_comment = review['rnci_comment'] if 'rnci_comment' in review else None
                 user_score.ratp = review['ratp'] if 'ratp' in review else None
                 user_score.ratp_comment = review['ratp_comment'] if 'ratp_comment' in review else None
                 user_score.ra = review['ra'] if 'ra' in review else None
@@ -86,19 +96,20 @@ class Command(BaseCommand, TestProjectData):
                     user_score.psa.set(portfolio.problem_statements.filter(name__in=review['psa']))
                 user_score.psa_comment = review['psa_comment'] if 'psa_comment' in review else None
                 user_score.save()
-            if 'scores' in proj_data:
-                pps.approved = approved
-                pps.psa.set(portfolio.problem_statements.filter(name__in=proj_data['scores']['psa']))
-                pps.reviewed = True
-                pps.rnci = proj_data['scores']['rnci']
-                pps.ratp = proj_data['scores']['ratp']
-                pps.ra = proj_data['scores']['ra']
-                pps.ee = proj_data['scores']['ee']
-                pps.nst = proj_data['scores']['nst']
-                pps.ps = proj_data['scores']['ps']
-                pps.impact = proj_data['scores']['impact']
-                pps.scale_phase = proj_data['scores']['scale_phase']
-                pps.save()
+        if 'scores' in proj_data:
+            pps.psa.set(portfolio.problem_statements.filter(name__in=proj_data['scores']['psa']))
+            pps.reviewed = True
+            pps.rnci = proj_data['scores']['rnci']
+            pps.ratp = proj_data['scores']['ratp']
+            pps.nc = proj_data['scores']['nc']
+            pps.ra = proj_data['scores']['ra']
+            pps.ee = proj_data['scores']['ee']
+            pps.nst = proj_data['scores']['nst']
+            pps.ps = proj_data['scores']['ps']
+            pps.impact = proj_data['scores']['impact']
+            pps.scale_phase = proj_data['scores']['scale_phase']
+            pps.approved = approved
+            pps.save()
 
     def create_portfolios(self, portfolios):
         for p_data in portfolios:
@@ -108,6 +119,7 @@ class Command(BaseCommand, TestProjectData):
             portfolio.icon = p_data['icon']
             managers = UserProfile.objects.filter(name__in=p_data['managers'])
             portfolio.managers.set(managers)
+            portfolio.status = p_data['status']
             portfolio.save()
             for p_s in p_data['problem_statements']:
                 ps, created = ProblemStatement.objects.get_or_create(
@@ -118,12 +130,13 @@ class Command(BaseCommand, TestProjectData):
                     pp_project = Project.objects.get(name=proj_data['name'])
                     pps, created = ProjectPortfolioState.objects.get_or_create(project=pp_project, portfolio=portfolio)
                     pp.pprint(f'ProjectPortfolioState: {pps}, created: {created}')
-                    self.parse_review_data(portfolio, pps, proj_data)
+                    self.parse_review_data(portfolio, pps, proj_data, False)
             if 'projects_approved' in p_data:
                 for proj_data in p_data['projects_approved']:
+                    pp_project = Project.objects.get(name=proj_data['name'])
                     pps, created = ProjectPortfolioState.objects.get_or_create(project=pp_project, portfolio=portfolio)
-                    pp.pprint(f'ProjectPortfolioState: {pps}, created: {created}')
-                    self.parse_review_data(portfolio, pps, proj_data, approved=True)
+                    pp.pprint(f'Approved ProjectPortfolioState: {pps}, created: {created}')
+                    self.parse_review_data(portfolio, pps, proj_data, True)
 
     def handle(self, *args, **options):
         pp.pprint('Parsing input data')

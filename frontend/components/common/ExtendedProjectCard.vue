@@ -1,48 +1,58 @@
 <template>
   <el-card :body-style="{ padding: '0px' }" class="ExtendedProjectCard rounded">
     <div>
-      <el-row type="flex" align="center" class="FirstRow">
-        <el-col :span="15" class="ProjectName">
-          <el-row class="FirstSubRow">
-            <el-col>
-              {{ projectData.name }}
-            </el-col>
-          </el-row>
-          <el-row type="flex" justify="start" class="SecondSubRow">
-            <el-col>
-              <country-item :id="projectData.country" :show-flag="true" />
-            </el-col>
-            <el-col>
-              <organisation-item :id="projectData.organisation" />
-            </el-col>
-          </el-row>
-        </el-col>
-
-        <el-col :span="4" class="ProjectMeta">
-          <div class="Donors">
-            <div>
-              {{ donors }}
-            </div>
-            <span><translate>Investor(s)</translate></span>
-          </div>
-        </el-col>
-        <el-col :span="4" class="ProjectMeta">
-          <div class="LastChange">
-            <div>
-              {{ lastChange }}
-            </div>
-            <span><translate>Updated on</translate></span>
-          </div>
-          <project-legend :id="id" />
-        </el-col>
-      </el-row>
-
+      <review-card-stripe v-if="type === 'review'" :item="project" />
       <el-row
         type="flex"
+        align="middle"
+        class="FirstRow"
         justify="space-between"
-        align="center"
-        class="SecondRow"
       >
+        <el-col class="ProjectName">
+          <el-row class="FirstSubRow">
+            <el-col>
+              {{ project.name }}
+            </el-col>
+          </el-row>
+          <el-row type="flex" align="middle" class="SecondSubRow">
+            <country-item :id="project.country" :show-flag="true" />
+            <organisation-item :id="project.organisation" />
+            <field-office-item
+              :value="project.field_office"
+              :office="project.country"
+            />
+          </el-row>
+        </el-col>
+        <el-row type="flex" align="center" justify="end">
+          <el-col class="ProjectMeta">
+            <div class="Donors">
+              <div>
+                {{ donors }}
+              </div>
+              <span><translate>Investor(s)</translate></span>
+            </div>
+          </el-col>
+          <el-col class="ProjectMeta">
+            <div class="LastChange">
+              <div>
+                {{ lastChange }}
+              </div>
+              <span><translate>Last updated</translate></span>
+            </div>
+          </el-col>
+          <el-col>
+            <project-legend :id="id" />
+            <!-- favorite -->
+            <favorite
+              v-if="project.isPublished"
+              :id="id"
+              :favorite="project.favorite"
+              type="initiatives"
+            />
+          </el-col>
+        </el-row>
+      </el-row>
+      <el-row type="flex" justify="space-between" class="SecondRow">
         <el-col>
           <div v-if="!project.isPublished" class="ProjectStatus Draft">
             <translate key="draft"> Draft </translate>
@@ -51,8 +61,8 @@
             <translate key="published"> Published </translate>
           </div>
           <div
-            v-if="projectData.approved"
-            class="ProjectStatus ApprovedByCountry"
+            v-if="project.approved"
+            class="ProjectStatus approved-by-country"
           >
             <translate key="approved"> Approved by MOH </translate>
           </div>
@@ -66,13 +76,15 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import { format } from 'date-fns'
 
-import CountryItem from './CountryItem'
-import OrganisationItem from './OrganisationItem'
-import ProjectCardActions from './ProjectCardActions'
-import ProjectLegend from './ProjectLegend'
+import ReviewCardStripe from '@/components/review/ReviewCardStripe'
+import CountryItem from '@/components/common/CountryItem'
+import OrganisationItem from '@/components/common/OrganisationItem'
+import ProjectCardActions from '@/components/common/ProjectCardActions'
+import ProjectLegend from '@/components/common/ProjectLegend'
+import FieldOfficeItem from '@/components/project/FieldOfficeItem'
+import Favorite from '@/components/common/Favorite'
 
 export default {
   components: {
@@ -80,49 +92,47 @@ export default {
     OrganisationItem,
     ProjectCardActions,
     ProjectLegend,
+    ReviewCardStripe,
+    FieldOfficeItem,
+    Favorite,
   },
   props: {
     id: {
       type: Number,
       required: true,
     },
+    type: {
+      type: String,
+      default: 'regular',
+    },
+    project: {
+      type: Object,
+      required: true,
+    },
   },
   computed: {
-    ...mapGetters({
-      getUserProjectDetails: 'projects/getUserProjectDetails',
-    }),
-    project() {
-      return this.getUserProjectDetails(this.id)
-    },
-    projectData() {
-      return this.project.isPublished
-        ? this.project.published
-        : this.project.draft
-    },
     donors() {
-      return this.projectData && this.projectData.donors
-        ? this.projectData.donors.length
+      return this.project && this.project.donors
+        ? this.project.donors.length
         : 0
     },
     lastChange() {
-      return format(this.projectData.modified, 'DD/MM/YYYY')
+      return format(this.project.modified, 'DD/MM/YYYY')
     },
   },
-  methods: {},
 }
 </script>
 
 <style lang="less">
-@import '../../assets/style/variables.less';
-@import '../../assets/style/mixins.less';
+@import '~assets/style/variables.less';
+@import '~assets/style/mixins.less';
 
 .ExtendedProjectCard {
-  max-width: @cardSizeMedium;
   margin: 0 auto 20px;
 
   .FirstRow {
     position: relative;
-    padding: 20px 50px 20px 30px;
+    padding: 20px 30px 20px;
 
     .FirstSubRow {
       margin-bottom: 16px;
@@ -132,49 +142,14 @@ export default {
     }
 
     .SecondSubRow {
-      .el-col {
-        &:first-child {
-          width: auto;
-        }
-
-        &:last-child {
-          width: 100%;
-        }
-      }
-
-      .CountryItem {
-        .CountryFlag {
-          img {
-            height: 14px;
-            width: auto;
-            margin: 1px 0;
-          }
-        }
-
-        .CountryName {
-          width: auto;
-          font-size: @fontSizeBase;
-          font-weight: 400;
-        }
-      }
-
-      .OrganisationItem {
-        position: relative;
-        padding-left: 21px;
+      .OrganisationItem,
+      .FieldOfficeItem {
+        width: auto;
         font-size: @fontSizeBase;
         font-weight: 400;
-
-        &::before {
-          content: '';
-          position: absolute;
-          top: 50%;
-          left: 10px;
-          transform: translateY(-50%);
-          display: inline-block;
-          width: 1px;
-          height: 14px;
-          background-color: @colorTextSecondary;
-        }
+        color: @colorBrandGrayDark!important;
+        padding: 0px 12px;
+        border-left: 1px solid #ddd7d0;
       }
     }
 
@@ -184,15 +159,12 @@ export default {
     }
 
     .ProjectMeta {
-      min-width: 140px;
-      max-width: 2000px;
+      // min-width: 140px;
       border-left: 1px solid @colorGrayLight;
+      padding: 0 24px 0px;
 
       .Donors,
       .LastChange {
-        padding: 0 20px;
-        text-align: center;
-
         > div {
           margin: 8px 0 12px;
           font-size: @fontSizeMedium;
@@ -210,10 +182,6 @@ export default {
     }
 
     .ProjectLegend {
-      position: absolute;
-      top: 26px;
-      right: 26px;
-
       .svg-inline--fa {
         font-size: 14px;
       }
@@ -221,12 +189,15 @@ export default {
   }
 
   .SecondRow {
-    padding: 16px 30px;
-    background-color: @colorBrandBlueLight;
+    height: 54px;
+    padding: 0 30px;
+    align-items: center;
+    background-color: #e8f6fd;
 
     .ProjectStatus {
       display: inline-block;
       height: 24px;
+      min-width: 86px;
       margin-right: 10px;
       padding: 0 10px;
       font-size: @fontSizeSmall - 1;
@@ -235,7 +206,7 @@ export default {
       text-transform: uppercase;
       color: @colorWhite;
       border-radius: 12px;
-
+      text-align: center;
       &.Draft {
         background-color: @colorDraft;
         color: @colorTextPrimary;
@@ -245,12 +216,9 @@ export default {
         background-color: @colorPublished;
       }
 
-      &.ApprovedByCountry {
+      &.approved-by-country {
         background-color: @colorApproved;
       }
-    }
-
-    .ProjectCardActions {
     }
   }
 }

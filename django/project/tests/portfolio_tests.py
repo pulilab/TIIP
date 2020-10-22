@@ -1,38 +1,12 @@
 from django.urls import reverse
-from rest_framework.test import APIClient, APITestCase
+from rest_framework.test import APITestCase
 
 from project.models import Portfolio, ProblemStatement
 from project.tests.setup import TestProjectData
 from user.models import UserProfile
-from user.tests import create_profile_for_user
 
 
 class PortfolioSetup(TestProjectData, APITestCase):
-    def create_user(self, user_email, user_password1, user_password_2):
-        """
-        Create a test user with profile.
-        """
-        url = reverse("rest_register")
-        data = {
-            "email": user_email,
-            "password1": user_password1,
-            "password2": user_password_2}
-        response = self.client.post(url, data, format="json")
-        self.assertEqual(response.status_code, 201, response.json())
-
-        create_profile_for_user(response)
-
-        # Log in the user.
-        url = reverse("api_token_auth")
-        data = {
-            "username": user_email,
-            "password": user_password1}
-        response = self.client.post(url, data, format="json")
-        self.assertEqual(response.status_code, 200, response.json())
-        test_user_key = response.json().get("token")
-        test_user_client = APIClient(HTTP_AUTHORIZATION="Token {}".format(test_user_key), format="json")
-        user_profile_id = response.json().get('user_profile_id')
-        return user_profile_id, test_user_client, test_user_key
 
     def move_project_to_portfolio(self, portfolio_id, project_id, expected_response_status=201, client=None):
         if client is None:
@@ -111,6 +85,7 @@ class PortfolioTests(PortfolioSetup):
         self.assertEqual(response.status_code, 200, response.json())
         self.assertEqual(response.json()['id'], self.portfolio_id)
         self.assertEqual(response.json()['status'], Portfolio.STATUS_ACTIVE)
+        self.assertTrue(response.json()['problem_statements'])
 
         # Re-check the portfolio list as user #1
         url = reverse("portfolio-list-active")
@@ -119,6 +94,7 @@ class PortfolioTests(PortfolioSetup):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()), 1)  # we forgot to activate the portfolio
         self.assertEqual(response.json()[0]['id'], self.portfolio_id)
+        self.assertTrue(response.json()[0]['problem_statements'])
 
         # Make the portfolio a draft again
         url = reverse("portfolio-update", kwargs={"pk": self.portfolio_id})
@@ -148,6 +124,7 @@ class PortfolioTests(PortfolioSetup):
         response = self.user_2_client.get(url)  # GMO users see all portfolios in this list
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()), 2)
+        self.assertTrue(response.json()[0]['problem_statements'])
 
         response = self.user_3_client.get(url)  # Managers only see their own portfolios in this list
         self.assertEqual(response.status_code, 200)
