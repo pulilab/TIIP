@@ -131,7 +131,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import CountryOfficeSelect from '@/components/common/CountryOfficeSelect'
 import FormHint from '@/components/common/FormHint'
 import {
@@ -183,11 +183,15 @@ export default {
     ...mapState({
       offices: (state) => state.offices.offices,
     }),
+    ...mapGetters({
+      getUnicefDonor: 'system/getUnicefDonor',
+    }),
     finalImportTemplate() {
-      const unicefCustomQuestions = get(
-        this,
-        'systemDicts.donorsLibrary.20.donor_questions'
-      )
+      const unicefCustomQuestions =
+        get(
+          this,
+          `systemDicts.donorsLibrary.${this.getUnicefDonor.id}.donor_questions`
+        ) || []
       const inventFields = reduce(
         apiNameInvenMapping,
         (res, val, key) => {
