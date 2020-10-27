@@ -244,6 +244,7 @@ export default {
         (p) => p.name
       )
       // INVENT
+      const flatCurrency = this.projectDicts.currencies.map((p) => p.name)
       const flatFunctions = this.projectDicts.functions.map((p) => p.name)
       const flatHardware = this.projectDicts.hardware.map((p) => p.name)
       const flatNontech = this.projectDicts.nontech.map((p) => p.name)
@@ -257,6 +258,7 @@ export default {
       // const flatPhases = this.projectDicts.phases.map(p => p.name);
 
       return [
+        [nameMapping.currency, ...flatCurrency],
         [nameMapping.functions, ...flatFunctions],
         [nameMapping.hardware, ...flatHardware],
         [nameMapping.nontech, ...flatNontech],

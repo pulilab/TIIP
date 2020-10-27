@@ -15,8 +15,10 @@ export const nameInventMapping = {
   total_budget_narrative: 'Total Budget (Narrative)',
   funding_needs: 'Funding Needs',
   partnership_needs: 'Partnership Needs',
-  // partner
   partners: 'Partners',
+  wbs: 'WBS number',
+  currency: 'Currency',
+  total_budget: 'Total Estimated Budget',
 }
 
 export const apiNameInvenMapping = {
@@ -74,6 +76,9 @@ export const importTemplate = [
     'Total Budget (Narrative)': 'text',
     'Funding Needs': 'text',
     'Partnership Needs': 'text',
+    'WBS number': '1|2',
+    Currency: 'USD',
+    'Total Estimated Budget': '0',
     Partners:
       'Investor Partner|Investor Name|partner@investor.com|www.investor.com|Technology Partner|Partner Name|partner@technology.com|www.technology.com',
   },

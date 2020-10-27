@@ -211,6 +211,7 @@ export default {
             ),
           start_date: () => this.parseDate(),
           end_date: () => this.parseDate(),
+          total_budget: () => this.parseNumber(),
           field_office: () => this.findProjectCollectionValue('field_offices'),
           goal_area: () => this.findProjectCollectionValue('goal_areas'),
           result_area: () => this.findProjectCollectionValue('result_areas'),
@@ -221,6 +222,7 @@ export default {
           capability_subcategories: () =>
             this.findProjectCollectionValue('capability_subcategories', true),
           // INVENT
+          wbs: () => this.stringArray(),
           partners: () => {
             const indexList = []
             const valueList = chunk(this.stringToArray(this.value), 4).map(
@@ -241,6 +243,7 @@ export default {
             }
           },
           functions: () => this.findProjectCollectionValue('functions', true),
+          currency: () => this.findProjectCollectionValue('currencies', false),
           hardware: () => this.findProjectCollectionValue('hardware', true),
           nontech: () => this.findProjectCollectionValue('nontech', true),
           regional_priorities: () =>
@@ -324,6 +327,13 @@ export default {
         names: [result],
       }
     },
+    parseNumber() {
+      const result = this.value ? this.value * 1 : null
+      return {
+        ids: [result],
+        names: [result],
+      }
+    },
     stringToArray(value) {
       if (Array.isArray(value)) {
         return value
@@ -402,9 +412,11 @@ export default {
         'regional_priorities',
         'innovation_categories',
         'cpd',
+        'wbs',
       ]
       const isIds = [
         ...isMultiple,
+        'currency',
         'donors',
         'country',
         'organisation',
