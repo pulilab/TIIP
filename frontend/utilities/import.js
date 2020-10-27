@@ -1,12 +1,15 @@
+// links: [],
+// target_group_reached: 0,
+
 export const nameInventMapping = {
   // INVENT
+  unicef_sector: 'Served Sector(s)',
   functions: 'Function(s) of Platform',
   hardware: 'Hardware platforms',
   nontech: 'Non-Technology platforms',
   regional_priorities: 'Regional Priorities',
   innovation_categories: 'Innovation Categories',
   cpd: 'In Country programme document (CPD)',
-  // phases: 'Phase of Initiative'
   overview: 'Overview',
   program_targets: 'Program Targets',
   program_targets_achieved: 'Program Targets Achieved',
@@ -19,15 +22,18 @@ export const nameInventMapping = {
   wbs: 'WBS number',
   currency: 'Currency',
   total_budget: 'Total Estimated Budget',
+  phase: 'Phase of Initiative',
 }
 
 export const apiNameInvenMapping = {
+  unicef_sector: 'getSectors',
   functions: 'getFunctions',
   hardware: 'getHardware',
   nontech: 'getNontech',
   regional_priorities: 'getRegionalPriorities',
   innovation_categories: 'getInnovationCategories',
   cpd: 'getCpd',
+  phase: 'getPhases',
 }
 
 export const nameMapping = {

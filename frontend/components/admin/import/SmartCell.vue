@@ -242,8 +242,10 @@ export default {
               ids: indexList.length === valueList.length ? indexList : [],
             }
           },
+          unicef_sector: () => this.findProjectCollectionValue('sectors', true),
           functions: () => this.findProjectCollectionValue('functions', true),
           currency: () => this.findProjectCollectionValue('currencies', false),
+          phase: () => this.findProjectCollectionValue('phases', false),
           hardware: () => this.findProjectCollectionValue('hardware', true),
           nontech: () => this.findProjectCollectionValue('nontech', true),
           regional_priorities: () =>
@@ -411,12 +413,14 @@ export default {
         'nontech',
         'regional_priorities',
         'innovation_categories',
+        'unicef_sector',
         'cpd',
         'wbs',
       ]
       const isIds = [
         ...isMultiple,
         'currency',
+        'phase',
         'donors',
         'country',
         'organisation',

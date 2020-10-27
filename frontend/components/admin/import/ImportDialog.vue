@@ -21,7 +21,13 @@
         </h3>
 
         <template v-if="apiNameInvenMapping[dialogData.column]">
+          <single-select
+            v-if="['phase'].includes(dialogData.column)"
+            v-model="dialogData.value[0]"
+            :source="`projects/${apiNameInvenMapping[dialogData.column]}`"
+          />
           <multi-selector
+            v-else
             v-model="dialogData.value"
             :source="apiNameInvenMapping[dialogData.column]"
           />
@@ -154,6 +160,7 @@
 
 <script>
 import MultiSelector from '@/components/project/MultiSelector'
+import SingleSelect from '@/components/common/SingleSelect'
 import PlatformSelector from '@/components/project/PlatformSelector'
 import HealthSystemChallengesSelector from '@/components/project/HealthSystemChallengesSelector'
 import HealthFocusAreasSelector from '@/components/project/HealthFocusAreasSelector'
@@ -176,6 +183,7 @@ export default {
     CapabilitySelector,
     FieldOfficeSelector,
     MultiSelector,
+    SingleSelect,
   },
   props: {
     customFieldsLib: {

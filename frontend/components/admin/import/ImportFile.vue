@@ -192,10 +192,16 @@ export default {
           this,
           `systemDicts.donorsLibrary.${this.getUnicefDonor.id}.donor_questions`
         ) || []
+      const keyMapping = {
+        unicef_sector: 'sectors',
+        phase: 'phases',
+      }
       const inventFields = reduce(
         apiNameInvenMapping,
         (res, val, key) => {
-          res[nameInventMapping[key]] = this.projectDicts[key][0].name
+          res[nameInventMapping[key]] = this.projectDicts[
+            keyMapping[key] || key
+          ][0].name
           return res
         },
         {}
@@ -245,6 +251,7 @@ export default {
       )
       // INVENT
       const flatCurrency = this.projectDicts.currencies.map((p) => p.name)
+      const flatPhases = this.projectDicts.phases.map((p) => p.name)
       const flatFunctions = this.projectDicts.functions.map((p) => p.name)
       const flatHardware = this.projectDicts.hardware.map((p) => p.name)
       const flatNontech = this.projectDicts.nontech.map((p) => p.name)
@@ -258,6 +265,7 @@ export default {
       // const flatPhases = this.projectDicts.phases.map(p => p.name);
 
       return [
+        [nameMapping.phase, ...flatPhases],
         [nameMapping.currency, ...flatCurrency],
         [nameMapping.functions, ...flatFunctions],
         [nameMapping.hardware, ...flatHardware],
