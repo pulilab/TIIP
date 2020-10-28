@@ -77,9 +77,8 @@ class Command(BaseCommand):
     @staticmethod
     def fill_currencies(data):
         for currency in data:
-            curr, created = Currency.objects.get_or_create(code=currency['code'])
-            curr.name = currency['name']
-            curr.save()
+            curr, created = Currency.objects.update_or_create(
+                code=currency['code'], defaults={'name': currency['name']})
             pp.pprint(f'{currency["name"]}, created: {created}')
 
     def handle(self, *args, **options):
