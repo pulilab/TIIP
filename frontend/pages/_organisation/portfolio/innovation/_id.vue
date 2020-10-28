@@ -32,7 +32,7 @@
         </tabs>
         <section class="tab-content">
           <Matrix
-            v-if="tab === 1"
+            v-show="tab === 1"
             ref="ambitionMatrix"
             bg-image="/bg-ambition_matrix.svg"
             :description="description"
@@ -41,7 +41,7 @@
             :bottom="matrixLabels.ambition.bottom"
           />
           <Matrix
-            v-if="tab === 2"
+            v-show="tab === 2"
             ref="riskMatrix"
             bg-color="#FCEFE8"
             color="#F26A21"
@@ -80,7 +80,8 @@
             </el-row>
             <el-row>
               <div class="Info">
-                <i class="fas fa-info-circle" />
+                <!-- <i class="fas fa-info-circle" /> -->
+                <fa icon="info-circle" />
                 <translate>
                   By clicking on a problem statement you can add or remove it
                   from your current filter settings.
@@ -230,9 +231,8 @@ export default {
   methods: {
     navigate(id) {
       this.$store.dispatch('search/resetSearch')
-      // cause an error
-      // this.$refs.ambitionMatrix.clear()
-      // this.$refs.riskMatrix.clear()
+      this.$refs.ambitionMatrix.clear()
+      this.$refs.riskMatrix.clear()
       this.$router.push(
         this.localePath({
           name: 'organisation-portfolio-innovation-id',
@@ -275,10 +275,8 @@ section.portfolio-area {
   }
 }
 .portfolio {
-  //margin: 0 40px 160px 40px;
   margin-bottom: 80px;
   .PHeader {
-    // padding: 0 40px;
     background-color: white;
   }
 
