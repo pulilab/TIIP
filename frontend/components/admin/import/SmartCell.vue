@@ -211,7 +211,6 @@ export default {
             ),
           start_date: () => this.parseDate(),
           end_date: () => this.parseDate(),
-          total_budget: () => this.parseNumber(),
           field_office: () => this.findProjectCollectionValue('field_offices'),
           goal_area: () => this.findProjectCollectionValue('goal_areas'),
           result_area: () => this.findProjectCollectionValue('result_areas'),
@@ -222,7 +221,10 @@ export default {
           capability_subcategories: () =>
             this.findProjectCollectionValue('capability_subcategories', true),
           // INVENT
+          total_budget: () => this.parseNumber(),
+          target_group_reached: () => this.parseNumber(),
           wbs: () => this.stringArray(),
+          links: () => this.stringArray(),
           partners: () => {
             const indexList = []
             const valueList = chunk(this.stringToArray(this.value), 4).map(
@@ -416,6 +418,7 @@ export default {
         'unicef_sector',
         'cpd',
         'wbs',
+        'links',
       ]
       const isIds = [
         ...isMultiple,

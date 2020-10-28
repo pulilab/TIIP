@@ -179,6 +179,12 @@
             :header="$gettext('Program Targets Achieved') | translate"
           />
           <simple-field
+            :content="project.target_group_reached"
+            :header="
+              $gettext('Target Group (Target Population) Reached ') | translate
+            "
+          />
+          <simple-field
             :content="project.current_achievements"
             :header="$gettext('Current Achievements') | translate"
           />
@@ -228,10 +234,7 @@
           />
         </collapsible-card>
 
-        <collapsible-card
-          id="phase"
-          :title="$gettext('4. Phase') | translate"
-        >
+        <collapsible-card id="phase" :title="$gettext('4. Phase') | translate">
           <simple-field :header="$gettext('Phase of Initiative') | translate">
             <list-element :value="project.phase" source="getPhases" />
           </simple-field>

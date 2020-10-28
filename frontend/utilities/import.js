@@ -23,6 +23,8 @@ export const nameInventMapping = {
   currency: 'Currency',
   total_budget: 'Total Estimated Budget',
   phase: 'Phase of Initiative',
+  target_group_reached: 'Target Group Reached',
+  links: 'Investment, Government, Programme, Technology URLs',
 }
 
 export const apiNameInvenMapping = {
@@ -85,6 +87,9 @@ export const importTemplate = [
     'WBS number': '1|2',
     Currency: 'USD',
     'Total Estimated Budget': '0',
+    'Target Group Reached': '0',
+    'Investment, Government, Programme, Technology URLs':
+      'https://invent.unicef.org|https://invent.unicef.org|https://invent.unicef.org|https://invent.unicef.org',
     Partners:
       'Investor Partner|Investor Name|partner@investor.com|www.investor.com|Technology Partner|Partner Name|partner@technology.com|www.technology.com',
   },
