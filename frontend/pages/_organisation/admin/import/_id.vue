@@ -18,8 +18,8 @@
           <div class="SavedSwitch">
             <el-switch
               v-model="showSaved"
-              active-text="Show saved projects"
-              inactive-text="Hide saved projects"
+              active-text="Show saved initiatives"
+              inactive-text="Hide saved initiatives"
             />
           </div>
           <div class="ExportDataTable">
@@ -300,9 +300,9 @@ export default {
         try {
           await this.$confirm(
             this.$gettext(
-              'Note that once you have saved this project, it will be uploaded to the DHA. You can access all of your saved Projects from your My Projects page.'
+              'Note that once you have saved this project, it will be uploaded to the DHA. You can access all of your saved Projects from your My Initiatives page.'
             ),
-            this.$gettext('Save Project'),
+            this.$gettext('Save Initiative'),
             {
               confirmButtonText: this.$gettext('OK'),
               cancelButtonText: this.$gettext('Cancel'),
@@ -328,7 +328,7 @@ export default {
             ),
             this.$gettext('Success!'),
             {
-              confirmButtonText: this.$gettext('Project page'),
+              confirmButtonText: this.$gettext('Initiative page'),
               cancelButtonText: this.$gettext('Keep working'),
               type: 'info',
             }
@@ -336,7 +336,7 @@ export default {
           const id = newRow.project
           this.$router.push(
             this.localePath({
-              name: 'organisation-projects-id-edit',
+              name: 'organisation-initiatives-id-edit',
               params: { id, organisation: this.$route.params.organisation },
             })
           )
@@ -369,9 +369,9 @@ export default {
       try {
         await this.$confirm(
           this.$gettext(
-            'Note that once you have saved these projects, they will be uploaded to the DHA. You can access all saved projects from your My Projects page.'
+            'Note that once you have saved these initiatives, they will be uploaded to the DHA. You can access all saved initiatives from your My Initiatives page.'
           ),
-          this.$gettext('Save all projects'),
+          this.$gettext('Save all initiatives'),
           {
             confirmButtonText: this.$gettext('OK'),
             cancelButtonText: this.$gettext('Cancel'),
@@ -382,7 +382,7 @@ export default {
       } catch (e) {
         this.$message({
           type: 'info',
-          message: this.$gettext('Saving all projects has been cancelled'),
+          message: this.$gettext('Saving all initiatives has been cancelled'),
         })
       }
     },
@@ -403,18 +403,18 @@ export default {
       try {
         await this.$confirm(
           this.$gettext(
-            'Your projects have been successfully saved as a draft, you can go to your project inbox or keep working on the import interface'
+            'Your initiatives have been successfully saved as a draft, you can go to your project inbox or keep working on the import interface'
           ),
           this.$gettext('Success!'),
           {
-            confirmButtonText: this.$gettext('Project inbox'),
+            confirmButtonText: this.$gettext('Initiative inbox'),
             cancelButtonText: this.$gettext('Keep working'),
             type: 'info',
           }
         )
         this.$router.push(
           this.localePath({
-            name: 'organisation-projects',
+            name: 'organisation-initiatives',
             params: this.$route.params,
           })
         )
