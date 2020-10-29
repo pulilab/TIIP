@@ -9,7 +9,7 @@
         </translate>
       </p>
       <p>
-        <translate> When importing your projects </translate>
+        <translate> When importing your initiatives </translate>
         <xlsx-workbook>
           <xlsx-sheet
             v-for="sheet in templateSheets"
@@ -42,7 +42,7 @@
       <p>
         <translate>
           If you have more than one investor, we recommend that you go back to
-          your projects once uploaded and add the correct investors.
+          your initiatives once uploaded and add the correct investors.
         </translate>
       </p>
       <p>
