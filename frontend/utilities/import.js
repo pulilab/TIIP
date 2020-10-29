@@ -24,7 +24,7 @@ export const nameInventMapping = {
   total_budget: 'Total Estimated Budget',
   phase: 'Phase of Initiative',
   target_group_reached: 'Target Group Reached',
-  links: 'Investment, Government, Programme, Technology URLs',
+  links: 'Links to website/Current Documentation',
 }
 
 export const apiNameInvenMapping = {
@@ -88,10 +88,10 @@ export const importTemplate = [
     Currency: 'USD',
     'Total Estimated Budget': '0',
     'Target Group Reached': '0',
-    'Investment, Government, Programme, Technology URLs':
-      'https://invent.unicef.org|https://invent.unicef.org|https://invent.unicef.org|https://invent.unicef.org',
+    'Links to website/Current Documentation':
+      'Website|https://invent.unicef.org|SharePoint|https://invent.unicef.org|External|https://invent.unicef.org|Monitoring|https://invent.unicef.org|Other|https://invent.unicef.org',
     Partners:
-      'Investor Partner|Investor Name|partner@investor.com|www.investor.com|Technology Partner|Partner Name|partner@technology.com|www.technology.com',
+      'Investor Partner|Investor Name|Investor Contact|partner@investor.com|https://www.investor.com|Technology Partner|Partner Name|Partner Contact|partner@technology.com|https://www.technology.com',
   },
   {
     'Project Name': 'MyProject2',

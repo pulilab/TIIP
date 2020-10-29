@@ -186,6 +186,28 @@ export default {
       if (!this.column) {
         return result
       } else {
+        const listParser = (valueLength, source) => {
+          return () => {
+            const indexList = []
+            const valueList = chunk(
+              this.stringToArray(this.value),
+              valueLength
+            ).map((list) => {
+              const type = find(
+                this.systemDicts[source],
+                (type) => type.name.substr(0, 3) === list[0].substr(0, 3)
+              )
+              if (type) {
+                indexList.push(type.id)
+              }
+              return list.join(', ')
+            })
+            return {
+              names: valueList,
+              ids: indexList.length === valueList.length ? indexList : [],
+            }
+          }
+        }
         const resolver = {
           organisation: () => this.findSystemValue('organisations'),
           platforms: () =>
@@ -224,26 +246,8 @@ export default {
           total_budget: () => this.parseNumber(),
           target_group_reached: () => this.parseNumber(),
           wbs: () => this.stringArray(),
-          links: () => this.stringArray(),
-          partners: () => {
-            const indexList = []
-            const valueList = chunk(this.stringToArray(this.value), 4).map(
-              (list) => {
-                const type = find(
-                  this.systemDicts.partner_types,
-                  (type) => type.name.substr(0, 3) === list[0].substr(0, 3)
-                )
-                if (type) {
-                  indexList.push(type.id)
-                }
-                return list.join(', ')
-              }
-            )
-            return {
-              names: valueList,
-              ids: indexList.length === valueList.length ? indexList : [],
-            }
-          },
+          links: listParser(2, 'link_types'),
+          partners: listParser(5, 'partner_types'),
           unicef_sector: () => this.findProjectCollectionValue('sectors', true),
           functions: () => this.findProjectCollectionValue('functions', true),
           currency: () => this.findProjectCollectionValue('currencies', false),
@@ -255,7 +259,6 @@ export default {
           innovation_categories: () =>
             this.findProjectCollectionValue('innovation_categories', true),
           cpd: () => this.findProjectCollectionValue('cpd', true),
-
           custom_field: () => {
             const q = this.customFieldsLib[this.type]
             if (!q) {
@@ -442,8 +445,23 @@ export default {
           return {
             partner_type: id,
             partner_name: data[1],
-            partner_email: data[2],
-            partner_website: data[3],
+            partner_contact: data[2],
+            partner_email: data[3],
+            partner_website: data[4],
+          }
+        })
+      }
+      if (
+        this.column === 'links' &&
+        this.parsedValue.ids &&
+        this.parsedValue.ids.length
+      ) {
+        const { names } = this.parsedValue
+        return this.parsedValue.ids.map(function (id, index) {
+          const data = names[index].split(', ')
+          return {
+            link_type: id,
+            link_url: data[1],
           }
         })
       }

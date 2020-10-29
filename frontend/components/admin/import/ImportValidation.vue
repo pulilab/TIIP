@@ -17,7 +17,6 @@
 <script>
 import { draftRules, publishRules } from '@/utilities/projects'
 import { nameMapping } from '@/utilities/import'
-
 export default {
   props: {
     headers: {
@@ -65,7 +64,12 @@ export default {
       const draftRequireds = []
       for (const key in this.validationRules) {
         const rule = this.validationRules[key]
-        if (rule && rule.required && !rule.skip) {
+        if (
+          rule &&
+          rule.required &&
+          key.substr(0, 8) !== 'partner_' &&
+          key.substr(0, 5) !== 'link_'
+        ) {
           draftRequireds.push(key)
         }
       }

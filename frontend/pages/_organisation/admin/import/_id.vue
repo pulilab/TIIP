@@ -36,7 +36,7 @@
               </import-headers>
               <div class="Rows">
                 <template v-if="showSaved">
-                  <import-rowimport-dialog
+                  <import-row
                     v-for="row in saved"
                     :key="row.id"
                     :row="row"
@@ -49,7 +49,7 @@
                             v-if="row.project"
                             :href="
                               localePath({
-                                name: 'organisation-projects-id-edit',
+                                name: 'organisation-initiatives-id-edit',
                                 params: {
                                   id: row.project,
                                   organisation: $route.params.organisation,
@@ -77,7 +77,7 @@
                         />
                       </template>
                     </template>
-                  </import-rowimport-dialog>
+                  </import-row>
                 </template>
                 <import-row
                   v-for="(row, index) in rows"
@@ -350,10 +350,8 @@ export default {
     async doSingleRowSave(doSave, nested) {
       try {
         const { country, country_office, donor, draft } = this.rawImport
-        // console.log({ country, country_office, donor, draft })
         const newRow = await doSave(country, donor, !draft, country_office)
-        // TODO remove comment !!!
-        // await this.patchRow(newRow)
+        await this.patchRow(newRow)
         return newRow
       } catch (e) {
         console.error(e)

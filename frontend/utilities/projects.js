@@ -76,18 +76,18 @@ export const draftRules = () => {
     partner_name: {
       required: true,
       max: 100,
-      skip: true,
+    },
+    partner_contact: {
+      max: 100,
     },
     partner_email: {
       email: true,
       required: true,
       max: 100,
-      skip: true,
     },
     partner_website: {
       url: { require_protocol: true },
       max: 100,
-      skip: true,
     },
     link_website: {
       url: { require_protocol: true },
@@ -164,6 +164,9 @@ export const draftRules = () => {
 }
 export const publishRules = () => {
   return {
+    partner_contact: {
+      max: 100,
+    },
     partner_name: {
       required: true,
       max: 100,
