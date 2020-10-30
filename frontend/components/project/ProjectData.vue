@@ -233,18 +233,14 @@
             :header="getLinkHeader(link_type)"
           />
 
-          <!-- TODO move software / investors -->
-          <simple-field :header="$gettext('Software') | translate">
-            <platforms-list :platforms="project.platforms" />
-          </simple-field>
+          <!-- TODO move investors -->
 
-          <simple-field :header="$gettext('Investor(s)') | translate">
-            <donors-list :value="project.donors" />
-          </simple-field>
+          <!--          <simple-field :header="$gettext('Investor(s)') | translate">-->
+          <!--            <donors-list :value="project.donors" />-->
+          <!--          </simple-field>-->
         </collapsible-card>
 
         <collapsible-card id="phase" :title="$gettext('4. Phase') | translate">
-
           <el-row>
             <el-col :span="12">
               <simple-field
@@ -268,7 +264,6 @@
               />
             </el-col>
           </el-row>
-
         </collapsible-card>
 
         <collapsible-card
@@ -291,11 +286,11 @@
                   />
                 </li>
                 <li>
-                  <translate>Partner Contact</translate>:
+                  <translate>Contact Name</translate>:
                   {{ partner.partner_contact }}
                 </li>
                 <li>
-                  <translate>Partner Email</translate>:
+                  <translate>Contact Email</translate>:
                   <a :href="`mailto:${partner.partner_email}`">{{
                     partner.partner_email
                   }}</a>
@@ -313,8 +308,12 @@
 
         <collapsible-card
           id="technology"
-          :title="$gettext('7. Technology') | translate"
+          :title="$gettext('6. Technology') | translate"
         >
+          <simple-field :header="$gettext('Software') | translate">
+            <platforms-list :platforms="project.platforms" />
+          </simple-field>
+
           <simple-field
             :header="
               $gettext('Hardware Platform(s) and Physical Product(s)')
