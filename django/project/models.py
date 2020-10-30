@@ -270,7 +270,7 @@ class Portfolio(ExtendedNameOrderedSoftDeletedModel):
             blob['projects'].sort()
         return blob_list
 
-    def get_problem_statement_matrix(self, project_ids: Union[List[int], None] = None):
+    def get_problem_statement_matrix(self):
         tresholds = settings.PORTFOLIO_PROBLEMSTATEMENT_TRESHOLDS
 
         neglected_filter = Q(num_projects__lt=tresholds['MODERATE'])
@@ -280,8 +280,6 @@ class Portfolio(ExtendedNameOrderedSoftDeletedModel):
         when_statement = dict(
             projectportfoliostate__approved=True,
             then=F('projectportfoliostate__id'))
-        if project_ids:
-            when_statement.update(dict(projectportfoliostate__project_id__in=project_ids))
 
         base_qs = self.problem_statements.annotate(num_projects=Count(Case(When(**when_statement),
                                                    output_field=IntegerField()), distinct=True))
@@ -537,6 +535,9 @@ class ProjectImportV2(ExtendedModel):
 
     class Meta:
         unique_together = ('user', 'filename', 'sheet_name')
+
+    def __str__(self):  # pragma: no cover
+        return self.filename if self.filename else self.pk
 
 
 class ImportRow(models.Model):

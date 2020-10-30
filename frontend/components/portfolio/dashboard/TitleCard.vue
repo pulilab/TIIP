@@ -1,7 +1,7 @@
 <template>
   <article class="portfolio-main-title">
     <div>
-      <h1>Manage your Portfolios</h1>
+      <h1>Manage Portfolios</h1>
       <el-button
         v-if="profile.global_portfolio_owner"
         icon="el-icon-plus"
@@ -13,8 +13,8 @@
     </div>
     <p>
       <translate>
-        Please select a Portfolio from the list above to edit its information,
-        or change its status.
+        Please select a portfolio below to edit its information or manage the
+        review and addition of initiatives.
       </translate>
     </p>
   </article>
@@ -69,6 +69,7 @@ export default {
     margin-bottom: 30px;
     button {
       align-self: center;
+      height: 48px;
     }
   }
 }

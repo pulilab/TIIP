@@ -13,7 +13,7 @@
         :value="co"
         :items="offices"
         multiple
-        :placeholder="$gettext('Country Office') | translate"
+        :placeholder="$gettext('UNICEF Office') | translate"
         @change="handleSearch('co', $event)"
       />
       <filter-select
@@ -23,13 +23,6 @@
         :placeholder="$gettext('Innovation Category') | translate"
         @change="handleSearch('ic', $event)"
       />
-      <!-- <filter-select
-        :value="partner"
-        :items="partners"
-        multiple
-        :placeholder="$gettext('Partners') | translate"
-        @change="handleSearch('partner', $event)"
-      /> -->
       <filter-select
         :value="goal"
         :items="goalAreas"
