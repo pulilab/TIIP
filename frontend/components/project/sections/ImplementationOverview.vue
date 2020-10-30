@@ -86,6 +86,7 @@
 
       <template v-else-if="goal_area">
         <custom-required-form-item
+          v-if="selectedGoalArea.capability_level_question !== 'MISSING'"
           :error="errors.first('capability_levels')"
           :draft-rule="draftRules.capability_levels"
           :publish-rule="publishRules.capability_levels"
@@ -102,7 +103,9 @@
             :data-vv-as="selectedGoalArea.capability_level_question"
           />
         </custom-required-form-item>
-        <custom-required-form-item>
+        <custom-required-form-item
+          v-if="selectedGoalArea.capability_category_question !== 'MISSING'"
+        >
           <template slot="label">
             {{ selectedGoalArea.capability_category_question }}
           </template>
@@ -112,7 +115,9 @@
             :values-function="getCapabilityCategoriesItems"
           />
         </custom-required-form-item>
-        <custom-required-form-item>
+        <custom-required-form-item
+          v-if="selectedGoalArea.capability_subcategory_question !== 'MISSING'"
+        >
           <template slot="label">
             {{ selectedGoalArea.capability_subcategory_question }}
           </template>
