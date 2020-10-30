@@ -291,6 +291,10 @@
                   />
                 </li>
                 <li>
+                  <translate>Partner Contact</translate>:
+                  {{ partner.partner_contact }}
+                </li>
+                <li>
                   <translate>Partner Email</translate>:
                   <a :href="`mailto:${partner.partner_email}`">{{
                     partner.partner_email
