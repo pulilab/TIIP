@@ -233,8 +233,6 @@
             :header="getLinkHeader(link_type)"
           />
 
-          <!-- TODO move investors -->
-
           <!--          <simple-field :header="$gettext('Investor(s)') | translate">-->
           <!--            <donors-list :value="project.donors" />-->
           <!--          </simple-field>-->
