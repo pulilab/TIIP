@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 import pprint as pp
 import json
 from user.models import User, UserProfile, Organisation
-from country.models import Donor
+from country.models import Donor, Country
 from project.models import Project, Portfolio, ProblemStatement, ProjectPortfolioState, ReviewScore
 from project.tests.setup import TestProjectData
 
@@ -27,6 +27,8 @@ class Command(BaseCommand, TestProjectData):
                                                  code=data_dict['d1'].lower().replace(' ', '_'))
         self.d2, _ = Donor.objects.get_or_create(name=data_dict['d2'],
                                                  code=data_dict['d2'].lower().replace(' ', '_'))
+        self.d_unicef, _ = Donor.objects.get_or_create(name='UNICEF',
+                                                    code='unicef')
         self.country, self.country_office = self.create_new_country_and_office(project_approval=False)
 
     @staticmethod
@@ -53,6 +55,7 @@ class Command(BaseCommand, TestProjectData):
 
             project_gen_data = project_gen_data['project']
             project_gen_data['date'] = project_gen_data['date'].strftime("%m/%d/%Y, %H:%M:%S")
+            country, _ = Country.objects.get_or_create(name=project_data.get('country', "unnamed_country"))
             project_gen_data['country'] = country.id
             project_gen_data['organisation'] = org.id
             project_gen_data['country_office'] = country_office.id
