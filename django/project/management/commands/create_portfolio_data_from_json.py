@@ -77,7 +77,6 @@ class Command(BaseCommand, TestProjectData):
             project.team.set(project_team)
             project.data = project_gen_data
             project.make_public_id(self.country.id)
-            project.approve()
             project.save()
 
             projects_list.append(project)
