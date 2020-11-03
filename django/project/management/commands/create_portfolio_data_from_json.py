@@ -28,7 +28,7 @@ class Command(BaseCommand, TestProjectData):
         self.d2, _ = Donor.objects.get_or_create(name=data_dict['d2'],
                                                  code=data_dict['d2'].lower().replace(' ', '_'))
         self.d_unicef, _ = Donor.objects.get_or_create(name='UNICEF',
-                                                    code='unicef')
+                                                       code='unicef')
         self.country, self.country_office = self.create_new_country_and_office(project_approval=False)
 
     @staticmethod
