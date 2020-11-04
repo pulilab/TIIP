@@ -9,7 +9,6 @@
       </li>
       <li v-show="selected.length === 0">
         <!-- N/A -->
-        <translate></translate>
       </li>
     </ul>
   </div>

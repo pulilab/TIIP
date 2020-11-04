@@ -3,7 +3,6 @@
     <span v-if="selected">{{ selected.name }}</span>
     <span v-else class="muted">
       <!-- N/A -->
-      <translate> </translate>
     </span>
   </div>
 </template>

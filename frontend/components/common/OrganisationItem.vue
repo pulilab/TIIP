@@ -5,7 +5,6 @@
     </span>
     <span v-else>
       <!-- N/A -->
-      <translate></translate>
     </span>
   </div>
 </template>

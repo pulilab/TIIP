@@ -10,7 +10,6 @@
     </ul>
     <span v-show="team.length === 0 && unknown === 0">
       <!-- N/A -->
-      <translate></translate>
     </span>
   </div>
 </template>

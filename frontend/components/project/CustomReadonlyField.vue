@@ -6,7 +6,6 @@
       </span>
       <span v-show="!value">
         <!-- N/A -->
-        <translate> </translate>
       </span>
     </template>
     <template v-if="type === 5">
@@ -17,7 +16,6 @@
           </span>
           <span v-show="!v">
             <!-- N/A -->
-            <translate> </translate>
           </span>
         </li>
       </ul>
