@@ -66,12 +66,14 @@
               :items="scope.row[reviewer][scope.row.type]"
               :problem-statements="problemStatements"
             />
-            <p v-else class="na psa">N/A</p>
+            <!-- N/A -->
+            <p v-else class="na psa"></p>
           </template>
           <p v-else-if="scope.row[reviewer][scope.row.type]" class="user-score">
             {{ scope.row[reviewer][scope.row.type] }}
           </p>
-          <p v-else class="na">N/A</p>
+          <!-- N/A -->
+          <p v-else class="na"></p>
           <el-popover
             v-if="scope.row[reviewer][`${scope.row.type}_comment`]"
             placement="right"
@@ -123,7 +125,7 @@
       >
         <template slot-scope="scope">
           <div :class="`content ${scope.row.type === 'psa' ? '' : 'center'}`">
-            <template v-if="review.reviewed">
+            <template v-if="review.approved">
               <template v-if="scope.row.type === 'psa'">
                 <psa-list
                   :items="score[scope.row.type]"
@@ -152,7 +154,7 @@
                 multiple
                 filterable
                 clearable
-                :disabled="review.reviewed"
+                :disabled="review.approved"
               >
                 <el-option
                   v-for="i in problemStatements"
@@ -166,7 +168,7 @@
                 v-model="score[scope.row.type]"
                 class="select-psa"
                 clearable
-                :disabled="review.reviewed"
+                :disabled="review.approved"
               >
                 <el-option
                   v-for="sp in scalePhases"
@@ -179,7 +181,7 @@
                 v-else
                 v-model="score[scope.row.type]"
                 clearable
-                :disabled="review.reviewed"
+                :disabled="review.approved"
               >
                 <el-option v-for="i in points" :key="i" :label="i" :value="i" />
               </el-select>
@@ -193,7 +195,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <template v-if="!review.reviewed">
+    <template v-if="!review.approved">
       <span slot="footer" class="dialog-footer">
         <el-button type="info" text @click="setScoreDialog(false)">
           <translate>Cancel</translate>
@@ -248,7 +250,7 @@ export default {
       scalePhases: (state) => state.system.scalePhases,
     }),
     disabled() {
-      if (this.review.reviewed) {
+      if (this.review.approved) {
         return true
       }
       if (this.score.impact === null || this.score.impact === '') {
@@ -329,7 +331,7 @@ export default {
       if (type === 'scale_phase') {
         return this.scalePhases.find((i) => i.id === this.score[type]).name
       }
-      return this.score[type] === null ? 'N/A' : this.score[type]
+      return this.score[type] === null ? ' ' : this.score[type] // N/A
     },
   },
 }

@@ -496,7 +496,7 @@ export default {
       }
     },
     convertDate(date) {
-      return date ? format(date, 'DD/MM/YYYY HH:mm') : 'N/A'
+      return date ? format(date, 'DD/MM/YYYY HH:mm') : ' ' // N/A
     },
     fixTableHeight() {
       const maxHeight = window
@@ -540,7 +540,7 @@ export default {
     },
     countryOffice(id) {
       const office = this.offices.find((obj) => obj.id === id)
-      return office ? office.name : 'N/A'
+      return office ? office.name : ' ' // N/A
     },
     handleFavorite(id) {
       console.log(`this will mark or unmark ${id}`)
