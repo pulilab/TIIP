@@ -2,7 +2,8 @@
   <div class="FieldOfficeItem">
     <span v-if="selected">{{ selected.name }}</span>
     <span v-else class="muted">
-      <translate> N/A </translate>
+      <!-- N/A -->
+      <translate> </translate>
     </span>
   </div>
 </template>

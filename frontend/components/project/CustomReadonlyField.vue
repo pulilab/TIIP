@@ -5,7 +5,8 @@
         {{ value }}
       </span>
       <span v-show="!value">
-        <translate> N/A </translate>
+        <!-- N/A -->
+        <translate> </translate>
       </span>
     </template>
     <template v-if="type === 5">
@@ -15,7 +16,8 @@
             {{ v }}
           </span>
           <span v-show="!v">
-            <translate> N/A </translate>
+            <!-- N/A -->
+            <translate> </translate>
           </span>
         </li>
       </ul>
