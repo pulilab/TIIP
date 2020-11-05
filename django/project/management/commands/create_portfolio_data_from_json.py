@@ -47,7 +47,7 @@ class Command(BaseCommand, TestProjectData):
         projects_list = []
         for project_data in projects:
             country_office = CountryOffice.objects.filter(country__name=project_data['country'])[0]
-            
+
             project_gen_data = {"project": {
                 "date": datetime.utcnow(),
                 "name": project_data['name'],
