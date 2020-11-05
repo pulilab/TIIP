@@ -21,7 +21,8 @@ mappings = [
     ("Argentina: Buenos Aires", "N/A", "Buenos Aires", "Argentina", "LACR"),
     ("Armenia: Yerevan", "N/A", "Yerevan", "Armenia", "ECAR"),
     (
-    "Australian National Committee: Australia: Sydney", "Australian National Committee", "Sydney", "Australia", "EAPR"),
+        "Australian National Committee: Australia: Sydney", "Australian National Committee", "Sydney", "Australia",
+        "EAPR"),
     ("Azerbaijan: Baku", "N/A", "Baku", "Azerbaijan", "ECAR"),
     ("Bangladesh: Barisal", "N/A", "Barisal", "Bangladesh", "SAR"),
     ("Bangladesh: Bogra", "N/A", "Bogra", "Bangladesh", "SAR"),
@@ -415,8 +416,9 @@ mappings = [
     ("Uzbekistan: Tashkent", "N/A", "Tashkent", "Uzbekistan", "ECAR"),
     ("Venezuela (Bolivarian Republic of): Caracas", "N/A", "Caracas", "Venezuela (Bolivarian Republic of)", "LACR"),
     (
-    "Venezuela (Bolivarian Republic of): Ciudad Guayana", "N/A", "Ciudad Guayana", "Venezuela (Bolivarian Republic of)",
-    "LACR"),
+        "Venezuela (Bolivarian Republic of): Ciudad Guayana", "N/A", "Ciudad Guayana",
+        "Venezuela (Bolivarian Republic of)",
+        "LACR"),
     ("Viet Nam: Hanoi", "N/A", "Hanoi", "Viet Nam", "EAPR"),
     ("Viet Nam: Ho Chi Minh City", "N/A", "Ho Chi Minh City", "Viet Nam", "EAPR"),
     ("WCARO: Dakar", "WCARO", "Dakar", "Senegal", "WCAR"),
