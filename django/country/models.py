@@ -66,9 +66,9 @@ class Country(UserManagement, LandingPageCommon):
         (0, _('EAPR')),
         (1, _('ECAR')),
         (2, _('ESAR')),
-        (3, _('LCAR')),
+        (3, _('LACR')),
         (4, _('MENA')),
-        (5, _('ROSA')),
+        (5, _('SAR')),
         (6, _('WCAR')),
         (7, _('HQ'))
     ]
