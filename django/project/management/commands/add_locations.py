@@ -6,6 +6,7 @@ from django.core.management.base import BaseCommand
 from country.models import RegionalOffice, Country, CountryOffice
 from project.data_files.mappings import mappings, countries_not_matched, ro
 
+
 class Command(BaseCommand):
     help = 'Generates data in the DB'
 
