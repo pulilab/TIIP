@@ -10,7 +10,7 @@ from country.models import Currency
 
 class Command(BaseCommand):
     help = 'Generates test data in the DB based on it the input JSON'
-    json_path = 'project/static-json/taxonomies.json'
+    json_path = 'project/data_files/taxonomies.json'
 
     data_model_map = {
         'UNICEF Sector': UNICEFSector,
