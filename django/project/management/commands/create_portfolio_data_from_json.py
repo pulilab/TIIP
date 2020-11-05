@@ -32,7 +32,8 @@ class Command(BaseCommand, TestProjectData):
         pp.pprint('Creating users if needed')
         profiles_list = []
         for user_data in users:
-            user_db, created = User.objects.get_or_create(username=user_data['email'], email=user_data['email'])
+            user_db, created = User.objects.get_or_create(username=user_data['email'], 
+                                                          defaults={'email': user_data['email']})
             user_db.password = '1234YabbaDabba'
             user_db.save()
             userprofile_db, created = UserProfile.objects.get_or_create(user=user_db)
