@@ -95,6 +95,9 @@ class RegionalOffice(InvalidateCacheMixin, models.Model):
     def __str__(self):  # pragma: no cover
         return self.name
 
+    class Meta:
+        ordering = ('name',)
+
 
 class CountryOffice(ExtendedModel):
     name = models.CharField(max_length=256)
@@ -109,6 +112,7 @@ class CountryOffice(ExtendedModel):
     class Meta:
         verbose_name = 'UNICEF Office'
         verbose_name_plural = 'UNICEF Offices'
+        ordering = ('name',)
 
 
 class Currency(InvalidateCacheMixin, models.Model):
