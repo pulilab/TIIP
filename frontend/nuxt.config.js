@@ -34,11 +34,11 @@ const loginUrl =
 
 const config = {
   head: {
-    title: 'TIIP',
+    title: 'INVENT',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'TIIP' },
+      { hid: 'description', name: 'description', content: 'INVENT' },
     ],
     link: [
       { rel: 'icon', type: 'image/ico', href: '/favicon.ico' },
