@@ -16,7 +16,10 @@
             <fa icon="caret-down" />
           </el-button>
           <div class="CustomPopoverList">
-            <ul>
+            <p v-if="savedFilters.length > 0">
+              <translate>No Filters saved</translate>
+            </p>
+            <ul v-else>
               <li
                 v-for="filter in savedFilters"
                 :key="filter.name"
@@ -43,7 +46,12 @@
         </el-button>
       </el-col>
       <el-col :span="6">
-        <el-button type="text" class="DeleteButton" @click="handleReset">
+        <el-button
+          type="text"
+          :disabled="disabledClear"
+          :class="disabledClear ? 'MutedButton' : 'DeleteButton'"
+          @click="handleReset"
+        >
           <translate>Clear</translate>
         </el-button>
       </el-col>
@@ -53,17 +61,26 @@
 
 <script>
 import isEqual from 'lodash/isEqual'
-import { mapActions, mapGetters } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import { queryStringComparisonParser } from '@/utilities/api.js'
 
 export default {
   computed: {
+    ...mapState({
+      tabs: (state) => state.filters.tabs,
+    }),
     ...mapGetters({
-      // dashboardType: 'dashboard/getDashboardType',
       savedFilters: 'dashboard/getSavedFilters',
     }),
     activePreseet() {
       return this.savedFilters.find((f) => this.isActive(f.query))
+    },
+    disabledClear() {
+      if (this.tabs) {
+        return true
+      } else {
+        return false
+      }
     },
   },
   methods: {
@@ -71,15 +88,17 @@ export default {
       setSearchOptions: 'dashboard/setSearchOptions',
       setSaveFiltersDialogState: 'layout/setSaveFiltersDialogState',
       setSavedFilters: 'dashboard/setSavedFilters',
-      resetSearch: 'search/resetSearch',
+      resetFilters: 'filters/resetFilters',
       getSearch: 'search/getSearch',
     }),
     openSaveFilter() {
-      // this.setSaveFiltersDialogState(this.dashboardType)
+      this.setSaveFiltersDialogState(this.dashboardType)
     },
     handleReset() {
-      this.resetSearch()
-      this.getSearch()
+      this.resetFilters()
+      if (this.tabs) {
+        this.getSearch()
+      }
     },
     isActive(query) {
       const fromRoute = queryStringComparisonParser(this.$route.query)
@@ -87,7 +106,7 @@ export default {
       return isEqual(fromRoute, fromItem)
     },
     applyPreset(query) {
-      this.setSearchOptions(query)
+      // this.setSearchOptions(query)
     },
     async deleteFilter(filter) {
       try {

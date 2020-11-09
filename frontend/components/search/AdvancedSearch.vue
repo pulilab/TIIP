@@ -321,6 +321,7 @@ export default {
   },
   mounted() {
     this.setBlockSearch(false)
+    this.setValue({ key: 'tabs', val: true })
   },
   beforeDestroy() {
     this.setBlockSearch(true)
@@ -328,6 +329,7 @@ export default {
   methods: {
     ...mapMutations({
       setSearch: 'search/SET_SEARCH',
+      setValue: 'filters/SET_VALUE',
     }),
     ...mapActions({
       getSearch: 'search/getSearch',

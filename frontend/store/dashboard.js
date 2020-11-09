@@ -399,7 +399,7 @@ export const actions = {
   setDashboardSection({ commit }, value) {
     commit('SET_DASHBOARD_SECTION', value)
   },
-  resetUserInput({ commit }) {
+  resetUserInput({ state, commit, dispatch }) {
     commit('RESET_USER_INPUT')
     commit('SET_SEARCH_OPTIONS', {})
     commit('SET_SELECTED_COLUMNS', defaultSelectedColumns())
