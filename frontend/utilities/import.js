@@ -65,7 +65,7 @@ export const importTemplate = [
     'Project End Date': '01/01/2019',
     'Programme Focal Point Name': 'Nico',
     'Programme Focal Point Email': 'nico@pulilab.com',
-    Software: 'Bamboo',
+    Software: 'Bamboo|Agora|Adobe Froms',
     'Digital Health Interventions':
       '3.4.1 Notify birth event|3.4.2 Register birth event',
     'Health Focus Areas':

@@ -211,7 +211,7 @@ export default {
         const resolver = {
           organisation: () => this.findSystemValue('organisations'),
           platforms: () =>
-            this.findProjectCollectionValue('technology_platforms', false),
+            this.findProjectCollectionValue('technology_platforms', true),
           dhis: () =>
             this.findProjectCollectionValue(
               'strategies',
