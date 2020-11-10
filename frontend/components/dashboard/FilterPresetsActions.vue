@@ -9,39 +9,37 @@
           trigger="click"
         >
           <el-button slot="reference" type="text" class="IconRight">
-            <translate v-show="!activePreseet"> Load filters </translate>
-            <span v-if="activePreseet">
-              {{ activePreseet.name }}
-            </span>
+            <span v-if="currentFilter"> {{ currentFilter }} </span>
+            <translate v-else> Load filters </translate>
             <fa icon="caret-down" />
           </el-button>
           <div class="CustomPopoverList">
-            <p v-if="savedFilters.length > 0">
+            <p v-if="emptyFilters">
               <translate>No Filters saved</translate>
             </p>
             <ul v-else>
               <li
-                v-for="filter in savedFilters"
-                :key="filter.name"
-                :class="{ Active: isActive(filter.query) }"
-                @click="applyPreset(filter.query)"
+                v-for="(value, name) in filters"
+                :key="name"
+                :class="{ Active: currentFilter === name }"
+                @click="handleFilterSelect(name)"
               >
                 <fa icon="check" />
                 <el-button
                   type="text"
                   class="DeleteButton"
-                  @click.stop="deleteFilter(filter)"
+                  @click.stop="handleDelete(name)"
                 >
                   <fa icon="times" />
                 </el-button>
-                {{ filter.name }}
+                {{ name }}
               </li>
             </ul>
           </div>
         </el-popover>
       </el-col>
       <el-col :span="6">
-        <el-button type="text" disabled @click="openSaveFilter">
+        <el-button type="text" :disabled="disabledSave" @click="openSaveFilter">
           <translate>Save</translate>
         </el-button>
       </el-col>
@@ -60,39 +58,50 @@
 </template>
 
 <script>
-import isEqual from 'lodash/isEqual'
-import { mapState, mapActions, mapGetters } from 'vuex'
-import { queryStringComparisonParser } from '@/utilities/api.js'
+import isEmpty from 'lodash/isEmpty'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   computed: {
     ...mapState({
       tabs: (state) => state.filters.tabs,
+      filters: (state) => state.filters.filters,
+      currentFilter: (state) => state.filters.currentFilter,
     }),
-    ...mapGetters({
-      savedFilters: 'dashboard/getSavedFilters',
-    }),
-    activePreseet() {
-      return this.savedFilters.find((f) => this.isActive(f.query))
+    emptyFilters() {
+      return isEmpty(this.filters)
+    },
+    disabledSave() {
+      if (this.tabs) {
+        return false
+      } else {
+        return false
+      }
     },
     disabledClear() {
       if (this.tabs) {
-        return true
+        return false
       } else {
         return false
       }
     },
   },
+  mounted() {
+    this.setCurrentFilter()
+    this.getFilters()
+  },
   methods: {
     ...mapActions({
-      setSearchOptions: 'dashboard/setSearchOptions',
       setSaveFiltersDialogState: 'layout/setSaveFiltersDialogState',
-      setSavedFilters: 'dashboard/setSavedFilters',
+      getFilters: 'filters/getFilters',
+      setCurrentFilter: 'filters/setCurrentFilter',
+      setFilters: 'filters/setFilters',
       resetFilters: 'filters/resetFilters',
+      deleteFilter: 'filters/deleteFilter',
       getSearch: 'search/getSearch',
     }),
     openSaveFilter() {
-      this.setSaveFiltersDialogState(this.dashboardType)
+      this.setSaveFiltersDialogState(true)
     },
     handleReset() {
       this.resetFilters()
@@ -100,15 +109,10 @@ export default {
         this.getSearch()
       }
     },
-    isActive(query) {
-      const fromRoute = queryStringComparisonParser(this.$route.query)
-      const fromItem = queryStringComparisonParser(query)
-      return isEqual(fromRoute, fromItem)
+    handleFilterSelect(name) {
+      this.setFilters(name)
     },
-    applyPreset(query) {
-      // this.setSearchOptions(query)
-    },
-    async deleteFilter(filter) {
+    async handleDelete(name) {
       try {
         await this.$confirm(
           this.$gettext(
@@ -121,10 +125,7 @@ export default {
             type: 'warning',
           }
         )
-        const filtered = this.savedFilters.filter(
-          (f) => !(f.name === filter.name && f.category === filter.category)
-        )
-        this.setSavedFilters(filtered)
+        await this.deleteFilter(name)
       } catch (e) {
         this.$message(this.$gettext('Operation successfully aborted'))
       }

@@ -429,6 +429,7 @@ export const mutations = {
     state.pageSize = options.page_size ? +options.page_size : 10
     state.page = options.page ? +options.page : 1
     state.sorting = options.ordering ? options.ordering : null
+    console.log(state.searchString)
     state.searchString = options.q ? options.q : ''
     state.searchIn = options.in ? options.in : searchIn()
     state.filteredCountries = intArrayFromQs(options.country)
