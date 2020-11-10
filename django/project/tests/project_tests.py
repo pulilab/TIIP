@@ -908,11 +908,11 @@ class ProjectTests(SetupTests):
         url = reverse("project-publish",
                       kwargs={"project_id": self.project_id, "country_office_id": self.country_office.id})
         data = copy.deepcopy(self.project_data)
-        long_link = f"https://longurl.com/fist-phase-is-short/second-phase-followed-by-a-short-prose/" \
-                    f"in-order-to-test-if-we-can-indeed-handle-long-links-which-should-be/" \
-                    f"way-over-200-characters-long/because-this-would-be-a-serious-limitation-were-it-not-the-case" \
-                    f"/but-we-can-handle-this-very-long-url-quite-easily/and-indeed-we-should-we-cannot-stress" \
-                    f"-the-outmost-importance-of-this-issue-at-hand"
+        long_link = "https://longurl.com/fist-phase-is-short/second-phase-followed-by-a-short-prose/" \
+                    "in-order-to-test-if-we-can-indeed-handle-long-links-which-should-be/" \
+                    "way-over-200-characters-long/because-this-would-be-a-serious-limitation-were-it-not-the-case" \
+                    "/but-we-can-handle-this-very-long-url-quite-easily/and-indeed-we-should-we-cannot-stress" \
+                    "-the-outmost-importance-of-this-issue-at-hand"
         new_links = [dict(link_type=0, link_url=long_link),
                      dict(link_type=1, link_url="https://NEWsharepoint.directory")]
         data['project']['links'] = new_links
