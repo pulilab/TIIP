@@ -22,7 +22,7 @@
 
         <template v-if="apiNameInvenMapping[dialogData.column]">
           <single-select
-            v-if="['phase'].includes(dialogData.column)"
+            v-if="['phase', 'currency'].includes(dialogData.column)"
             v-model="dialogData.value[0]"
             :source="`projects/${apiNameInvenMapping[dialogData.column]}`"
           />
@@ -82,6 +82,14 @@
 
         <template v-if="dialogData.column === 'partners'">
           <partner-data :value.sync="dialogData.value" />
+        </template>
+
+        <template v-if="dialogData.column === 'links'">
+          <links-data :value.sync="dialogData.value" />
+        </template>
+
+        <template v-if="dialogData.column === 'wbs'">
+          <wbs-data :value.sync="dialogData.value" />
         </template>
 
         <div v-if="dialogData.column === 'custom_field'" ref="custom_fields">
@@ -169,6 +177,8 @@ import GoalAreasSelector from '@/components/common/GoalAreasSelector'
 import ResultAreasSelector from '@/components/common/ResultAreasSelector'
 import CapabilitySelector from '@/components/project/CapabilitySelector'
 import PartnerData from '@/components/admin/import/PartnerData'
+import LinksData from '@/components/admin/import/LinksData'
+import WbsData from '@/components/admin/import/WbsData'
 import { apiNameInvenMapping } from '@/utilities/import'
 import { mapGetters } from 'vuex'
 
@@ -184,6 +194,8 @@ export default {
     MultiSelector,
     SingleSelect,
     PartnerData,
+    LinksData,
+    WbsData,
   },
   props: {
     customFieldsLib: {

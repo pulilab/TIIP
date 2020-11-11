@@ -30,7 +30,20 @@
         <template v-else-if="isDate || isTextArea">
           {{ internalValue }}
         </template>
-
+        <template v-else-if="isLinks">
+          <div
+            v-for="(parsed, i) in parsedValue.ids"
+            :key="`${parsed.link_type}_${i}`"
+          >
+            <ul>
+              <li>
+                {{ getLinkHeader(parsed.link_type) }}
+              </li>
+              <li>{{ parsed.link_url }}</li>
+            </ul>
+            <div>-----------------------------</div>
+          </div>
+        </template>
         <template v-else-if="isPartner">
           <div v-for="parsed in parsedValue.ids" :key="parsed.partner_name">
             <ul>
@@ -86,6 +99,7 @@ import { mapState } from 'vuex'
 import chunk from 'lodash/chunk'
 import find from 'lodash/find'
 import compact from 'lodash/compact'
+import pickBy from 'lodash/pickBy'
 
 export default {
   components: {
@@ -177,6 +191,9 @@ export default {
     isPartner() {
       return this.column === 'partners'
     },
+    isLinks() {
+      return this.column === 'links'
+    },
     isDate() {
       return ['start_date', 'end_date', 'implementation_dates'].includes(
         this.column
@@ -195,6 +212,16 @@ export default {
         'health_workers',
         'clients',
         'facilities',
+        'overview',
+        'program_targets',
+        'program_targets_achieved',
+        'current_achievements',
+        'awp',
+        'total_budget_narrative',
+        'funding_needs',
+        'partnership_needs',
+        'total_budget',
+        'target_group_reached',
       ].includes(this.column)
     },
     isForced() {
@@ -211,28 +238,6 @@ export default {
       if (!this.column) {
         return result
       } else {
-        const listParser = (valueLength, source) => {
-          return () => {
-            const indexList = []
-            const valueList = chunk(
-              this.stringToArray(this.value),
-              valueLength
-            ).map((list) => {
-              const type = find(
-                this.systemDicts[source],
-                (type) => type.name.substr(0, 3) === list[0].substr(0, 3)
-              )
-              if (type) {
-                indexList.push(type.id)
-              }
-              return list.join(', ')
-            })
-            return {
-              names: valueList,
-              ids: indexList.length === valueList.length ? indexList : [],
-            }
-          }
-        }
         const resolver = {
           organisation: () => this.findSystemValue('organisations'),
           platforms: () =>
@@ -270,7 +275,7 @@ export default {
           total_budget: () => this.parseNumber(),
           target_group_reached: () => this.parseNumber(),
           wbs: () => this.stringArray(),
-          links: listParser(2, 'link_types'),
+          links: () => this.parseLinks(),
           partners: () => this.parsePartners(),
           unicef_sector: () => this.findProjectCollectionValue('sectors', true),
           functions: () => this.findProjectCollectionValue('functions', true),
@@ -351,6 +356,37 @@ export default {
         })
       }
     },
+    getLinkHeader(link_type) {
+      const type = find(this.systemDicts.link_types, (t) => t.id === link_type)
+      return type ? `${type.name} URL` : link_type
+    },
+    parseLinks() {
+      const names = []
+      let ids =
+        typeof this.value !== 'string'
+          ? this.value
+          : compact(
+              chunk(this.stringToArray(this.value), 2).map((list) => {
+                const type = find(
+                  this.systemDicts.link_types,
+                  (type) => type.name.substr(0, 3) === list[0].substr(0, 3)
+                )
+                if (type) {
+                  names.push(list[1])
+                } else {
+                  return
+                }
+                return {
+                  link_type: type.id,
+                  link_url: list[1],
+                }
+              })
+            )
+      ids = ids.filter((value) => {
+        return value.link_url
+      })
+      return { ids, names }
+    },
     parsePartners() {
       const names = []
       const ids =
@@ -368,7 +404,7 @@ export default {
                   return
                 }
                 return {
-                  partner_type: type && type.id,
+                  partner_type: type.id,
                   partner_name: list[1],
                   partner_contact: list[2],
                   partner_email: list[3],
@@ -376,6 +412,9 @@ export default {
                 }
               })
             )
+      ids.forEach(function (value, key) {
+        ids[key] = pickBy(value, (val) => val || val === 0)
+      })
       return { ids, names }
     },
     parseDate() {
@@ -485,20 +524,6 @@ export default {
         'goal_area',
         'result_area',
       ]
-      if (
-        this.column === 'links' &&
-        this.parsedValue.ids &&
-        this.parsedValue.ids.length
-      ) {
-        const { names } = this.parsedValue
-        return this.parsedValue.ids.map(function (id, index) {
-          const data = names[index].split(', ')
-          return {
-            link_type: id,
-            link_url: data[1],
-          }
-        })
-      }
       const idsOrNames = isIds.includes(this.column)
         ? this.parsedValue.ids
         : this.parsedValue.names
