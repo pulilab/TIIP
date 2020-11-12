@@ -195,7 +195,7 @@
           </simple-field>
           <simple-field :header="$gettext('Total Budget') | translate">
             {{ project.total_budget }}
-            <list-element :value="++project.currency" source="getCurrencies" />
+            <list-element :value="project.currency" source="getCurrencies" />
           </simple-field>
           <simple-field
             :content="project.total_budget_narrative"
@@ -234,7 +234,7 @@
           </el-row>
 
           <simple-field :header="$gettext('Phase of Initiative') | translate">
-            <list-element :value="++project.phase" source="getPhases" />
+            <list-element :value="project.phase" source="getPhases" />
           </simple-field>
 
           <el-row>
