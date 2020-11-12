@@ -110,7 +110,13 @@
             </simple-field>
           </template>
 
-          <template v-else-if="goalArea && goalArea.id">
+          <template
+            v-else-if="
+              goalArea &&
+              goalArea.id &&
+              goalArea.capability_level_question !== 'MISSING'
+            "
+          >
             <simple-field :header="goalArea.capability_level_question">
               <CapabilitiesList
                 :value="project.capability_levels"
