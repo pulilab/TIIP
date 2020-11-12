@@ -11,14 +11,21 @@
         :publish-rule="publishRules.name"
       >
         <template slot="label">
-          <translate key="project-name"> Initiative Name </translate>
-          <form-hint>
-            <translate key="project-name-hint">
-              If this is your first time uploading a project, a sample data form
-              can be found here for reference.
-            </translate>
-          </form-hint>
+          <span class="pull-right">
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="Suggested format for the initiative name: Prefix (RO or CO) -
+              (Sector or Function) - Name of Initiative (Identifier). Example: PHL - T4D -
+              Knowledge, Innovation and Data System (KIDS)"
+              placement="right"
+            >
+              <i class="el-icon-warning warning" />
+            </el-tooltip>
+          </span>
+          <translate key="project-name"> Initiative Name</translate>
         </template>
+
         <character-count-input
           v-model="name"
           v-validate="rules.name"
@@ -26,6 +33,21 @@
           data-as-name="Name"
           data-vv-name="name"
         />
+        <span class="Hint">
+          <fa icon="info-circle" />
+          <p>
+            <translate>
+              An easy to understand name for your initiative. We recommend using
+              descriptive names that describe what your initiative does. Please
+              avoid acronyms, clever names/puns as well as the name of a
+              specific technology or platform (e.g. RapidPro) as those can make
+              it hard to search for an initiative. For large, potentially public
+              initiatives, please do a quick search on the web for your
+              initiative's name to make sure that name isn't already being used,
+              as it can cause confusion.
+            </translate>
+          </p>
+        </span>
       </custom-required-form-item>
 
       <custom-required-form-item
@@ -122,11 +144,6 @@
       >
         <template slot="label">
           <translate key="implementation-overview"> Description </translate>
-          <form-hint>
-            <translate key="implementation-overview-hint">
-              Describe your overall digital health project design.
-            </translate>
-          </form-hint>
         </template>
 
         <character-count-input
@@ -157,12 +174,6 @@
           >
             <template slot="label">
               <translate key="contact-name">Contact Name</translate>
-              <form-hint>
-                <translate key="contact-name-hint">
-                  This is the individual who will be the lead point of contact
-                  for any queries through the DHA.
-                </translate>
-              </form-hint>
             </template>
 
             <character-count-input
@@ -204,11 +215,6 @@
         >
           <template slot="label">
             <translate key="team"> Add team members (editors) </translate>
-            <form-hint>
-              <translate key="team-hint">
-                Editors can edit and publish initiatives
-              </translate>
-            </form-hint>
           </template>
 
           <team-selector
@@ -233,11 +239,6 @@
         >
           <template slot="label">
             <translate key="viewers"> Add team members (viewers) </translate>
-            <form-hint>
-              <translate key="viewers-hint">
-                Viewers can view initiative drafts
-              </translate>
-            </form-hint>
           </template>
 
           <team-selector
