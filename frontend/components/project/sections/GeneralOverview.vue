@@ -11,7 +11,9 @@
         :publish-rule="publishRules.name"
       >
         <template slot="label">
-          <translate key="project-name"> Initiative Name</translate>
+          <translate key="project-name">
+            What is the name of the initiative?
+          </translate>
         </template>
         <template slot="tooltip">
           <el-tooltip
@@ -59,7 +61,19 @@
         :publish-rule="publishRules.country_office"
       >
         <template slot="label">
-          <translate key="country_office"> Unicef Office </translate>
+          <translate key="country_office">
+            Which UNICEF Office supports the initiative?
+          </translate>
+        </template>
+        <template slot="tooltip">
+          <el-tooltip
+            class="item"
+            content="If you encounter an error and/or can not locate the UNICEF Office
+            you would like to see in this list, please send a request with details to invent@unicef.org"
+            placement="right"
+          >
+            <i class="el-icon-warning warning" />
+          </el-tooltip>
         </template>
         <country-office-select
           v-model="country_office"
@@ -67,6 +81,15 @@
           data-vv-name="country_office"
           data-vv-as="country_office"
         />
+        <span class="Hint">
+          <fa icon="info-circle" />
+          <p>
+            <translate>
+              The name of the country or field office location. Start typing the
+              name of the UNICEF country office to show all the field locations.
+            </translate>
+          </p>
+        </span>
       </custom-required-form-item>
 
       <custom-required-form-item>
@@ -108,11 +131,18 @@
           <translate key="overview">
             Please provide a brief overview of the initiative.
           </translate>
-          <form-hint>
-            <translate key="overview-hint"> - </translate>
-          </form-hint>
         </template>
-
+        <template slot="tooltip">
+          <el-tooltip
+            class="item"
+            content="Suggested format for the brief overview is to include the
+            What, How, Who and Where. Example: Text-based behaviour change
+            communication messages on maternal health for midwives in rural Philippines."
+            placement="right"
+          >
+            <i class="el-icon-warning warning" />
+          </el-tooltip>
+        </template>
         <character-count-input
           v-model="overview"
           v-validate="rules.overview"
@@ -125,12 +155,11 @@
           <fa icon="info-circle" />
           <p>
             <translate
-              >The short description provides a clear understanding of the
+              >This short description provides a clear understanding of the
               purpose and target group to a reader who does not know anything
-              about the initiative. It should include the technology or
-              innovation, programme function and target beneficiary. eg.
-              Text-based behaviour change communication messages on maternal
-              health for midwives.
+              about the initiative. It should be 10-15 words or less and include
+              the technology or innovation, programme function and target
+              beneficiary.
             </translate>
           </p>
         </span>
@@ -142,7 +171,9 @@
         :publish-rule="publishRules.implementation_overview"
       >
         <template slot="label">
-          <translate key="implementation-overview"> Description </translate>
+          <translate key="implementation-overview">
+            Please provide a detailed narrative of the initiative.
+          </translate>
         </template>
 
         <character-count-input
@@ -156,11 +187,11 @@
         <span class="Hint">
           <fa icon="info-circle" />
           <p>
-            <translate
-              >Describe what the technology aims to achieve, detailing the
-              users, the reasons for deploying the system, and current and
-              future phases of deployment.</translate
-            >
+            <translate>
+              What the initiative aims to achieve, detailing the purpose,
+              summarizing the approach, solution and intended impact, and
+              specifying current and planned activities during deployment.
+            </translate>
           </p>
         </span>
       </custom-required-form-item>
@@ -172,7 +203,9 @@
             :publish-rule="publishRules.contact_name"
           >
             <template slot="label">
-              <translate key="contact-name">Contact Name</translate>
+              <translate key="contact-name">
+                Who is the focal point of contact for this initiative?
+              </translate>
             </template>
 
             <character-count-input
@@ -191,7 +224,7 @@
             :publish-rule="publishRules.contact_email"
           >
             <template slot="label">
-              <translate key="contact-email">Contact Email</translate>
+              <translate key="contact-email"> Focal Point Email </translate>
             </template>
 
             <character-count-input
@@ -213,7 +246,9 @@
           :publish-rule="publishRules.team"
         >
           <template slot="label">
-            <translate key="team"> Add team members (editors) </translate>
+            <translate key="team">
+              Who else should be able to modify this initiative's entry?
+            </translate>
           </template>
 
           <team-selector
@@ -226,7 +261,10 @@
           <span class="Hint">
             <fa icon="info-circle" />
             <p>
-              <translate>Editors can edit and publish initiatives</translate>
+              <translate>
+                These team members can modify entries on "+ New Initiative"
+                page.
+              </translate>
             </p>
           </span>
         </custom-required-form-team-item>
@@ -237,7 +275,10 @@
           :publish-rule="publishRules.viewers"
         >
           <template slot="label">
-            <translate key="viewers"> Add team members (viewers) </translate>
+            <translate key="viewers">
+              Who should receive updates that this initiative has been added or
+              modified?
+            </translate>
           </template>
 
           <team-selector
@@ -250,7 +291,10 @@
           <span class="Hint">
             <fa icon="info-circle" />
             <p>
-              <translate>Viewers can view initiative drafts</translate>
+              <translate>
+                These team members will receive a notification when an
+                initiative has been added.
+              </translate>
             </p>
           </span>
         </custom-required-form-team-item>
