@@ -87,7 +87,7 @@ export default {
     border-radius: 50%;
     > span {
       position: relative;
-      top: 4px;
+      top: 3px;
     }
   }
   .DraftRequired {

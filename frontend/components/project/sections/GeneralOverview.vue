@@ -11,19 +11,18 @@
         :publish-rule="publishRules.name"
       >
         <template slot="label">
-          <span class="pull-right">
-            <el-tooltip
-              class="item"
-              effect="dark"
-              content="Suggested format for the initiative name: Prefix (RO or CO) -
+          <translate key="project-name"> Initiative Name</translate>
+        </template>
+        <template slot="tooltip">
+          <el-tooltip
+            class="item"
+            content="Suggested format for the initiative name: Prefix (RO or CO) -
               (Sector or Function) - Name of Initiative (Identifier). Example: PHL - T4D -
               Knowledge, Innovation and Data System (KIDS)"
-              placement="right"
-            >
-              <i class="el-icon-warning warning" />
-            </el-tooltip>
-          </span>
-          <translate key="project-name"> Initiative Name</translate>
+            placement="right"
+          >
+            <i class="el-icon-warning warning" />
+          </el-tooltip>
         </template>
 
         <character-count-input
