@@ -30,13 +30,6 @@
             </el-form-item>
 
             <el-form-item
-              :label="$gettext('Organisation name') | translate"
-              prop="organisation"
-            >
-              <organisation-select v-model="innerProfile.organisation" />
-            </el-form-item>
-
-            <el-form-item
               :label="$gettext('Country') | translate"
               prop="country"
             >
@@ -95,19 +88,13 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import FormAPIErrorsMixin from './mixins/FormAPIErrorsMixin'
-import OrganisationSelect from './common/OrganisationSelect'
 import LanguageSelect from './common/LanguageSelect'
 import CountrySelect from './common/CountrySelect'
-// import DonorSelect from './common/DonorSelect'
-import UserPrivileges from './UserPrivileges'
 
 export default {
   components: {
-    OrganisationSelect,
     LanguageSelect,
     CountrySelect,
-    // DonorSelect,
-    UserPrivileges,
   },
   mixins: [FormAPIErrorsMixin],
   data() {
@@ -120,7 +107,7 @@ export default {
         donor: null,
       },
       isCountryUser: false,
-      isDonorUser: false,
+      isDonorUser: true,
       changeApprovedUserRole: false,
       donorFilters: ['unicef'],
     }
@@ -132,8 +119,8 @@ export default {
     ...mapGetters({
       profile: 'user/getProfile',
       user: 'user/getUser',
-      donors: 'system/getDonors',
       unicefOrganisation: 'system/getUnicefOrganisation',
+      unicefDonor: 'system/getUnicefDonor',
     }),
 
     userTypeRequested() {
@@ -160,14 +147,6 @@ export default {
           },
           { validator: this.validatorGenerator('name') },
         ],
-        organisation: [
-          {
-            required: true,
-            message: this.$gettext('This field is required'),
-            trigger: 'change',
-          },
-          { validator: this.validatorGenerator('organisation') },
-        ],
         language: [
           {
             required: true,
@@ -184,53 +163,21 @@ export default {
           },
           { validator: this.validatorGenerator('country') },
         ],
-        donor: [
-          {
-            required: this.isDonorRequired,
-            message: this.$gettext('This field is required'),
-            trigger: 'change',
-          },
-          { validator: this.validatorGenerator('donor') },
-        ],
       }
     },
   },
 
   watch: {
-    isCountryUser(newVal, oldVal) {
-      if (newVal && !oldVal) {
-        this.isDonorUser = false
-        if (!['G', 'CA', 'SCA'].includes(this.innerProfile.account_type)) {
-          this.innerProfile.account_type = 'G'
-        }
-      } else if (!newVal && !this.isDonorUser) {
-        this.innerProfile.account_type = 'I'
-      }
-    },
-    isDonorUser(newVal, oldVal) {
-      if (newVal && !oldVal) {
-        this.isCountryUser = false
-        if (!['D', 'DA', 'SDA'].includes(this.innerProfile.account_type)) {
-          this.innerProfile.account_type = 'D'
-        }
-      } else if (!newVal && !this.isCountryUser) {
-        this.innerProfile.account_type = 'I'
-      }
-    },
     profile: {
       immediate: true,
       handler(profile) {
         this.innerProfile = {
           ...profile,
           organisation: this.unicefOrganisation.id,
+          donor: this.unicefDonor.id,
         }
       },
     },
-  },
-
-  mounted() {
-    this.isCountryUser = ['G', 'CA', 'SCA'].includes(this.profile.account_type)
-    this.isDonorUser = ['D', 'DA', 'SDA'].includes(this.profile.account_type)
   },
 
   methods: {
