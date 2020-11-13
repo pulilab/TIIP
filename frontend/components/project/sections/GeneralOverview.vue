@@ -319,7 +319,6 @@ import ProjectFieldsetMixin from '../../mixins/ProjectFieldsetMixin.js'
 import CollapsibleCard from '../CollapsibleCard'
 import TeamSelector from '../TeamSelector'
 import CountryOfficeSelect from '../../common/CountryOfficeSelect'
-import FormHint from '../FormHint'
 import { mapGettersActions } from '../../../utilities/form'
 
 export default {
@@ -327,7 +326,6 @@ export default {
     CollapsibleCard,
     CountryOfficeSelect,
     TeamSelector,
-    FormHint,
     CustomRequiredFormTeamItem,
   },
   mixins: [VeeValidationMixin, ProjectFieldsetMixin],
