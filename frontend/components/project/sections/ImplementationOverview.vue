@@ -426,6 +426,41 @@
             </translate>
           </p>
         </span>
+        <span v-else-if="index === 1" class="Hint">
+          <fa icon="info-circle" />
+          <p>
+            <translate>
+              Provide the link(s) to the Sharepoint or other repository holding
+              all the relevant documentation for the initiative.
+            </translate>
+          </p>
+        </span>
+        <span v-else-if="index === 2" class="Hint">
+          <fa icon="info-circle" />
+          <p>
+            <translate>
+              Provide link(s) to any advocacy and marketing stories celebrating
+              the initiative.
+            </translate>
+          </p>
+        </span>
+        <span v-else-if="index === 3" class="Hint">
+          <fa icon="info-circle" />
+          <p>
+            <translate>
+              Provide link(s) to any research and or reports detailing
+              monitoring, evaluation or learning associated with the initiative.
+            </translate>
+          </p>
+        </span>
+        <span v-else class="Hint">
+          <fa icon="info-circle" />
+          <p>
+            <translate>
+              Provide any other link(s) associated with the initiative.
+            </translate>
+          </p>
+        </span>
       </custom-required-form-item>
     </collapsible-card>
   </div>
