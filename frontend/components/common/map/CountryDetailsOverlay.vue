@@ -201,6 +201,7 @@ export default {
       })
     },
     markerClickHandler(id) {
+      console.log('momento de activar el pais')
       this.$emit('update:activeCountry', this.selectedCountry)
       this.$emit('update:activeSubLevel', id)
     },
