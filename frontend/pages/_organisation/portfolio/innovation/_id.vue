@@ -268,7 +268,7 @@ export default {
       this.$refs.riskMatrix.clear()
       this.$router.push(
         this.localePath({
-          name: 'organisation-portfolio-innovation-id',
+          name: 'organisation-innovation-id',
           params: { organisation: '-', id },
         })
       )

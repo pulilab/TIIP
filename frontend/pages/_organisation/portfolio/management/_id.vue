@@ -3,9 +3,7 @@
     <div class="content-area">
       <tabs :tabs="tabs" :tab="tab" @handleTab="setTab">
         <template slot="title">
-          <nuxt-link
-            :to="localePath({ name: 'organisation-portfolio-management' })"
-          >
+          <nuxt-link :to="localePath({ name: 'organisation-management' })">
             <fa icon="angle-left" size="sm" />
             <translate>Back</translate>
           </nuxt-link>

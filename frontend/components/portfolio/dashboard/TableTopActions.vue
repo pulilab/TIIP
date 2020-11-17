@@ -289,7 +289,7 @@ export default {
       const colFilter = (hide = ['20', '30']) =>
         filter(columns, (c) => !hide.includes(c.id))
       const columns = [...this.columns.map((s) => ({ ...s }))]
-      if (this.$route.name.includes('organisation-portfolio-management-id')) {
+      if (this.$route.name.includes('organisation-management-id')) {
         switch (this.portfolioPage) {
           case 'review':
             this.selectedColumns = columns

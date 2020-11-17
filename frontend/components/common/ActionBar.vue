@@ -168,10 +168,10 @@ export default {
       return this.$route.name.includes('organisation___')
     },
     isPortfolioEdit() {
-      return this.$route.name.includes('organisation-portfolio-management-id')
+      return this.$route.name.includes('organisation-management-id')
     },
     isPortfolioDetails() {
-      return this.$route.name.includes('organisation-portfolio-innovation-id')
+      return this.$route.name.includes('organisation-innovation-id')
     },
     isMapSubRoute() {
       return this.$route.name.includes('organisation-inventory___')
@@ -209,7 +209,8 @@ export default {
   }
 
   .ActionBarTabs {
-    width: 100%;
+    width: auto;
+    margin-right: auto;
     height: @actionBarHeight;
     overflow: hidden;
 

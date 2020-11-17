@@ -418,7 +418,7 @@ export default {
         : 'sizes, prev, slot, next'
     },
     scoringDisplay() {
-      if (this.$route.name.includes('organisation-portfolio-management-id')) {
+      if (this.$route.name.includes('organisation-management-id')) {
         return (
           this.selectedColumns.includes('30') &&
           (this.tab === 2 || this.tab === 3)
