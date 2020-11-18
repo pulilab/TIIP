@@ -3,7 +3,7 @@ export default function ({ app, store, route, redirect }) {
   const routeName = route.name.split('___')[0]
   const routeObserver = [
     'organisation-management',
-    'organisation-management-edit-id',
+    'organisation-management-id-edit',
     'organisation-management-new',
     'organisation-management-id',
   ]

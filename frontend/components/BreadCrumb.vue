@@ -37,17 +37,28 @@ export default {
       // sub sections for inventory
       'organisation-inventory-list': this.$gettext('Inventory'),
       // sub sections for innovation
-
       // sub sections for managers
       'organisation-management-new': this.$gettext('New portfolio'),
-      // this one does not exist
-      'organisation-management-edit': this.$gettext('Edit portfolio'),
+      'organisation-management-id-edit': this.$gettext('Edit portfolio'),
       // sub sections for initiatives
       'organisation-initiatives-create': this.$gettext('New Initiative'),
       'organisation-initiatives-id-published': this.$gettext(
         'Published Initiative'
       ),
       'organisation-initiatives-id-edit': this.$gettext('Edit Initiative'),
+      // route exclutions
+      exclude: [
+        'organisation-inventory-list',
+        'organisation-inventory',
+        'organisation-edit-profile',
+        'organisation-admin',
+        'organisation-admin-country',
+        'organisation-admin-donor',
+        'organisation-admin-import',
+        'organisation-admin-import-id',
+        'organisation-email-confirmation',
+        'organisation-cms',
+      ],
     }
   },
   computed: {
@@ -65,32 +76,11 @@ export default {
       return null
     },
     breadcrumbs() {
-      const home = [
-        {
-          id: 'organisation',
-          localePath: { name: 'organisation' },
-          text: this.$gettext('Organisation'),
-        },
-      ]
-
-      if (this.pureRoute.includes('import')) {
-        return [...home]
-      }
-      if (
-        this.pureRoute.includes('admin') ||
-        this.pureRoute.includes('profile')
-      ) {
-        return [
-          ...home,
-          {
-            id: 'admin',
-            localePath: { name: 'admin' },
-            text: this.$gettext('Admin'),
-          },
-        ]
-      }
       let name = ''
-      return split(this.pureRoute, '-').map((item, idx) => {
+      const route = this.exclude.includes(this.pureRoute)
+        ? 'organisation'
+        : this.pureRoute
+      return split(route, '-').map((item, idx) => {
         name = name !== '' ? join([name, item], '-') : item
         return {
           id: item,
@@ -107,7 +97,6 @@ export default {
           return this.initiative.name
         case 'organisation-innovation-id':
           return this.portfolioInnovationName
-        case 'organisation-management-edit-id':
         case 'organisation-management-id':
           return this.portfolioManagementName
         default:

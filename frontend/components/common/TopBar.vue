@@ -53,7 +53,9 @@
               <div>
                 <nuxt-link
                   key="portfolioBtn"
-                  :to="localePath({ name: 'organisation-innovation' })"
+                  :to="
+                    localePath({ name: 'organisation-portfolio-innovation' })
+                  "
                   class="HeaderBtn"
                 >
                   <translate>Innovation Portfolios</translate>
@@ -62,7 +64,9 @@
               <div v-if="displayManager">
                 <nuxt-link
                   key="managerBtn"
-                  :to="localePath({ name: 'organisation-management' })"
+                  :to="
+                    localePath({ name: 'organisation-portfolio-management' })
+                  "
                   class="HeaderBtn"
                 >
                   <translate>Portfolio Manager</translate>
