@@ -168,10 +168,12 @@ export default {
       return this.$route.name.includes('organisation___')
     },
     isPortfolioEdit() {
-      return this.$route.name.includes('organisation-management-id')
+      return this.$route.name.includes(
+        'organisation-portfolio-management-edit-id'
+      )
     },
     isPortfolioDetails() {
-      return this.$route.name.includes('organisation-innovation-id')
+      return this.$route.name.includes('organisation-portfolio-innovation-id')
     },
     isMapSubRoute() {
       return this.$route.name.includes('organisation-inventory___')

@@ -28,7 +28,7 @@
           <nuxt-link
             :to="
               localePath({
-                name: 'organisation-management-id',
+                name: 'organisation-portfolio-management-id',
                 params: { id: item.id },
               })
             "
@@ -38,7 +38,7 @@
           <nuxt-link
             :to="
               localePath({
-                name: 'organisation-management-id-edit',
+                name: 'organisation-portfolio-management-id-edit',
                 params: { id: item.id },
               })
             "

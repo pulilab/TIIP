@@ -19,6 +19,7 @@
 <script>
 import split from 'lodash/split'
 import join from 'lodash/join'
+import each from 'lodash/each'
 
 import { mapState, mapGetters } from 'vuex'
 
@@ -29,18 +30,15 @@ export default {
       'organisation-login': this.$gettext('Login'),
       'organisation-signup': this.$gettext('Signup'),
       'organisation-reset-key': this.$gettext('Reset'),
-      // main sections
-      'organisation-inventory': this.$gettext('Inventory'),
-      'organisation-innovation': this.$gettext('Innovation Portfolio'),
-      'organisation-management': this.$gettext('Portfolio Manager'),
+      'organisation-portfolio-innovation': this.$gettext(
+        'Innovation Portfolio'
+      ),
+      'organisation-portfolio-management': this.$gettext('Portfolio Manager'),
       'organisation-initiatives': this.$gettext('My initiatives'),
-      // sub sections for inventory
-      'organisation-inventory-list': this.$gettext('Inventory'),
-      // sub sections for innovation
-      // sub sections for managers
-      'organisation-management-new': this.$gettext('New portfolio'),
-      'organisation-management-id-edit': this.$gettext('Edit portfolio'),
-      // sub sections for initiatives
+      'organisation-portfolio-management-new': this.$gettext('New portfolio'),
+      'organisation-portfolio-management-id-edit': this.$gettext(
+        'Edit portfolio'
+      ),
       'organisation-initiatives-create': this.$gettext('New Initiative'),
       'organisation-initiatives-id-published': this.$gettext(
         'Published Initiative'
@@ -77,17 +75,24 @@ export default {
     },
     breadcrumbs() {
       let name = ''
+      let breadcrumbs = []
       const route = this.exclude.includes(this.pureRoute)
         ? 'organisation'
         : this.pureRoute
-      return split(route, '-').map((item, idx) => {
+      split(route, '-').forEach((item) => {
         name = name !== '' ? join([name, item], '-') : item
-        return {
-          id: item,
-          localePath: { name },
-          text: this[name] || '',
+        if (name !== 'organisation-portfolio') {
+          breadcrumbs = [
+            ...breadcrumbs,
+            {
+              id: item,
+              localePath: { name },
+              text: this[name] || '',
+            },
+          ]
         }
       })
+      return breadcrumbs
     },
   },
   methods: {
@@ -95,9 +100,9 @@ export default {
       switch (route) {
         case 'organisation-initiatives-id':
           return this.initiative.name
-        case 'organisation-innovation-id':
+        case 'organisation-portfolio-innovation-id':
           return this.portfolioInnovationName
-        case 'organisation-management-id':
+        case 'organisation-portfolio-management-id':
           return this.portfolioManagementName
         default:
           return ''

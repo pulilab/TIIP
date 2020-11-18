@@ -1,7 +1,9 @@
 <template>
   <div class="portfolio">
     <div class="title">
-      <nuxt-link :to="localePath({ name: 'organisation-management' })">
+      <nuxt-link
+        :to="localePath({ name: 'organisation-portfolio-management' })"
+      >
         <fa icon="angle-left" size="sm" />
         <translate>Back</translate>
       </nuxt-link>

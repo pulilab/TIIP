@@ -40,7 +40,7 @@
           <nuxt-link
             :to="
               localePath({
-                name: 'organisation-innovation-id',
+                name: 'organisation-portfolio-innovation-id',
                 params: { organisation: '-', id: portfolio.id },
               })
             "

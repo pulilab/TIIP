@@ -2,10 +2,10 @@ export default function ({ app, store, route, redirect }) {
   const user = store.state.user.profile
   const routeName = route.name.split('___')[0]
   const routeObserver = [
-    'organisation-management',
-    'organisation-management-id-edit',
-    'organisation-management-new',
-    'organisation-management-id',
+    'organisation-portfolio-management',
+    'organisation-portfolio-managementmanagement-id-edit',
+    'organisation-portfolio-managementmanagement-new',
+    'organisation-portfolio-managementmanagement-id',
   ]
   const permissions =
     (user && user.is_superuser) ||
@@ -14,7 +14,7 @@ export default function ({ app, store, route, redirect }) {
   if (routeObserver.includes(routeName)) {
     if (permissions) {
       if (
-        routeName === 'organisation-management-new' &&
+        routeName === 'organisation-portfolio-managementmanagement-new' &&
         !user.global_portfolio_owner
       ) {
         redirect(

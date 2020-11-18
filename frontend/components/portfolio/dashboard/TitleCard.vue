@@ -32,7 +32,7 @@ export default {
   methods: {
     handleLink() {
       this.$router.push(
-        this.localePath({ name: 'organisation-management-new' })
+        this.localePath({ name: 'organisation-portfolio-management-new' })
       )
     },
   },
