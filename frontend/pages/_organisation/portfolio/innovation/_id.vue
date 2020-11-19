@@ -218,19 +218,13 @@ export default {
   async fetch({ store, query, error, params }) {
     // setup search
     store.dispatch('search/resetSearch')
-<<<<<<< HEAD
-    // await store.dispatch('dashboard/setSearchOptions', { query })
-    await store.dispatch('dashboard/setSearchOptions', {})
-    store.commit('search/SET_SEARCH', { key: 'portfolio', val: params.id })
-=======
     store.dispatch('landing/resetSearch')
     store.dispatch('dashboard/setSearchOptions', query)
-    // search stup
+    // search setup
     store.commit('search/SET_SEARCH', {
       key: 'portfolio',
       val: params.id,
     })
->>>>>>> 68f3e52f9dddbf9b3cb085b606187e4cbe92acfa
     store.commit('search/SET_SEARCH', {
       key: 'portfolio_page',
       val: 'portfolio',
