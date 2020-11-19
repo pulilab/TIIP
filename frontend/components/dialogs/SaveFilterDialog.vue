@@ -1,12 +1,12 @@
 <template>
   <el-dialog
-    v-if="visible"
-    :visible.sync="visible"
+    :visible="visible"
     :title="$gettext('Save filters') | translate"
     modal
     top="30vh"
     width="30vw"
     custom-class="SaveFiltersDialog"
+    @close="handleCancel"
   >
     <el-form
       :model="form"
@@ -31,7 +31,12 @@
           </el-button>
         </el-col>
         <el-col class="PrimaryButtons">
-          <el-button type="primary" @click="handleSave">
+          <el-button
+            type="primary"
+            :disabled="disabled"
+            :loading="loading"
+            @click="handleSave"
+          >
             <translate>Save</translate>
           </el-button>
         </el-col>
@@ -63,7 +68,11 @@ export default {
   computed: {
     ...mapState({
       visible: (state) => state.layout.saveFiltersDialogState,
+      loading: (state) => state.filters.loading,
     }),
+    disabled() {
+      return !(this.form.name.length >= 3)
+    },
   },
   methods: {
     ...mapActions({

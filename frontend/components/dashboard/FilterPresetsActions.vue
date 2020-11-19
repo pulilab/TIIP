@@ -39,15 +39,15 @@
         </el-popover>
       </el-col>
       <el-col :span="6">
-        <el-button type="text" :disabled="disabledSave" @click="openSaveFilter">
+        <el-button type="text" :disabled="disabled" @click="openSaveFilter">
           <translate>Save</translate>
         </el-button>
       </el-col>
       <el-col :span="6">
         <el-button
           type="text"
-          :disabled="disabledClear"
-          :class="disabledClear ? 'MutedButton' : 'DeleteButton'"
+          :disabled="disabled"
+          :class="disabled ? 'MutedButton' : 'DeleteButton'"
           @click="handleReset"
         >
           <translate>Clear</translate>
@@ -59,30 +59,73 @@
 
 <script>
 import isEmpty from 'lodash/isEmpty'
-import { mapState, mapActions } from 'vuex'
+import isEqual from 'lodash/isEqual'
+
+import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
+  data() {
+    return {
+      emptySearch: {
+        q: '',
+        // in: ['name', 'org', 'country', 'overview', 'loc'],
+        country: [],
+        sw: [],
+        dhi: [],
+        hfa: [],
+        hsc: [],
+        region: '',
+        // partner: [],
+        co: [],
+        goal: '',
+        result: '',
+        cl: [],
+        cc: [],
+        cs: [],
+        ic: [],
+        sp: '',
+        ps: '',
+      },
+      emptySearchInventory: {
+        q: '',
+        // in: ['name', 'org', 'country', 'overview', 'loc'],
+        country: [],
+        sw: [],
+        dhi: [],
+        hfa: [],
+        hsc: [],
+        region: '',
+        co: [],
+        goal: '',
+        result: '',
+        cl: [],
+        cc: [],
+        cs: [],
+        ic: [],
+      },
+    }
+  },
   computed: {
     ...mapState({
       tabs: (state) => state.filters.tabs,
       filters: (state) => state.filters.filters,
       currentFilter: (state) => state.filters.currentFilter,
+      currentSearchFilter: (state) => state.search.filter,
+    }),
+    ...mapGetters({
+      getSearchParameters: 'dashboard/getSearchParameters',
     }),
     emptyFilters() {
       return isEmpty(this.filters)
     },
-    disabledSave() {
+    disabled() {
       if (this.tabs) {
-        return false
+        return this.isSearchEmpty(this.emptySearch, this.currentSearchFilter)
       } else {
-        return false
-      }
-    },
-    disabledClear() {
-      if (this.tabs) {
-        return false
-      } else {
-        return false
+        return this.isSearchEmpty(
+          this.emptySearchInventory,
+          this.getSearchParameters
+        )
       }
     },
   },
@@ -100,6 +143,12 @@ export default {
       deleteFilter: 'filters/deleteFilter',
       getSearch: 'search/getSearch',
     }),
+    isSearchEmpty(keys, filter) {
+      for (const key in keys) {
+        if (!isEqual(filter[key], keys[key])) return false
+      }
+      return true
+    },
     openSaveFilter() {
       this.setSaveFiltersDialogState(true)
     },

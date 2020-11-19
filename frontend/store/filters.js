@@ -4,6 +4,27 @@ export const state = () => ({
   tabs: false,
   currentFilter: undefined,
   filters: {},
+  tabsSearchKeys: {
+    q: '',
+    // in: ['name', 'org', 'country', 'overview', 'loc'],
+    country: [], // array
+    sw: [],
+    dhi: [],
+    hfa: [],
+    hsc: [],
+    region: '',
+    // partner: [],
+    co: [], // array
+    goal: '',
+    result: '',
+    cl: [],
+    cc: [],
+    cs: [],
+    ic: [], // array
+    sp: '',
+    ps: '',
+  },
+  loading: false,
 })
 
 export const actions = {
@@ -22,10 +43,30 @@ export const actions = {
   setCurrentFilter({ state, commit, dispatch }, val = undefined) {
     commit('SET_VALUE', { key: 'currentFilter', val })
   },
-  setFilters({ state, commit, dispatch }, name) {
+  async setFilters({ state, commit, dispatch }, name) {
+    await dispatch('resetFilters')
     commit('SET_VALUE', { key: 'currentFilter', val: name })
     if (state.tabs) {
-      console.log('tabs')
+      const newFilters = queryStringToObject(state.filters[name])
+      dispatch('dashboard/setSearchOptions', newFilters, {
+        root: true,
+      })
+      for (const key in state.tabsSearchKeys) {
+        if (newFilters[key] !== undefined) {
+          const filter = newFilters[key]
+          let val =
+            Array.isArray(filter) || !/\d/.test(filter)
+              ? filter
+              : ['country', 'co', 'ic'].includes(key)
+              ? [parseInt(filter)]
+              : parseInt(filter)
+          val = ['country', 'co', 'ic'].includes(key)
+            ? val.map((i) => parseInt(i))
+            : val
+          await commit('search/SET_SEARCH', { key, val }, { root: true })
+        }
+      }
+      await dispatch('search/getSearch', {}, { root: true })
     } else {
       dispatch(
         'dashboard/setSearchOptions',
@@ -36,7 +77,8 @@ export const actions = {
       )
     }
   },
-  async newFilter({ state, dispatch, rootState, rootGetters }, name) {
+  async newFilter({ commit, state, dispatch, rootState, rootGetters }, name) {
+    commit('SET_VALUE', { key: 'loading', val: true })
     const newFilter = {
       [name]: state.tabs
         ? objectToQueryString(rootState.search.filter)
@@ -47,6 +89,7 @@ export const actions = {
       ...newFilter,
     })
     await dispatch('setFilters', name)
+    commit('SET_VALUE', { key: 'loading', val: false })
   },
   async deleteFilter({ state, dispatch }, name = '') {
     const filters = state.filters
