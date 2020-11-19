@@ -102,7 +102,10 @@
               </div>
             </el-row>
           </div>
-          <search-map v-if="tab === 4" />
+          <div v-if="tab === 4" class="map">
+            <search-map />
+            <portfolio-project-box />
+          </div>
         </section>
         <!-- tabs -->
         <div class="DashboardListView">
@@ -129,6 +132,7 @@ import Matrix from '@/components/portfolio/Matrix'
 import Radio from '@/components/portfolio/form/inputs/Radio'
 import SearchMap from '@/components/searchMap/SearchMap'
 import Tabs from '@/components/common/Tabs'
+import PortfolioProjectBox from '@/components/searchMap/PortfolioProjectBox'
 
 import { mapState, mapGetters, mapActions } from 'vuex'
 
@@ -141,6 +145,7 @@ export default {
     TableTopActions,
     SearchMap,
     Tabs,
+    PortfolioProjectBox,
   },
   data() {
     return {
@@ -213,33 +218,33 @@ export default {
   async fetch({ store, query, error, params }) {
     // setup search
     store.dispatch('search/resetSearch')
+<<<<<<< HEAD
     // await store.dispatch('dashboard/setSearchOptions', { query })
     await store.dispatch('dashboard/setSearchOptions', {})
     store.commit('search/SET_SEARCH', { key: 'portfolio', val: params.id })
+=======
+    store.dispatch('landing/resetSearch')
+    store.dispatch('dashboard/setSearchOptions', query)
+    // search stup
+    store.commit('search/SET_SEARCH', {
+      key: 'portfolio',
+      val: params.id,
+    })
+>>>>>>> 68f3e52f9dddbf9b3cb085b606187e4cbe92acfa
     store.commit('search/SET_SEARCH', {
       key: 'portfolio_page',
       val: 'portfolio',
     })
     store.commit('search/SET_SEARCH', { key: 'scores', val: true })
-    // set portfolio details
-    store.commit('portfolio/SET_VALUE', {
-      key: 'currentPortfolioId',
-      val: params.id,
-    })
-    // actual search
     await Promise.all([
-      store.dispatch('projects/loadProjectStructure'),
+      store.dispatch('portfolio/getPortfolios', 'active-list'),
+      store.dispatch('countries/loadMapData'),
       store.dispatch('portfolio/getPortfolioDetails', {
         id: params.id,
         type: 'active-list',
       }),
-      store.dispatch('search/getSearch'),
-      // map
-      store.dispatch('search/loadProjectsMap'),
-      store.dispatch('countries/loadMapData'),
     ])
   },
-
   computed: {
     ...mapState({
       ps: (state) => state.search.filter.ps,
@@ -253,9 +258,13 @@ export default {
       description: 'portfolio/getDescription',
     }),
   },
+  mounted() {
+    this.getSearch()
+  },
   methods: {
     ...mapActions({
       loadProjectsMap: 'search/loadProjectsMap',
+      getSearch: 'search/getSearch',
     }),
     navigate(id) {
       this.$store.dispatch('search/resetSearch')
@@ -274,7 +283,7 @@ export default {
       } else {
         this.$store.commit('search/SET_SEARCH', { key: 'ps', val: '' })
       }
-      this.$store.dispatch('search/getSearch')
+      this.getSearch()
     },
     setTab(id) {
       this.tab = id
@@ -332,6 +341,9 @@ section.portfolio-area {
     .el-icon-caret-bottom {
       font-size: 22px;
     }
+  }
+  .map {
+    position: relative;
   }
   .Problems {
     background-color: white;

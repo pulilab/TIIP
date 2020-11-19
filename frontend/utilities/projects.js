@@ -59,9 +59,9 @@ export const projectFields = () => ({
   total_budget_narrative: '',
   funding_needs: '',
   partnership_needs: '',
-  target_group_reached: 0,
-  currency: 1,
-  total_budget: 0,
+  target_group_reached: null,
+  currency: null,
+  total_budget: null,
   phase: null,
 })
 
@@ -81,16 +81,16 @@ export const draftRules = () => {
     },
     partner_email: {
       email: true,
-      required: true,
+      required: false,
       max: 100,
     },
     partner_website: {
       url: { require_protocol: true },
-      max: 100,
+      max: 2048,
     },
     link_website: {
       url: { require_protocol: true },
-      max: 100,
+      max: 2048,
     },
     wbs: {
       max: 200,
@@ -172,16 +172,16 @@ export const publishRules = () => {
     },
     partner_email: {
       email: true,
-      required: true,
+      required: false,
       max: 100,
     },
     partner_website: {
       url: { require_protocol: true },
-      max: 100,
+      max: 2048,
     },
     link_website: {
       url: { require_protocol: true },
-      max: 100,
+      max: 2048,
     },
     wbs: {
       max: 30,

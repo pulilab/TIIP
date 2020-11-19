@@ -381,7 +381,7 @@ export const actions = {
     commit('SET_VIEWERS', data.viewers)
     return dispatch('user/updateTeamViewers', { ...data, id }, { root: true })
   },
-  async createProject({ getters, dispatch, rootGetters }) {
+  async createProject({ state, getters, dispatch, rootGetters }) {
     dispatch('setLoading', 'draft')
     const draft = getters.getProjectData
     draft.organisation = rootGetters['system/getUnicefOrganisation'].id
@@ -610,9 +610,9 @@ export const mutations = {
     state.total_budget_narrative = get(project, 'total_budget_narrative', '')
     state.funding_needs = get(project, 'funding_needs', '')
     state.partnership_needs = get(project, 'partnership_needs', '')
-    state.target_group_reached = get(project, 'target_group_reached', 0)
+    state.target_group_reached = get(project, 'target_group_reached', '')
     state.currency = get(project, 'currency', 1)
-    state.total_budget = get(project, 'total_budget', 0)
+    state.total_budget = get(project, 'total_budget', '')
     state.wbs = get(project, 'wbs', [])
     state.innovation_categories = get(project, 'innovation_categories', [])
     state.links = get(project, 'links', [])

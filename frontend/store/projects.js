@@ -327,7 +327,7 @@ export const actions = {
       })
       commit('SET_VALUE', { key: 'loadingProject', val: false })
     } catch (e) {
-      // console.log(e.response.data);
+      console.log(e.response.data)
       commit('SET_VALUE', { key: 'loadingProject', val: false })
       console.error('portfolio/loadPortfolioProjects failed')
     }
@@ -420,8 +420,11 @@ export const actions = {
         case 'initiatives':
           await dispatch('getInitiatives')
           break
+        case 'inventory':
+          await dispatch('dashboard/loadProjectList', {}, { root: true })
+          break
         case 'table':
-          await dispatch('portfolio/getPortfolioProjects', {}, { root: true })
+          await dispatch('search/getSearch', {}, { root: true })
           break
         case 'detail':
           await dispatch('user/refreshProfile', {}, { root: true })

@@ -1,32 +1,39 @@
 <template>
   <div class="InfoBox">
-    <img
-      :alt="$gettext('T4D and Innovation Inventory Platform') | translate"
-      class="InfoPicture"
-      src="/photo-whyusedha.jpg"
-    />
+    <div class="img-container">
+      <img
+        :alt="$gettext('INVENT') | translate"
+        src="/INVENT-landing-left.jpg"
+      />
+    </div>
 
     <div class="InfoArticle">
-      <h3><translate>T4D and Innovation Inventory Platform</translate></h3>
+      <h3><translate>INVENT</translate></h3>
       <p>
         <translate>
-          The T4D and Innovation Inventory Platform (TIIP) is an open-source web
-          platform designed to support goverments, technologists, implementers
-          and donors to better coordinate digital health activities globally.
+          INVENT is an open, global hub for Technology for Development and
+          Innovation at UNICEF. The platform provides a searchable inventory of
+          initiatives as well as a portfolio tool that provides a strategic view
+          of UNICEF's priority areas for innovation.
         </translate>
       </p>
       <p>
         <translate>
-          This web platform offers users the information needed to improve the
-          planning, coordination and use of digital health information systems
-          for health.
+          INVENT provides a global inventory designed to strengthen the value
+          and impact of innovation and digital development investments, improve
+          coordination, and facilitate institutionalization and scale.
         </translate>
       </p>
       <p>
         <translate>
-          In addition, the TIIP supports implementers to assess the maturity of
-          their digital health projects and gain access to global resources on
-          current best practices in digital health.
+          INVENT supports UNICEF’s Innovation Portfolio Approach focusing
+          innovation on the most challenging problems UNICEF is trying to solve
+          for and with children and young people. INVENT helps programme teams
+          map, monitor and foster digital investments designed to meet UNICEF’s
+          strategic goals and align with good programme and planning governance
+          processes to help country and regional offices have oversight of
+          innovation pipelines and initiatives being scaled with and across
+          regions.
         </translate>
       </p>
     </div>
@@ -48,9 +55,15 @@ export default {}
   // background-repeat: no-repeat;
   // background-position: center bottom;
 
-  .InfoPicture {
+  .img-container {
     width: 100%;
-    max-height: 172px;
+    // max-height: 172px;
+    overflow: hidden;
+    img {
+      width: inherit;
+      height: inherit;
+      object-fit: cover;
+    }
   }
 
   .InfoArticle {

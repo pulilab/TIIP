@@ -26,9 +26,9 @@ class PartnerSerializer(serializers.Serializer):
 
     partner_type = serializers.ChoiceField(choices=PARTNER_TYPE)
     partner_name = serializers.CharField(max_length=100)
-    partner_contact = serializers.CharField(max_length=100, required=False)
-    partner_email = serializers.EmailField(required=False)
-    partner_website = serializers.URLField(required=False)
+    partner_contact = serializers.CharField(max_length=100, required=False, allow_blank=True)
+    partner_email = serializers.EmailField(required=False, allow_blank=True)
+    partner_website = serializers.URLField(max_length=2048, required=False, allow_blank=True)
 
 
 class LinkSerializer(serializers.Serializer):
@@ -39,7 +39,7 @@ class LinkSerializer(serializers.Serializer):
                  (4, _('Other Documents/Resources'))]
 
     link_type = serializers.ChoiceField(choices=LINK_TYPE)
-    link_url = serializers.URLField(required=False)
+    link_url = serializers.URLField(max_length=2048, required=False, allow_blank=True)
 
 
 class ProjectPublishedSerializer(serializers.Serializer):
@@ -193,7 +193,7 @@ class ProjectGroupSerializer(serializers.ModelSerializer):
 
     def perform_create(self, email):
         user = User.objects.create_user(username=email[:150], email=email)
-        UserProfile.objects.create(user=user, account_type=UserProfile.IMPLEMENTER)
+        UserProfile.objects.create(user=user, account_type=UserProfile.DONOR)
         return user
 
     def save(self, **kwargs):
