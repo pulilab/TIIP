@@ -93,7 +93,6 @@ export default {
       }
     },
     async saveTeamViewers(id, team = []) {
-      console.warn('woot2')
       const teamViewers = {
         team: team.filter((d) => typeof d === 'number'),
         new_team_emails: team.filter((d) => typeof d === 'string'),
