@@ -52,7 +52,7 @@ export const getters = {
   getCapabilityCategories: (state) => state.capability_categories,
   getCapabilitySubcategories: (state) => state.capability_subcategories,
   getPlatforms: (state) =>
-    state.platforms.length === 0 ? [null] : state.platforms,
+    state.platforms.length === 0 ? [] : state.platforms,
   getSectors: (state) =>
     state.unicef_sector.length === 0 ? [null] : state.unicef_sector,
   getRegionalPriorities: (state) =>

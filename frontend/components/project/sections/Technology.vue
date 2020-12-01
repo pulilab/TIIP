@@ -27,11 +27,22 @@
             <i class="el-icon-warning warning" />
           </el-tooltip>
         </template>
-        <platform-selector
+        <!-- <platform-selector
           v-model="platforms"
           v-validate="rules.platforms"
           data-vv-name="platforms"
           data-vv-as="Software"
+        /> -->
+        {{ platforms }}
+        <select-box
+          v-model="platforms"
+          v-validate="rules.platforms"
+          data-vv-name="platforms"
+          data-vv-as="Software"
+          filterable
+          multiple
+          :options="technologyPlatforms"
+          @setNewItem="setNewSoftware"
         />
       </custom-required-form-item>
 
@@ -171,23 +182,26 @@
 
 <script>
 import MultiSelector from '@/components/project/MultiSelector'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { mapGettersActions } from '@/utilities/form'
+// import PlatformSelector from '@/components/project/PlatformSelector'
+import SelectBox from '@/components/project/SelectBox'
 import VeeValidationMixin from '../../mixins/VeeValidationMixin.js'
 import ProjectFieldsetMixin from '../../mixins/ProjectFieldsetMixin.js'
 import CollapsibleCard from '../CollapsibleCard'
-import PlatformSelector from '../PlatformSelector'
 
 export default {
   components: {
     CollapsibleCard,
     MultiSelector,
-    PlatformSelector,
+    // PlatformSelector,
+    SelectBox,
   },
   mixins: [VeeValidationMixin, ProjectFieldsetMixin],
   computed: {
     ...mapGetters({
       modified: 'project/getModified',
+      technologyPlatforms: 'projects/getTechnologyPlatforms',
     }),
     ...mapGettersActions({
       hardware: ['project', 'getHardware', 'setHardware', 0],
@@ -197,6 +211,9 @@ export default {
     }),
   },
   methods: {
+    ...mapActions({
+      setNewSoftware: 'projects/setNewSoftware',
+    }),
     async validate() {
       this.$refs.collapsible.expandCard()
       const validations = await Promise.all([this.$validator.validate()])
