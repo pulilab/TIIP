@@ -506,6 +506,11 @@ class InnovationCategory(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedMod
         verbose_name_plural = 'Innovation Categories'
 
 
+class InnovationWay(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
+    class Meta(ExtendedNameOrderedSoftDeletedModel.Meta):
+        verbose_name_plural = 'Innovation Ways'
+
+
 class CPD(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
     class Meta(ExtendedNameOrderedSoftDeletedModel.Meta):
         verbose_name_plural = 'CPD and annual work plan'
