@@ -107,7 +107,7 @@ class ProjectPublicViewSet(ViewSet):
             health_focus_areas=health_focus_areas,
             hsc_challenges=hsc_challenges,
             strategies=strategies,
-            regional_offices=RegionalOffice.objects.values('id', 'name'),
+            regional_offices=RegionalOffice.objects.values('id', 'name', 'region'),
             currencies=Currency.objects.values('id', 'name', 'code'),
             sectors=UNICEFSector.objects.values('id', 'name').custom_ordered(),
             regional_priorities=RegionalPriority.objects.values('id', 'name').custom_ordered(),
