@@ -475,6 +475,8 @@ class UNICEFSector(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
 
 
 class RegionalPriority(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
+    region = models.IntegerField(choices=Country.UNICEF_REGIONS, null=True, blank=True)
+
     class Meta(ExtendedNameOrderedSoftDeletedModel.Meta):
         verbose_name_plural = 'Regional Priorities'
 
