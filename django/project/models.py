@@ -516,6 +516,11 @@ class CPD(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
         verbose_name_plural = 'CPD and annual work plan'
 
 
+class ISC(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
+    class Meta(ExtendedNameOrderedSoftDeletedModel.Meta):
+        verbose_name_plural = 'Information Security Classification'
+
+
 class ProjectImport(ExtendedModel):
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     csv = models.FileField()
