@@ -99,6 +99,11 @@ class ProjectPublishedSerializer(serializers.Serializer):
 
     links = LinkSerializer(many=True, required=False, allow_empty=True)
     partners = PartnerSerializer(many=True, required=False, allow_empty=True)
+    
+    # ITERATION 2 Fields
+    innovation_ways = serializers.ListField(
+        child=serializers.IntegerField(), max_length=64, min_length=0, allow_empty=True)
+    isc = serializers.IntegerField(required=False)
 
     # SECTION 2 Implementation Overview
     platforms = serializers.ListField(
