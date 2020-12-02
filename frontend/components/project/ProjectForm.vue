@@ -32,6 +32,17 @@
             :publish-rules="publishRules"
             :api-errors="apiErrors"
           />
+          <stage-overview
+            ref="stageOverview"
+            :use-publish-rules="usePublishRules"
+            :rules="rules"
+            :draft-rules="draftRules"
+            :publish-rules="publishRules"
+            :api-errors="apiErrors"
+            :prepend-title="3"
+            @hook:mounted="mountedHandler"
+            @hook:created="createdHandler"
+          />
           <partners
             ref="partners"
             :rules="rules"
@@ -71,6 +82,7 @@ import { publishRules, draftRules } from '@/utilities/projects'
 import Categorization from '@/components/project/sections/Categorization'
 import Technology from '@/components/project/sections/Technology'
 import Stages from '@/components/project/sections/Stages'
+import StageOverview from '@/components/project/sections/StageOverview'
 import Partners from '@/components/project/sections/Partners'
 import { mapGetters, mapActions } from 'vuex'
 import ProjectNavigation from './ProjectNavigation'
@@ -86,6 +98,7 @@ export default {
     DonorCustom,
     Categorization,
     Stages,
+    StageOverview,
     Partners,
     Technology,
   },
@@ -340,6 +353,14 @@ export default {
         }
         this.handleErrorMessages()
       })
+    },
+    createdHandler() {
+      this.createdElements += 1
+    },
+    mountedHandler() {
+      setTimeout(() => {
+        this.readyElements += 1
+      }, 300)
     },
   },
 }

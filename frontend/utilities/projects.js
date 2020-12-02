@@ -1,3 +1,5 @@
+import { format } from 'date-fns'
+
 export const fetchProjectData = async (store, params, error) => {
   try {
     await store.dispatch('projects/setCurrentProject', params.id)
@@ -16,6 +18,33 @@ export const fetchProjectData = async (store, params, error) => {
     return Promise.reject(e)
   }
 }
+
+export const epochCheck = (date, present = true) => {
+  if (date) {
+    const secondsSinceEpoch = Math.round(date.getTime() / 1000)
+    if (secondsSinceEpoch === 0) {
+      return present ? new Date() : ''
+    }
+  }
+  return date
+}
+
+export const newStages = (draft) => {
+  return draft
+    .filter((i) => i.checked)
+    .map((i) => {
+      return {
+        id: i.id,
+        note: i.note || null,
+        date: formatDate(i.date),
+      }
+    })
+}
+
+export const formatDate = (date) =>
+  format(date, 'YYYY-MM-DD') === 'Invalid Date'
+    ? null
+    : format(date, 'YYYY-MM-DD')
 
 export const projectFields = () => ({
   name: null,

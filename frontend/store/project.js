@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import get from 'lodash/get'
 import { apiReadParser, apiWriteParser, APIError } from '../utilities/api'
-import { projectFields } from '../utilities/projects'
+import { projectFields, epochCheck, newStages } from '../utilities/projects'
 
 const cleanState = () => ({
   ...projectFields(),
@@ -34,8 +34,43 @@ export const getters = {
   getCountryOffice: (state) => state.country_office,
   getModified: (state) => state.modified,
   getImplementationOverview: (state) => state.implementation_overview,
-  getStartDate: (state) => state.start_date,
-  getEndDate: (state) => state.end_date,
+  getStartDate: (state) => epochCheck(state.start_date),
+  getEndDate: (state) => epochCheck(state.end_date, false),
+  getResearch: (state) => state.research,
+  getEndDateNote: (state) => state.end_date_note,
+  getStages: (state) => state.stages,
+  getStagesDraft: (state, getters, rootState) => {
+    if (!('stageDraft' in state)) {
+      // initial set
+      console.log(rootState.projects.projectStructure)
+      if ('phases' in rootState.projects.projectStructure) {
+        return rootState.projects.projectStructure.phases.map((item) => {
+          const included =
+            state.stages && state.stages.find((i) => i.id === item.id)
+          if (included) {
+            return {
+              ...item,
+              date: included.date,
+              note: included.note,
+              checked: true,
+            }
+          }
+          return { ...item, date: '', note: '', checked: false }
+        })
+      }
+      return []
+    } else {
+      return state.stagesDraft
+    }
+  },
+  getStagesList: (state, getters, rootState) => {
+    if ('phases' in rootState.projects.projectStructure) {
+      return rootState.projects.projectStructure.phases.map((i) => {
+        return { id: i.id, name: i.name }
+      })
+    }
+    return []
+  },
   getContactName: (state) => state.contact_name,
   getContactEmail: (state) => state.contact_email,
   getTeam: (state) => state.team,
@@ -129,7 +164,6 @@ export const getters = {
 
 export const actions = {
   async loadProject({ commit, dispatch, rootGetters }, id) {
-    // const unicefId = rootGetters['system/getUnicefOrganisation'].id
     const userProject = rootGetters['projects/getUserProjectList'].find(
       (p) => p.id === id
     )
@@ -148,6 +182,10 @@ export const actions = {
     if (data.published) {
       const published = { ...clean, ...apiReadParser(data.published) }
       published.donors.forEach((d) => donorsToFetch.add(d))
+      commit('SET_STAGES', published.stages)
+      commit('SET_START_DATE', new Date(published.start_date))
+      commit('SET_END_DATE', new Date(published.end_date))
+      commit('SET_END_DATE_NOTE', published.end_date_note)
       commit('SET_PUBLISHED', Object.freeze(published))
     }
     await Promise.all([
@@ -234,6 +272,18 @@ export const actions = {
   },
   setEndDate({ commit }, value) {
     commit('SET_END_DATE', value)
+  },
+  setResearch({ commit }, value) {
+    commit('SET_RESEARCH', value)
+  },
+  setEndDateNote({ commit }, value) {
+    commit('SET_END_DATE_NOTE', value)
+  },
+  setStages({ commit }, value) {
+    commit('SET_STAGES', value)
+  },
+  setStagesDraft({ commit }, value) {
+    commit('SET_STAGES_DRAFT', value)
   },
   setContactName({ commit }, value) {
     commit('SET_CONTACT_NAME', value)
@@ -386,6 +436,7 @@ export const actions = {
     const draft = getters.getProjectData
     draft.organisation = rootGetters['system/getUnicefOrganisation'].id
     draft.donors = [rootGetters['system/getUnicefDonor'].id]
+    draft.stages = newStages(state.stagesDraft)
     const parsed = apiWriteParser(
       draft,
       getters.getAllCountryAnswers,
@@ -405,6 +456,7 @@ export const actions = {
     const draft = getters.getProjectData
     draft.organisation = rootGetters['system/getUnicefOrganisation'].id
     draft.donors = [rootGetters['system/getUnicefDonor'].id]
+    draft.stages = newStages(state.stagesDraft)
     const parsed = apiWriteParser(
       draft,
       getters.getAllCountryAnswers,
@@ -422,6 +474,7 @@ export const actions = {
     const draft = getters.getProjectData
     draft.organisation = rootGetters['system/getUnicefOrganisation'].id
     draft.donors = [rootGetters['system/getUnicefDonor'].id]
+    draft.stages = newStages(state.stagesDraft)
     const parsed = apiWriteParser(
       draft,
       getters.getAllCountryAnswers,
@@ -475,6 +528,9 @@ export const actions = {
     dispatch('projects/updateProject', data, { root: true })
     dispatch('setLoading', false)
   },
+  loadStagesDraft({ getters, dispatch }) {
+    dispatch('setStagesDraft', getters.getStagesDraft)
+  },
 }
 
 export const mutations = {
@@ -501,6 +557,18 @@ export const mutations = {
   },
   SET_END_DATE: (state, end_date) => {
     state.end_date = end_date
+  },
+  SET_RESEARCH: (state, research) => {
+    state.research = research
+  },
+  SET_END_DATE_NOTE: (state, end_date_note) => {
+    state.end_date_note = end_date_note
+  },
+  SET_STAGES: (state, stages) => {
+    state.stages = stages
+  },
+  SET_STAGES_DRAFT: (state, stagesDraft) => {
+    Vue.set(state, 'stagesDraft', stagesDraft)
   },
   SET_CONTACT_NAME: (state, contact_name) => {
     state.contact_name = contact_name
@@ -571,6 +639,9 @@ export const mutations = {
     state.implementation_overview = get(project, 'implementation_overview', '')
     state.start_date = get(project, 'start_date', '')
     state.end_date = get(project, 'end_date', '')
+    state.research = project.research
+    state.end_date_note = get(project, 'end_date_note', '')
+    state.stages = get(project, 'phases', [])
     state.contact_name = get(project, 'contact_name', '')
     state.contact_email = get(project, 'contact_email', '')
     state.team = get(project, 'team', [])
