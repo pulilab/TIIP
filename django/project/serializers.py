@@ -102,7 +102,7 @@ class ProjectPublishedSerializer(serializers.Serializer):
 
     # ITERATION 2 Fields
     innovation_ways = serializers.ListField(
-        child=serializers.IntegerField(), max_length=64, min_length=0, allow_empty=True)
+        child=serializers.IntegerField(), max_length=64, min_length=0, allow_empty=True, required=False)
     isc = serializers.IntegerField(required=False)
 
     # SECTION 2 Implementation Overview
