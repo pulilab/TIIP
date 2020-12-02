@@ -475,6 +475,8 @@ class UNICEFSector(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
 
 
 class RegionalPriority(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
+    region = models.IntegerField(choices=Country.UNICEF_REGIONS, null=True, blank=True)
+
     class Meta(ExtendedNameOrderedSoftDeletedModel.Meta):
         verbose_name_plural = 'Regional Priorities'
 
@@ -504,9 +506,19 @@ class InnovationCategory(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedMod
         verbose_name_plural = 'Innovation Categories'
 
 
+class InnovationWay(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
+    class Meta(ExtendedNameOrderedSoftDeletedModel.Meta):
+        verbose_name_plural = 'Innovation Ways'
+
+
 class CPD(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
     class Meta(ExtendedNameOrderedSoftDeletedModel.Meta):
         verbose_name_plural = 'CPD and annual work plan'
+
+
+class ISC(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
+    class Meta(ExtendedNameOrderedSoftDeletedModel.Meta):
+        verbose_name_plural = 'Information Security Classification'
 
 
 class ProjectImport(ExtendedModel):

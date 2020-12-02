@@ -18,7 +18,7 @@ from core.views import TokenAuthMixin, TeamTokenAuthMixin, get_object_or_400, GP
 from project.cache import cache_structure
 from project.models import HSCGroup, ProjectApproval, ProjectImportV2, ImportRow, UNICEFGoal, UNICEFResultArea, \
     UNICEFCapabilityLevel, UNICEFCapabilityCategory, UNICEFCapabilitySubCategory, UNICEFSector, RegionalPriority, \
-    Phase, HardwarePlatform, NontechPlatform, PlatformFunction, CPD, InnovationCategory
+    Phase, HardwarePlatform, NontechPlatform, PlatformFunction, CPD, InnovationCategory, InnovationWay, ISC
 from project.permissions import InCountryAdminForApproval
 from toolkit.models import Toolkit, ToolkitVersion
 from .models import Project, CoverageVersion, TechnologyPlatform, DigitalStrategy, \
@@ -58,6 +58,8 @@ class ProjectPublicViewSet(ViewSet):
         `functions` = Function(s) of Platform  
         `cpd` = CPD and annual work plan  
         `innovation_categories` = Innovation Categories  
+        `innovation_ways` = Innovation ways  
+        `isc` = Information Security Classification  
         """
         return Response(self._get_project_structure())
 
@@ -110,13 +112,15 @@ class ProjectPublicViewSet(ViewSet):
             regional_offices=RegionalOffice.objects.values('id', 'name'),
             currencies=Currency.objects.values('id', 'name', 'code'),
             sectors=UNICEFSector.objects.values('id', 'name').custom_ordered(),
-            regional_priorities=RegionalPriority.objects.values('id', 'name').custom_ordered(),
+            regional_priorities=RegionalPriority.objects.values('id', 'name', 'region').custom_ordered(),
             phases=Phase.objects.values('id', 'name').custom_ordered(),
             hardware=HardwarePlatform.objects.values('id', 'name').custom_ordered(),
             nontech=NontechPlatform.objects.values('id', 'name').custom_ordered(),
             functions=PlatformFunction.objects.values('id', 'name').custom_ordered(),
             cpd=CPD.objects.values('id', 'name').custom_ordered(),
-            innovation_categories=InnovationCategory.objects.values('id', 'name').custom_ordered()
+            innovation_categories=InnovationCategory.objects.values('id', 'name').custom_ordered(),
+            innovation_ways=InnovationWay.objects.values('id', 'name').custom_ordered(),
+            isc=ISC.objects.values('id', 'name').custom_ordered(),
         )
 
     @staticmethod
