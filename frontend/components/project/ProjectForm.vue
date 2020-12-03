@@ -4,6 +4,7 @@
       <el-row type="flex">
         <el-col :span="18">
           <general-overview
+            key="generalOverview"
             ref="generalOverview"
             :use-publish-rules="usePublishRules"
             :rules="rules"
@@ -12,6 +13,7 @@
             :api-errors="apiErrors"
           />
           <categorization
+            key="categorization"
             ref="categorization"
             :rules="rules"
             :draft-rules="draftRules"
@@ -25,13 +27,13 @@
             :publish-rules="publishRules"
             :api-errors="apiErrors"
           />
-          <stages
+          <!-- <stages
             ref="stages"
             :rules="rules"
             :draft-rules="draftRules"
             :publish-rules="publishRules"
             :api-errors="apiErrors"
-          />
+          /> -->
           <stage-overview
             ref="stageOverview"
             :use-publish-rules="usePublishRules"
@@ -39,7 +41,6 @@
             :draft-rules="draftRules"
             :publish-rules="publishRules"
             :api-errors="apiErrors"
-            :prepend-title="3"
             @hook:mounted="mountedHandler"
             @hook:created="createdHandler"
           />
@@ -81,7 +82,7 @@
 import { publishRules, draftRules } from '@/utilities/projects'
 import Categorization from '@/components/project/sections/Categorization'
 import Technology from '@/components/project/sections/Technology'
-import Stages from '@/components/project/sections/Stages'
+// import Stages from '@/components/project/sections/Stages'
 import StageOverview from '@/components/project/sections/StageOverview'
 import Partners from '@/components/project/sections/Partners'
 import { mapGetters, mapActions } from 'vuex'
@@ -97,7 +98,7 @@ export default {
     ImplementationOverview,
     DonorCustom,
     Categorization,
-    Stages,
+    // Stages,
     StageOverview,
     Partners,
     Technology,
@@ -238,7 +239,7 @@ export default {
         this.$refs.generalOverview.validate(),
         this.$refs.categorization.validate(),
         this.$refs.implementationOverview.validate(),
-        this.$refs.stages.validate(),
+        this.$refs.stagesOverview.validate(),
         this.$refs.partners.validate(),
         this.$refs.technology.validate(),
         this.$refs.donorCustom.validate(),
@@ -251,7 +252,7 @@ export default {
       this.$refs.generalOverview.clear()
       this.$refs.categorization.clear()
       this.$refs.implementationOverview.clear()
-      this.$refs.stages.clear()
+      this.$refs.stagesOverview.clear()
       this.$refs.partners.clear()
       this.$refs.technology.clear()
       this.$refs.donorCustom.clear()

@@ -2,7 +2,7 @@
   <div id="stages" class="StageOverview">
     <collapsible-card
       ref="collapsible"
-      :title="$gettext('Phases') | translate"
+      :title="$gettext('Completion of initiative stages') | translate"
       show-legend
     >
       <!-- stages -->
@@ -80,7 +80,6 @@
                   Set current and previous stages of initiative
                 </translate>
               </template>
-              {{ stagesDraft }}
               <el-col
                 v-for="(stage, idx) in stagesDraft"
                 :key="stage.id"

@@ -43,8 +43,8 @@ export const getters = {
     if (!('stageDraft' in state)) {
       // initial set
       console.log(rootState.projects.projectStructure)
-      if ('phases' in rootState.projects.projectStructure) {
-        return rootState.projects.projectStructure.phases.map((item) => {
+      if ('stages' in rootState.projects.projectStructure) {
+        return rootState.projects.projectStructure.stages.map((item) => {
           const included =
             state.stages && state.stages.find((i) => i.id === item.id)
           if (included) {
@@ -64,8 +64,8 @@ export const getters = {
     }
   },
   getStagesList: (state, getters, rootState) => {
-    if ('phases' in rootState.projects.projectStructure) {
-      return rootState.projects.projectStructure.phases.map((i) => {
+    if ('stages' in rootState.projects.projectStructure) {
+      return rootState.projects.projectStructure.stages.map((i) => {
         return { id: i.id, name: i.name }
       })
     }
@@ -641,7 +641,7 @@ export const mutations = {
     state.end_date = get(project, 'end_date', '')
     state.research = project.research
     state.end_date_note = get(project, 'end_date_note', '')
-    state.stages = get(project, 'phases', [])
+    state.stages = get(project, 'stages', [])
     state.contact_name = get(project, 'contact_name', '')
     state.contact_email = get(project, 'contact_email', '')
     state.team = get(project, 'team', [])
