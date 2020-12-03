@@ -63,6 +63,8 @@ export const projectFields = () => ({
   currency: null,
   total_budget: null,
   phase: null,
+  innovation_ways: [],
+  isc: null,
 })
 
 export const draftRules = () => {
@@ -72,6 +74,8 @@ export const draftRules = () => {
     total_budget: {},
     phase: {},
     cbd: {},
+    innovation_ways: {},
+    isc: {},
     partner_name: {
       required: true,
       max: 100,
