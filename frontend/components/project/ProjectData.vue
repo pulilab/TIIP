@@ -131,6 +131,13 @@
             />
           </simple-field>
 
+          <simple-field :header="$gettext('Innovation(s)') | translate">
+            <platforms-list
+              :platforms="project.innovation_ways"
+              source="getInnovationWays"
+            />
+          </simple-field>
+
           <simple-field
             :header="$gettext('Innovation category(ies)') | translate"
           >
@@ -312,6 +319,13 @@
               :platforms="project.functions"
               source="getFunctions"
             />
+          </simple-field>
+          <simple-field
+            :header="
+              $gettext('Information security classification ') | translate
+            "
+          >
+            <list-element :value="project.isc" source="getInfoSec" />
           </simple-field>
         </collapsible-card>
 

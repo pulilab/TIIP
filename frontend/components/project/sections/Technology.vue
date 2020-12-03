@@ -165,6 +165,44 @@
           </custom-required-form-item>
         </el-col>
       </el-row>
+      <el-row :gutter="20" type="flex">
+        <el-col :span="24">
+          <custom-required-form-item
+            :error="errors.first('isc')"
+            :draft-rule="draftRules.isc"
+            :publish-rule="publishRules.isc"
+          >
+            <template slot="label">
+              <translate key="isc-label">
+                Has the initiative completed a Information Security
+                Classification via UNICEF's Classi Tool?
+              </translate>
+            </template>
+
+            <single-select
+              v-model="isc"
+              v-validate="rules.isc"
+              data-vv-name="isc"
+              data-vv-as="Information Security"
+              source="projects/getInfoSec"
+            />
+            <span class="Hint">
+              <fa icon="info-circle" />
+              <p>
+                <translate>
+                  All digital initiatives at UNICEF are required to undertake an
+                  information security risk classification. Classi is a UNICEF
+                  tool that helps to prioritize and define UNICEF information
+                  assets, their value and how we shall protect them. It helps
+                  evaluate the risk associated in the information in case there
+                  is a loss in confidentiality, integrity and availability. For
+                  more info visit: https://uni.cf/CLASSI
+                </translate>
+              </p>
+            </span>
+          </custom-required-form-item>
+        </el-col>
+      </el-row>
     </collapsible-card>
   </div>
 </template>
@@ -177,12 +215,14 @@ import VeeValidationMixin from '../../mixins/VeeValidationMixin.js'
 import ProjectFieldsetMixin from '../../mixins/ProjectFieldsetMixin.js'
 import CollapsibleCard from '../CollapsibleCard'
 import PlatformSelector from '../PlatformSelector'
+import SingleSelect from '~/components/common/SingleSelect'
 
 export default {
   components: {
     CollapsibleCard,
     MultiSelector,
     PlatformSelector,
+    SingleSelect,
   },
   mixins: [VeeValidationMixin, ProjectFieldsetMixin],
   computed: {
@@ -194,6 +234,7 @@ export default {
       functions: ['project', 'getFunctions', 'setFunctions', 0],
       nontech: ['project', 'getNontech', 'setNontech', 0],
       platforms: ['project', 'getPlatforms', 'setPlatforms', 0],
+      isc: ['project', 'getInfoSec', 'setInfoSec', 0],
     }),
   },
   methods: {
@@ -208,6 +249,8 @@ export default {
         this.$validator.validate('hardware'),
         this.$validator.validate('nontech'),
         this.$validator.validate('functions'),
+        this.$validator.validate('platforms'),
+        this.$validator.validate('isc'),
       ])
       return validations.reduce((a, c) => a && c, true)
     },

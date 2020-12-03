@@ -62,6 +62,9 @@ export const getters = {
   getNontech: (state) => (state.nontech.length === 0 ? [null] : state.nontech),
   getFunctions: (state) =>
     state.functions.length === 0 ? [null] : state.functions,
+  getInnovationWays: (state) =>
+    state.innovation_ways.length === 0 ? [null] : state.innovation_ways,
+  getInfoSec: (state) => state.isc,
   getOverview: (state) => state.overview,
   getProgramTargets: (state) => state.program_targets,
   getProgramTargetsAchieved: (state) => state.program_targets_achieved,
@@ -70,7 +73,7 @@ export const getters = {
   getPhase: (state) => state.phase,
   getCpd: (state) => state.cpd,
   getInnovationCategories: (state) => state.innovation_categories,
-  getLinks: (state) => state.links,
+  getLinks: (state) => (state.links.length === 0 ? [null] : state.links),
   getPartners: (state) =>
     state.partners.length === 0 ? [null] : state.partners,
   getWbs: (state) => (state.wbs.length === 0 ? [null] : state.wbs),
@@ -264,6 +267,12 @@ export const actions = {
   },
   setFunctions({ commit }, value) {
     commit('SET_FUNCTIONS', value)
+  },
+  setInfoSec({ commit }, value) {
+    commit('SET_DATA', { key: 'isc', value })
+  },
+  setInnovationWays({ commit }, value) {
+    commit('SET_DATA', { key: 'innovation_ways', value })
   },
   setOverview({ commit }, value) {
     commit('SET_DATA', { key: 'overview', value })
@@ -619,6 +628,8 @@ export const mutations = {
     state.cpd = get(project, 'cpd', [])
     state.partners = get(project, 'partners', [])
     state.phase = get(project, 'phase', null)
+    state.isc = get(project, 'isc', null)
+    state.innovation_ways = get(project, 'innovation_ways', [])
   },
   SET_ORIGINAL: (state, project) => {
     state.original = project
