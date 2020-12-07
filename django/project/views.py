@@ -18,7 +18,8 @@ from core.views import TokenAuthMixin, TeamTokenAuthMixin, get_object_or_400, GP
 from project.cache import cache_structure
 from project.models import HSCGroup, ProjectApproval, ProjectImportV2, ImportRow, UNICEFGoal, UNICEFResultArea, \
     UNICEFCapabilityLevel, UNICEFCapabilityCategory, UNICEFCapabilitySubCategory, UNICEFSector, RegionalPriority, \
-    Phase, HardwarePlatform, NontechPlatform, PlatformFunction, CPD, InnovationCategory, InnovationWay, ISC
+    Phase, HardwarePlatform, NontechPlatform, PlatformFunction, CPD, InnovationCategory, InnovationWay, ISC, \
+    ApprovalState
 from project.permissions import InCountryAdminForApproval
 from toolkit.models import Toolkit, ToolkitVersion
 from .models import Project, CoverageVersion, TechnologyPlatform, DigitalStrategy, \
@@ -29,8 +30,10 @@ from .serializers import ProjectDraftSerializer, ProjectGroupSerializer, Project
     ProjectApprovalSerializer, ProjectImportV2Serializer, ImportRowSerializer, PortfolioListSerializer, \
     ReviewScoreSerializer, ReviewScoreFillSerializer, ReviewScoreBriefSerializer, \
     ProjectPortfolioStateManagerSerializer, PortfolioSerializer, \
-    PortfolioStateChangeSerializer, ReviewScoreDetailedSerializer
+    PortfolioStateChangeSerializer, ReviewScoreDetailedSerializer, TechnologyPlatformCreateSerializer, \
+    HardwarePlatformCreateSerializer, NontechPlatformCreateSerializer, PlatformFunctionCreateSerializer
 from user.serializers import UserProfileSerializer
+from .tasks import notify_superusers_about_new_pending_approval
 
 
 class ProjectPublicViewSet(ViewSet):
@@ -589,6 +592,12 @@ class ImportRowViewSet(TokenAuthMixin, UpdateModelMixin, DestroyModelMixin, Gene
         return ImportRow.objects.filter(parent__user=self.request.user)
 
 
+class ApprovalRequestViewSet(CreateModelMixin, GenericViewSet):
+    model = None
+
+    def perform_create(self, serializer) -> None:
+        serializer.save(added_by=self.request.user.userprofile, state=ApprovalState.PENDING)
+        notify_superusers_about_new_pending_approval.apply_async((self.model._meta.model_name, serializer.instance.id,))
 class PortfolioActiveListViewSet(TokenAuthMixin, ListModelMixin, GenericViewSet):
     serializer_class = PortfolioListSerializer
     queryset = Portfolio.objects.filter(status=Portfolio.STATUS_ACTIVE)
