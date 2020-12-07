@@ -103,13 +103,13 @@ class ProjectPublicViewSet(ViewSet):
                 .values('id', 'name', 'state').custom_ordered(),
             goal_areas=UNICEFGoal.objects.values('id', 'name', 'capability_level_question',
                                                  'capability_category_question', 'capability_subcategory_question')
-            .custom_ordered(),
+                .custom_ordered(),
             result_areas=UNICEFResultArea.objects.values('id', 'name', 'goal_area_id').custom_ordered(),
             capability_levels=UNICEFCapabilityLevel.objects.values('id', 'name', 'goal_area_id').custom_ordered(),
-            capability_categories=UNICEFCapabilityCategory.objects.values('id', 'name', 'goal_area_id').
-            custom_ordered(),
-            capability_subcategories=UNICEFCapabilitySubCategory.objects.values('id', 'name', 'goal_area_id').
-            custom_ordered(),
+            capability_categories=UNICEFCapabilityCategory.objects.values('id', 'name', 'goal_area_id')
+                .custom_ordered(),
+            capability_subcategories=UNICEFCapabilitySubCategory.objects.values('id', 'name', 'goal_area_id')
+                .custom_ordered(),
             health_focus_areas=health_focus_areas,
             hsc_challenges=hsc_challenges,
             strategies=strategies,
