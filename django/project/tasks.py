@@ -228,23 +228,24 @@ def notify_superusers_about_new_pending_approval(class_name, object_id):
                                    'added_by': object.added_by})
 
 
-@app.task(name='notify_user_about_software_approval')
-def notify_user_about_software_approval(action, software_id):
-    software = TechnologyPlatform.objects.get(id=software_id)
-    if not software.added_by:
+@app.task(name='notify_user_about_approval')
+def notify_user_about_approval(action, class_name, object_id):
+    klass = apps.get_model('project', class_name)
+    object = klass.objects.get(id=object_id)
+    if not object.added_by:
         return
 
     if action == 'approve':
-        subject = _("The software you requested has been approved")
-        email_type = "software_approved"
+        subject = _(f"`{object.name}` you requested has been approved")
+        email_type = "object_approved"
     elif action == 'decline':
-        subject = _("The software you requested has been declined")
-        email_type = "software_declined"
+        subject = _(f"`{object.name}` you requested has been declined")
+        email_type = "object_declined"
     else:
         return
 
     send_mail_wrapper(subject=subject,
                       email_type=email_type,
-                      to=software.added_by.user.email,
-                      language=software.added_by.language or settings.LANGUAGE_CODE,
-                      context={'software_name': software.name})
+                      to=object.added_by.user.email,
+                      language=object.added_by.language or settings.LANGUAGE_CODE,
+                      context={'object_name': object.name})
