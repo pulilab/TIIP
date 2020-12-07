@@ -422,6 +422,27 @@ class ApprovalState(models.Model):
             setattr(self, '__original_%s' % field, getattr(self, field))
 
 
+class TechnologyPlatform(InvalidateCacheMixin, ApprovalState, ExtendedNameOrderedSoftDeletedModel):
+    class Meta:
+        verbose_name = 'Software'
+        verbose_name_plural = 'Software'
+
+
+class HardwarePlatform(InvalidateCacheMixin, ApprovalState, ExtendedNameOrderedSoftDeletedModel):
+    class Meta(ExtendedNameOrderedSoftDeletedModel.Meta):
+        verbose_name_plural = 'Hardware Platform(s) and Physical Product(s)'
+
+
+class NontechPlatform(InvalidateCacheMixin, ApprovalState, ExtendedNameOrderedSoftDeletedModel):
+    class Meta(ExtendedNameOrderedSoftDeletedModel.Meta):
+        verbose_name_plural = 'Programme Innovation(s) and Non-Technology Platform(s)'
+
+
+class PlatformFunction(InvalidateCacheMixin, ApprovalState, ExtendedNameOrderedSoftDeletedModel):
+    class Meta(ExtendedNameOrderedSoftDeletedModel.Meta):
+        verbose_name_plural = 'Function(s) of Platform'
+
+
 
 class Licence(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
     pass
