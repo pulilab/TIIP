@@ -443,6 +443,42 @@ class PlatformFunction(InvalidateCacheMixin, ApprovalState, ExtendedNameOrderedS
         verbose_name_plural = 'Function(s) of Platform'
 
 
+@receiver(post_save, sender=PlatformFunction)
+@receiver(post_save, sender=NontechPlatform)
+@receiver(post_save, sender=HardwarePlatform)
+@receiver(post_save, sender=TechnologyPlatform)
+def process_approval_states(sender, instance, created, **kwargs):
+    if not created and instance.__original_state != instance.state:
+        from project.tasks import notify_user_about_software_approval
+
+        if sender == TechnologyPlatform:
+            data_key = 'platforms'
+        elif sender == HardwarePlatform:
+            data_key = 'hardware'
+        elif sender == NontechPlatform:
+            data_key = 'nontech'
+        elif sender == PlatformFunction:
+            data_key = 'functions'
+        else:
+            return
+
+        if instance.state == ApprovalState.DECLINED:
+            projects = Project.objects.filter(Q(**{f"data__{data_key}__contains":[{'id': instance.id}]}) |
+                Q(**{f"draft__{data_key}__contains":[{'id': instance.id}]}))
+
+            for project in projects:
+                if project.public_id and data_key in project.data:
+                    project.data[data_key] = \
+                        [item for item in project.data[data_key] if item['id'] != instance.id]
+                if data_key in project.draft:
+                    project.draft[data_key] = \
+                        [item for item in project.draft[data_key] if item['id'] != instance.id]
+                project.save(update_fields=['data', 'draft'])
+
+            notify_user_about_software_approval.apply_async(args=('decline', instance.pk,))
+        elif instance.state == ApprovalState.APPROVED:
+            notify_user_about_software_approval.apply_async(args=('approve', instance.pk,))
+
 
 class Licence(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
     pass
@@ -523,21 +559,6 @@ class RegionalPriority(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel
 class Phase(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
     class Meta(ExtendedNameOrderedSoftDeletedModel.Meta):
         verbose_name_plural = 'Phase of Initiative'
-
-
-class HardwarePlatform(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
-    class Meta(ExtendedNameOrderedSoftDeletedModel.Meta):
-        verbose_name_plural = 'Hardware Platform(s) and Physical Product(s)'
-
-
-class NontechPlatform(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
-    class Meta(ExtendedNameOrderedSoftDeletedModel.Meta):
-        verbose_name_plural = 'Programme Innovation(s) and Non-Technology Platform(s)'
-
-
-class PlatformFunction(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
-    class Meta(ExtendedNameOrderedSoftDeletedModel.Meta):
-        verbose_name_plural = 'Function(s) of Platform'
 
 
 class InnovationCategory(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
