@@ -204,69 +204,47 @@ def send_project_approval_digest():
                                   context=context)
 
 
+@app.task(name='notify_superusers_about_new_pending_approval')
+def notify_superusers_about_new_pending_approval(class_name, object_id):
+    klass = apps.get_model('project', class_name)
+    object = klass.objects.get(id=object_id)
+    super_users = User.objects.filter(is_superuser=True)
+
+    email_mapping = defaultdict(list)
+    for user in super_users:
         try:
-            if not serialized.is_valid():
-                logging.error(serialized.errors)
-                for error in serialized.errors:
-                    parsed.pop(error, None)
-                serialized = new_or_updated_serializer(parsed, existing)
-                serialized.is_valid(raise_exception=True)
-
-            if existing:
-                serialized.save()
-            else:
-                u = User.objects.get(email=user_email)
-                project = serialized.save(owner=u.userprofile)
-                send_imported_email(project, u)
+            email_mapping[user.userprofile.language].append(user.email)
         except ObjectDoesNotExist:
-            logging.error('No user with following email: {}'.format(user_email))
-        except ValidationError:
-            logging.warning('Validation error/s:')
-            logging.warning(serialized.errors)
+            email_mapping[settings.LANGUAGE_CODE].append(user.email)
 
-    def save_or_update_project(row, user_email, odk_etag, odk_id, odk_extra_data, interoperability_links):
-        existing = None
-        try:
-            existing = Project.objects.get(odk_id=odk_id)
-        except ObjectDoesNotExist:
-            pass
-        if not existing:
-            logging.error('Does not exist in DHA database: importing')
-            serialize_and_save(row, odk_etag, odk_id, odk_extra_data, None, user_email, interoperability_links)
-        elif existing.odk_etag is None:
-            logging.error('Overridden by ui: nothing to do')
-        elif existing.odk_etag != odk_etag:
-            logging.error('Exist in DHA database, but new version found in ODK: updating')
-            serialize_and_save(row, odk_etag, odk_id, odk_extra_data, existing, None, interoperability_links)
-        else:
-            logging.error('Already present and same version: nothing to do')
+    change_url = reverse('admin:project_{}_change'.format(object._meta.model_name), args=(object.id,))
+    for language, email_list in email_mapping.items():
+        send_mail_wrapper(subject=_(f'New {object._meta.model_name} is pending for approval'),
+                          email_type="new_pending_approval",
+                          to=email_list,
+                          language=language,
+                          context={'object_name': object.name,
+                                   'change_url': change_url,
+                                   'added_by': object.added_by})
 
-    def start_sync(rows, interoperability_links):
-        logging.error('ODK IMPORT TASK START: {}'.format(datetime.now()))
-        logging.error('\n')
-        for row in rows:
-            odk_etag = uuid_parser(row.get('rowETag'))
-            odk_id = uuid_parser(row.get('id'))
-            savepoint_column_type = row.get('savepointType', 'INCOMPLETE')
-            deleted = row.get('deleted', True)
-            user_email = row.get('createUser', None)
-            odk_extra_data = {
-                'create_user': user_email,
-                'last_update_user': row.get('lastUpdateUser', None),
-                'locale': row.get('locale', None),
-                'savepoint_timestamp': row.get('savepointTimestamp', None),
-                'savepoint_creator': row.get('savepointCreator', None),
-                'filterScope': row.get('filterScope', None)
-            }
-            logging.error('Processing odk_id {} with odk_etag {} START'.format(odk_id, odk_etag))
-            if savepoint_column_type.lower() == 'complete' and deleted != 'true':
-                save_or_update_project(row, user_email, odk_etag, odk_id, odk_extra_data, interoperability_links)
-            else:
-                logging.error('Incomplete or deleted: nothing to do')
-            logging.error('\n')
-        logging.error('ODK IMPORT TASK END: {}'.format(datetime.now()))
 
-    # with open('project/static-json/odk.json') as odk_file:
-    #     rows = json.load(odk_file)
-    #     start_sync(rows, interoperability_links)
-    start_sync(res.json(), interoperability_links)
+@app.task(name='notify_user_about_software_approval')
+def notify_user_about_software_approval(action, software_id):
+    software = TechnologyPlatform.objects.get(id=software_id)
+    if not software.added_by:
+        return
+
+    if action == 'approve':
+        subject = _("The software you requested has been approved")
+        email_type = "software_approved"
+    elif action == 'decline':
+        subject = _("The software you requested has been declined")
+        email_type = "software_declined"
+    else:
+        return
+
+    send_mail_wrapper(subject=subject,
+                      email_type=email_type,
+                      to=software.added_by.user.email,
+                      language=software.added_by.language or settings.LANGUAGE_CODE,
+                      context={'software_name': software.name})
