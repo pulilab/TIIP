@@ -181,18 +181,6 @@ class PhaseAdmin(admin.ModelAdmin):
     ordering = search_fields = ['name']
 
 
-class HardwarePlatformAdmin(admin.ModelAdmin):
-    ordering = search_fields = ['name']
-
-
-class NontechPlatformAdmin(admin.ModelAdmin):
-    ordering = search_fields = ['name']
-
-
-class PlatformFunctionAdmin(admin.ModelAdmin):
-    ordering = search_fields = ['name']
-
-
 class InnovationCategoryAdmin(admin.ModelAdmin):
     ordering = search_fields = ['name']
 
