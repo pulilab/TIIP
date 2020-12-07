@@ -12,7 +12,7 @@ from core.utils import send_mail_wrapper
 from country.models import Country, Donor, DonorCustomQuestion
 from scheduler.celery import app
 from user.models import UserProfile
-from .models import Project, ReviewScore, TechnologyPlatform
+from .models import Project, ReviewScore
 
 logger = get_task_logger(__name__)
 
