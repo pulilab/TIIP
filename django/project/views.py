@@ -598,6 +598,36 @@ class ApprovalRequestViewSet(CreateModelMixin, GenericViewSet):
     def perform_create(self, serializer) -> None:
         serializer.save(added_by=self.request.user.userprofile, state=ApprovalState.PENDING)
         notify_superusers_about_new_pending_approval.apply_async((self.model._meta.model_name, serializer.instance.id,))
+
+
+class TechnologyPlatformRequestViewSet(ApprovalRequestViewSet):
+    model = TechnologyPlatform
+    queryset = TechnologyPlatform.objects.all()
+    serializer_class = TechnologyPlatformCreateSerializer
+    permission_classes = (IsAuthenticated,)
+
+
+class HardwarePlatformRequestViewSet(ApprovalRequestViewSet):
+    model = HardwarePlatform
+    queryset = HardwarePlatform.objects.all()
+    serializer_class = HardwarePlatformCreateSerializer
+    permission_classes = (IsAuthenticated,)
+
+
+class NontechPlatformRequestViewSet(ApprovalRequestViewSet):
+    model = NontechPlatform
+    queryset = NontechPlatform.objects.all()
+    serializer_class = NontechPlatformCreateSerializer
+    permission_classes = (IsAuthenticated,)
+
+
+class PlatformFunctionRequestViewSet(ApprovalRequestViewSet):
+    model = PlatformFunction
+    queryset = PlatformFunction.objects.all()
+    serializer_class = PlatformFunctionCreateSerializer
+    permission_classes = (IsAuthenticated,)
+
+
 class PortfolioActiveListViewSet(TokenAuthMixin, ListModelMixin, GenericViewSet):
     serializer_class = PortfolioListSerializer
     queryset = Portfolio.objects.filter(status=Portfolio.STATUS_ACTIVE)
