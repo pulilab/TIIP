@@ -453,31 +453,31 @@ def process_approval_states(sender, instance, created, **kwargs):
 
         if sender == TechnologyPlatform:
             data_key = 'platforms'
-        elif sender == HardwarePlatform:
+        elif sender == HardwarePlatform:  # pragma: no cover
             data_key = 'hardware'
-        elif sender == NontechPlatform:
+        elif sender == NontechPlatform:  # pragma: no cover
             data_key = 'nontech'
-        elif sender == PlatformFunction:
+        elif sender == PlatformFunction:  # pragma: no cover
             data_key = 'functions'
-        else:
+        else:  # pragma: no cover
             return
 
         if instance.state == ApprovalState.DECLINED:
-            projects = Project.objects.filter(Q(**{f"data__{data_key}__contains": [{'id': instance.id}]}) |
-                                              Q(**{f"draft__{data_key}__contains": [{'id': instance.id}]}))
+            projects = Project.objects.filter(Q(**{f"data__{data_key}__contains": [instance.id]}) |
+                                              Q(**{f"draft__{data_key}__contains": [instance.id]}))
 
             for project in projects:
                 if project.public_id and data_key in project.data:
                     project.data[data_key] = \
-                        [item for item in project.data[data_key] if item['id'] != instance.id]
+                        [item for item in project.data[data_key] if item != instance.id]
                 if data_key in project.draft:
                     project.draft[data_key] = \
-                        [item for item in project.draft[data_key] if item['id'] != instance.id]
+                        [item for item in project.draft[data_key] if item != instance.id]
                 project.save(update_fields=['data', 'draft'])
 
-            notify_user_about_approval.apply_async(args=('decline', str(sender), instance.pk,))
+            notify_user_about_approval.apply_async(args=('decline', instance._meta.model_name, instance.pk,))
         elif instance.state == ApprovalState.APPROVED:
-            notify_user_about_approval.apply_async(args=('approve', str(sender), instance.pk,))
+            notify_user_about_approval.apply_async(args=('approve', instance._meta.model_name, instance.pk,))
 
 
 class Licence(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
