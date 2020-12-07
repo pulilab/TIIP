@@ -453,13 +453,13 @@ def process_approval_states(sender, instance, created, **kwargs):
 
         if sender == TechnologyPlatform:
             data_key = 'platforms'
-        elif sender == HardwarePlatform:
+        elif sender == HardwarePlatform:  # pragma: no cover
             data_key = 'hardware'
-        elif sender == NontechPlatform:
+        elif sender == NontechPlatform:  # pragma: no cover
             data_key = 'nontech'
-        elif sender == PlatformFunction:
+        elif sender == PlatformFunction:  # pragma: no cover
             data_key = 'functions'
-        else:
+        else:  # pragma: no cover
             return
 
         if instance.state == ApprovalState.DECLINED:
