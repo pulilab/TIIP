@@ -1,6 +1,7 @@
 import copy
 from datetime import datetime
 
+import mock
 import pytz
 from django.urls import reverse
 from django.utils import timezone
@@ -17,7 +18,8 @@ from project.admin import ProjectAdmin
 from user.models import Organisation, UserProfile
 from project.models import Project, DigitalStrategy, InteroperabilityLink, TechnologyPlatform, \
     Licence, InteroperabilityStandard, HISBucket, HSCChallenge, HSCGroup, ProjectApproval
-from project.tasks import send_project_approval_digest
+from project.tasks import send_project_approval_digest, notify_superusers_about_new_pending_approval, \
+    notify_user_about_approval
 
 from project.tests.setup import SetupTests, MockRequest
 from user.tests import create_profile_for_user
@@ -1002,3 +1004,25 @@ class ProjectTests(SetupTests):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()), 1)
         self.assertEqual([p['id'] for p in response.json()], [project_ids[2]])
+
+    @mock.patch('project.views.notify_superusers_about_new_pending_approval.apply_async')
+    def test_technology_platform_create(self, notify_superusers_about_new_pending_approval):
+
+        user = User.objects.create_user(username='test_user_100000', password='test_user_100000')
+        user_profile = UserProfile.objects.create(user=user, name="test_user_100000")
+
+        data = {
+            'name': 'test platform',
+            'state': TechnologyPlatform.APPROVED,  # should have no effect
+            'added_by': user_profile.id,  # should have no effect
+        }
+        url = reverse('technologyplatform-list')
+        response = self.test_user_client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.json())
+        data = response.json()
+        self.assertEqual(data['state'], TechnologyPlatform.PENDING)
+        self.assertEqual(data['added_by'], self.user_profile_id)
+
+        software = TechnologyPlatform.objects.get(id=data['id'])
+
+        notify_superusers_about_new_pending_approval.assert_called_once_with((software._meta.model_name, software.pk))
