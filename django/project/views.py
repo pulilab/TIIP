@@ -99,7 +99,8 @@ class ProjectPublicViewSet(ViewSet):
             ))
 
         return dict(
-            technology_platforms=TechnologyPlatform.objects.values('id', 'name').custom_ordered(),
+            technology_platforms=TechnologyPlatform.objects.exclude(state=ApprovalState.DECLINED)
+                .values('id', 'name', 'state').custom_ordered(),
             goal_areas=UNICEFGoal.objects.values('id', 'name', 'capability_level_question',
                                                  'capability_category_question', 'capability_subcategory_question')
             .custom_ordered(),
@@ -117,9 +118,12 @@ class ProjectPublicViewSet(ViewSet):
             sectors=UNICEFSector.objects.values('id', 'name').custom_ordered(),
             regional_priorities=RegionalPriority.objects.values('id', 'name', 'region').custom_ordered(),
             phases=Phase.objects.values('id', 'name').custom_ordered(),
-            hardware=HardwarePlatform.objects.values('id', 'name').custom_ordered(),
-            nontech=NontechPlatform.objects.values('id', 'name').custom_ordered(),
-            functions=PlatformFunction.objects.values('id', 'name').custom_ordered(),
+            hardware=HardwarePlatform.objects.exclude(state=ApprovalState.DECLINED)
+                .values('id', 'name', 'state').custom_ordered(),
+            nontech=NontechPlatform.objects.exclude(state=ApprovalState.DECLINED)
+                .values('id', 'name', 'state').custom_ordered(),
+            functions=PlatformFunction.objects.exclude(state=ApprovalState.DECLINED)
+                .values('id', 'name', 'state').custom_ordered(),
             cpd=CPD.objects.values('id', 'name').custom_ordered(),
             innovation_categories=InnovationCategory.objects.values('id', 'name').custom_ordered(),
             innovation_ways=InnovationWay.objects.values('id', 'name').custom_ordered(),
