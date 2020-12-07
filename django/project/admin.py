@@ -95,6 +95,21 @@ class ApprovalStateAdmin(AllObjectsAdmin):
     actions = (approve, decline)
 
 
+class TechnologyPlatformAdmin(ApprovalStateAdmin):
+    pass
+
+
+class HardwarePlatformAdmin(ApprovalStateAdmin):
+    pass
+
+
+class NontechPlatformAdmin(ApprovalStateAdmin):
+    pass
+
+
+class PlatformFunctionAdmin(ApprovalStateAdmin):
+    pass
+
 
 class ParentFilter(admin.SimpleListFilter):
     title = 'Parent Filter'
