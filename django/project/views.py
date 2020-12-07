@@ -99,12 +99,10 @@ class ProjectPublicViewSet(ViewSet):
             ))
 
         return dict(
-            technology_platforms=TechnologyPlatform.objects.exclude(state=ApprovalState.DECLINED)
-                .values('id', 'name', 'state').custom_ordered(),
+            result_areas=UNICEFResultArea.objects.values('id', 'name', 'goal_area_id').custom_ordered(),
             goal_areas=UNICEFGoal.objects.values('id', 'name', 'capability_level_question',
                                                  'capability_category_question', 'capability_subcategory_question')
-                .custom_ordered(),
-            result_areas=UNICEFResultArea.objects.values('id', 'name', 'goal_area_id').custom_ordered(),
+                .custom_ordered(),  # noqa: E131
             capability_levels=UNICEFCapabilityLevel.objects.values('id', 'name', 'goal_area_id').custom_ordered(),
             capability_categories=UNICEFCapabilityCategory.objects.values('id', 'name', 'goal_area_id')
                 .custom_ordered(),
@@ -118,6 +116,8 @@ class ProjectPublicViewSet(ViewSet):
             sectors=UNICEFSector.objects.values('id', 'name').custom_ordered(),
             regional_priorities=RegionalPriority.objects.values('id', 'name', 'region').custom_ordered(),
             phases=Phase.objects.values('id', 'name').custom_ordered(),
+            technology_platforms=TechnologyPlatform.objects.exclude(state=ApprovalState.DECLINED)
+                .values('id', 'name', 'state').custom_ordered(),
             hardware=HardwarePlatform.objects.exclude(state=ApprovalState.DECLINED)
                 .values('id', 'name', 'state').custom_ordered(),
             nontech=NontechPlatform.objects.exclude(state=ApprovalState.DECLINED)
