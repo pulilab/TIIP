@@ -449,7 +449,7 @@ class PlatformFunction(InvalidateCacheMixin, ApprovalState, ExtendedNameOrderedS
 @receiver(post_save, sender=TechnologyPlatform)
 def process_approval_states(sender, instance, created, **kwargs):
     if not created and instance.__original_state != instance.state:
-        from project.tasks import notify_user_about_software_approval
+        from project.tasks import notify_user_about_approval
 
         if sender == TechnologyPlatform:
             data_key = 'platforms'
@@ -475,9 +475,9 @@ def process_approval_states(sender, instance, created, **kwargs):
                         [item for item in project.draft[data_key] if item['id'] != instance.id]
                 project.save(update_fields=['data', 'draft'])
 
-            notify_user_about_software_approval.apply_async(args=('decline', instance.pk,))
+            notify_user_about_approval.apply_async(args=('decline', str(sender), instance.pk,))
         elif instance.state == ApprovalState.APPROVED:
-            notify_user_about_software_approval.apply_async(args=('approve', instance.pk,))
+            notify_user_about_approval.apply_async(args=('approve', str(sender), instance.pk,))
 
 
 class Licence(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
