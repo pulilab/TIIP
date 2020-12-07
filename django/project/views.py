@@ -123,16 +123,6 @@ class ProjectPublicViewSet(ViewSet):
             isc=ISC.objects.values('id', 'name').custom_ordered(),
         )
 
-    @staticmethod
-    def project_structure_export(request):
-        """
-        Used to sync objects to "Implementation Toolkit"
-        """
-        return Response(dict(
-            technology_platforms=TechnologyPlatform.objects.values('id', 'name'),
-            digital_strategies=DigitalStrategy.objects.filter(parent=None).values('id', 'name')
-        ))
-
 
 class ProjectListViewSet(TokenAuthMixin, ViewSet):
     @staticmethod
