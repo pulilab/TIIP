@@ -463,8 +463,8 @@ def process_approval_states(sender, instance, created, **kwargs):
             return
 
         if instance.state == ApprovalState.DECLINED:
-            projects = Project.objects.filter(Q(**{f"data__{data_key}__contains":[{'id': instance.id}]}) |
-                Q(**{f"draft__{data_key}__contains":[{'id': instance.id}]}))
+            projects = Project.objects.filter(Q(**{f"data__{data_key}__contains": [{'id': instance.id}]}) |
+                                              Q(**{f"draft__{data_key}__contains": [{'id': instance.id}]}))
 
             for project in projects:
                 if project.public_id and data_key in project.data:
