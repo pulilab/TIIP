@@ -57,11 +57,10 @@ export const getters = {
     state.unicef_sector.length === 0 ? [null] : state.unicef_sector,
   getRegionalPriorities: (state) =>
     state.regional_priorities.length === 0 ? [null] : state.regional_priorities,
-  getHardware: (state) =>
-    state.hardware.length === 0 ? [null] : state.hardware,
-  getNontech: (state) => (state.nontech.length === 0 ? [null] : state.nontech),
+  getHardware: (state) => (state.hardware.length === 0 ? [] : state.hardware),
+  getNontech: (state) => (state.nontech.length === 0 ? [] : state.nontech),
   getFunctions: (state) =>
-    state.functions.length === 0 ? [null] : state.functions,
+    state.functions.length === 0 ? [] : state.functions,
   getOverview: (state) => state.overview,
   getProgramTargets: (state) => state.program_targets,
   getProgramTargetsAchieved: (state) => state.program_targets_achieved,

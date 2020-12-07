@@ -21,12 +21,7 @@
         <b>{{ newItem.name }}</b>
       </span>
       <span class="left">
-        <small>
-          <translate>
-            DHA Admin will update the Software list to include your new software
-            name
-          </translate>
-        </small>
+        <small>{{ newInfoTitle }}</small>
       </span>
       <span class="right">
         <b>
@@ -61,6 +56,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   model: {
     prop: 'items',
@@ -73,6 +70,14 @@ export default {
     },
     options: {
       type: Array,
+      required: true,
+    },
+    source: {
+      type: String,
+      required: true,
+    },
+    newInfoTitle: {
+      type: String,
       required: true,
     },
   },
@@ -88,19 +93,22 @@ export default {
     },
   },
   mounted() {
-    this.availableItems = this.options
-      .filter(
-        (tp) => !this.items.some((s) => s === tp.id) || tp.id === this.items
-      )
-      .sort((a, b) => a.name.localeCompare(b.name))
+    const options = this.options
+    this.availableItems = options.sort((a, b) => a.name.localeCompare(b.name))
   },
   methods: {
+    ...mapActions({
+      setNewItem: 'projects/setNewItem',
+    }),
     async changeHandler(value) {
       // get a new item
       let newItem = Array.isArray(value) ? value[value.length - 1] : value
       if (typeof newItem === 'string') {
         // try to add new item
-        const result = await this.$emit('setNewItem', newItem)
+        const result = await this.setNewItem({
+          type: this.source,
+          name: newItem,
+        })
         newItem = typeof result === 'number' ? [result] : []
         'multiple' in this.$attrs
           ? this.$emit('change', [...value.slice(0, -1), ...newItem])
@@ -136,7 +144,7 @@ export default {
 
 .el-select-dropdown__item {
   &.requested {
-    background-color: #fffbdd;
+    background-color: #fffbdd !important;
     .left {
       float: left;
       width: 60%;
@@ -148,6 +156,7 @@ export default {
       color: @colorTextMuted;
       font-size: 10px;
       margin-top: 0px;
+      margin-right: 20px;
       svg {
         color: #f8a72a;
         margin-right: 6px;
