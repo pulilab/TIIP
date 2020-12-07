@@ -11,6 +11,10 @@
       :region="selectedRegion"
       :disabled="disabledCountries"
     />
+    <regional-select
+      v-model="selectedRegionalOffice"
+      :disabled="disabledCountries"
+    />
   </div>
 </template>
 
@@ -21,21 +25,30 @@ import { mapGettersActions } from '../../utilities/form.js'
 
 import CountrySelect from '../common/CountrySelect'
 import RegionSelect from '../common/RegionSelect'
+import RegionalSelect from '~/components/common/RegionalSelect'
 
 export default {
   components: {
     CountrySelect,
     CountryOfficeSelect,
     RegionSelect,
+    RegionalSelect,
   },
   computed: {
     ...mapGetters({
       dashboardType: 'dashboard/getDashboardType',
+      regionalOffices: 'projects/getRegionalOffices',
     }),
     ...mapState({
+      office: (state) => state.offices.office,
       offices: (state) => state.offices.offices,
     }),
     ...mapGettersActions({
+      selectedRegionalOffice: [
+        'dashboard',
+        'getFilteredRegionalOffice',
+        'setFilteredRegionalOffice',
+      ],
       selectedCountries: [
         'dashboard',
         'getFilteredCountries',
@@ -50,9 +63,7 @@ export default {
     }),
     disabledCountries() {
       return !!(
-        this.selectedCountryOffice &&
-        this.selectedCountryOffice.length > 0 &&
-        this.selectedCountryOffice !== null
+        this.selectedCountryOffice && this.selectedCountryOffice.length > 0
       )
     },
   },
@@ -73,12 +84,21 @@ export default {
         ? this.selectedCountries.filter((c) => c.unicef_region === newRegion.id)
         : this.selectedCountries
     },
-    selectedCountryOffice(newOffices) {
+    async selectedCountryOffice(newOffices) {
       this.selectedCountries = Array.isArray(newOffices)
         ? this.offices
             .filter((o) => newOffices.includes(o.id))
             .map((c) => c.country)
         : this.offices.filter((o) => newOffices === o.id).map((c) => c.country)
+
+      await this.$store.dispatch(
+        'offices/loadOffice',
+        newOffices ? newOffices[0] : 0
+      )
+      this.selectedRegionalOffice =
+        this.office && newOffices && newOffices.length === 1
+          ? [this.office.regional_office]
+          : null
     },
   },
   mounted() {

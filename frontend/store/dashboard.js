@@ -61,6 +61,7 @@ export const state = () => ({
   filteredCountries: [],
   filteredOffice: null,
   filteredCountryOffice: null,
+  filteredRegionalOffice: null,
   filteredRegion: null,
   selectAll: false,
   pageSize: 10,
@@ -165,6 +166,9 @@ export const getters = {
       ? [state.dashboardId]
       : state.filteredCountryOffice
   },
+  getFilteredRegionalOffice: (state) => {
+    return state.filteredRegionalOffice
+  },
   getInnovationCategories: (state) => state.innovationCategories,
   getGovernmentApproved: (state) => state.governmentApproved,
   getGovernmentFinanced: (state) => state.governmentFinanced,
@@ -211,6 +215,8 @@ export const getters = {
       cs: state.selectedCapabilitySubcategories,
       view_as: state.dashboardType !== 'user' ? state.dashboardType : undefined,
       sc: state.selectedColumns,
+      // new
+      ro: state.filteredRegionalOffice,
     }
   },
 }
@@ -344,6 +350,10 @@ export const actions = {
   },
   setFilteredRegion({ commit }, value) {
     commit('SET_FILTERED_REGION', value)
+    commit('SET_CURRENT_PAGE', 1)
+  },
+  setFilteredRegionalOffice({ commit }, value) {
+    commit('SET_FILTERED_REGIONAL_OFFICE', value)
     commit('SET_CURRENT_PAGE', 1)
   },
   setInnovationCategories({ commit }, value) {
@@ -513,6 +523,9 @@ export const mutations = {
   },
   SET_FILTERED_REGION: (state, value) => {
     state.filteredRegion = value
+  },
+  SET_FILTERED_REGIONAL_OFFICE: (state, value) => {
+    state.filteredRegionalOffice = value
   },
   SET_INNOVATION_CATEGORIES: (state, value) => {
     state.innovationCategories = value
