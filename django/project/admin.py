@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin import SimpleListFilter
 from django.db.models import Q
 from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
@@ -8,7 +9,7 @@ from .models import TechnologyPlatform, DigitalStrategy, HealthFocusArea, \
     HealthCategory, HSCChallenge, Project, HSCGroup, \
     UNICEFGoal, UNICEFResultArea, UNICEFCapabilityLevel, UNICEFCapabilityCategory, \
     UNICEFCapabilitySubCategory, UNICEFSector, RegionalPriority, Phase, HardwarePlatform, NontechPlatform, \
-    PlatformFunction, Portfolio, InnovationCategory, CPD, ProjectImportV2, InnovationWay, ISC
+    PlatformFunction, Portfolio, InnovationCategory, CPD, ProjectImportV2, InnovationWay, ISC, ApprovalState
 from core.utils import make_admin_list
 
 # This has to stay here to use the proper celery instance with the djcelery_email package
@@ -84,9 +85,15 @@ class ApprovalStateFilter(SimpleListFilter):
             self.used_parameters[self.parameter_name] = ApprovalState.PENDING
         return queryset.filter(state=self.value())
 
+
+class ApprovalStateAdmin(AllObjectsAdmin):
     list_display = [
-        'name',
+        'name', 'state', 'added_by'
     ]
+    ordering = search_fields = ['name']
+    list_filter = [ApprovalStateFilter]
+    actions = (approve, decline)
+
 
 
 class ParentFilter(admin.SimpleListFilter):
