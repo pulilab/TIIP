@@ -36,7 +36,22 @@ class ViewOnlyInlineMixin:
         return False
 
 
-class TechnologyPlatformAdmin(AllObjectsAdmin):
+def approve(modeladmin, request, queryset):
+    for obj in queryset:
+        obj.state = ApprovalState.APPROVED
+        obj.save()
+
+
+approve.short_description = "Approve selected items"
+
+
+def decline(modeladmin, request, queryset):
+    for obj in queryset:
+        obj.state = ApprovalState.DECLINED
+        obj.save()
+
+
+decline.short_description = "Decline selected items"
     list_display = [
         'name',
     ]
