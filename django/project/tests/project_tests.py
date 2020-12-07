@@ -1059,3 +1059,27 @@ class ProjectTests(SetupTests):
                 user.is_superuser = True
                 user.save()
 
+    @mock.patch('project.tasks.send_mail_wrapper', return_value=None)
+    def test_notify_user_about_software_approve(self, send_email):
+        software = TechnologyPlatform.objects.create(name='pending software', state=TechnologyPlatform.PENDING, 
+                                                     added_by_id=self.user_profile_id)
+        notify_user_about_approval.apply(args=('test', software._meta.model_name, software.id))
+        notify_user_about_approval.apply(args=('approve', software._meta.model_name, software.id))
+
+        send_email.assert_called_once()
+        call_args_list = send_email.call_args_list[0][1]
+        self.assertEqual(call_args_list['subject'], f"`{software.name}` you requested has been approved")
+        self.assertEqual(call_args_list['email_type'], 'object_approved')
+        self.assertEqual(call_args_list['context']['object_name'], software.name)
+
+    @mock.patch('project.tasks.send_mail_wrapper', return_value=None)
+    def test_notify_user_about_software_decline(self, send_email):
+        software = TechnologyPlatform.objects.create(name='pending software', state=TechnologyPlatform.PENDING, 
+                                                     added_by_id=self.user_profile_id)
+        notify_user_about_approval.apply(args=('decline', software._meta.model_name, software.id))
+
+        call_args_list = send_email.call_args_list[0][1]
+        self.assertEqual(call_args_list['subject'], f"`{software.name}` you requested has been declined")
+        self.assertEqual(call_args_list['email_type'], 'object_declined')
+        self.assertEqual(call_args_list['context']['object_name'], software.name)
+
