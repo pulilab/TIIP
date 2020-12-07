@@ -1083,3 +1083,46 @@ class ProjectTests(SetupTests):
         self.assertEqual(call_args_list['email_type'], 'object_declined')
         self.assertEqual(call_args_list['context']['object_name'], software.name)
 
+    @mock.patch('project.tasks.send_mail_wrapper', return_value=None)
+    def test_notify_user_about_software_approval_fail(self, send_email):
+        software = TechnologyPlatform.objects.create(name='pending software')
+        notify_user_about_approval.apply(args=('approve', software._meta.model_name, software.id))
+
+        send_email.assert_not_called()
+
+    @mock.patch('project.tasks.notify_user_about_approval.apply_async', return_value=None)
+    def test_software_decline(self, notify_user_about_approval):
+        software_1 = TechnologyPlatform.objects.create(name='approved software')
+        software_2 = TechnologyPlatform.objects.create(name='will be declined', state=TechnologyPlatform.PENDING)
+
+        data, org, country, country_office, d1, d2 = self.create_test_data(name="Test Project 10000")
+        data['project']['platforms'] = [software_1.id, software_2.id]
+
+        url = reverse("project-create", kwargs={"country_office_id": country_office.id})
+        response = self.test_user_client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.json())
+
+        project = Project.objects.get(pk=response.json()['id'])
+        self.assertEqual(len(project.draft['platforms']), 2)
+
+        url = reverse("project-publish", kwargs={"project_id": project.id,
+                                                 "country_office_id": country_office.id})
+        response = self.test_user_client.put(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
+
+        project.refresh_from_db()
+        self.assertEqual(len(project.draft['platforms']), 2)
+        self.assertEqual(len(project.data['platforms']), 2)
+
+        # decline software
+        software_2.state = TechnologyPlatform.DECLINED
+        software_2.save()
+
+        project.refresh_from_db()
+        self.assertEqual(len(project.draft['platforms']), 1)
+        self.assertEqual(project.draft['platforms'][0], software_1.id)
+        self.assertEqual(len(project.data['platforms']), 1)
+        self.assertEqual(project.data['platforms'][0], software_1.id)
+
+        notify_user_about_approval.assert_called_once_with(args=('decline', 
+                                                                 software_2._meta.model_name, software_2.pk))
