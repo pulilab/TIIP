@@ -398,11 +398,29 @@ class InteroperabilityLink(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedM
     pre = models.CharField(max_length=255)
 
 
-class TechnologyPlatform(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
+class ApprovalState(models.Model):
+    APPROVED = 1
+    PENDING = 2
+    DECLINED = 3
+
+    STATES = (
+        (APPROVED, _("Approved")),
+        (PENDING, _("Pending")),
+        (DECLINED, _("Declined")),
+    )
+
+    state = models.IntegerField(choices=STATES, default=APPROVED)
+    added_by = models.ForeignKey(UserProfile, blank=True, null=True, on_delete=models.SET_NULL)
+
     class Meta:
-        verbose_name = 'Platform'
-        verbose_name_plural = 'Platforms'
-        ordering = ['name']
+        abstract = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__important_fields = ['state']
+        for field in self.__important_fields:
+            setattr(self, '__original_%s' % field, getattr(self, field))
+
 
 
 class Licence(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
