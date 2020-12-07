@@ -475,9 +475,9 @@ def process_approval_states(sender, instance, created, **kwargs):
                         [item for item in project.draft[data_key] if item['id'] != instance.id]
                 project.save(update_fields=['data', 'draft'])
 
-            notify_user_about_approval.apply_async(args=('decline', str(sender), instance.pk,))
+            notify_user_about_approval.apply_async(args=('decline', instance._meta.model_name, instance.pk,))
         elif instance.state == ApprovalState.APPROVED:
-            notify_user_about_approval.apply_async(args=('approve', str(sender), instance.pk,))
+            notify_user_about_approval.apply_async(args=('approve', instance._meta.model_name, instance.pk,))
 
 
 class Licence(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
