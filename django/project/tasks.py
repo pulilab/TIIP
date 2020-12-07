@@ -1,28 +1,18 @@
-import json
-import logging
-import traceback
 from collections import defaultdict
-from datetime import datetime
-from urllib.parse import urljoin
-
-import requests
 from celery.utils.log import get_task_logger
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.mail import send_mail
-from django.template import loader
 from django.utils import timezone
-from django.utils.translation import ugettext
 from django.utils.translation import ugettext_lazy as _
-from rest_framework.exceptions import ValidationError
+from django.urls import reverse
+from django.apps import apps
 
 from core.utils import send_mail_wrapper
 from country.models import Country, Donor, DonorCustomQuestion
 from scheduler.celery import app
-from user.models import Organisation, UserProfile
-from .models import Project, InteroperabilityLink, ReviewScore
-from .serializers import ProjectDraftSerializer
+from user.models import UserProfile
+from .models import Project, ReviewScore, TechnologyPlatform
 
 logger = get_task_logger(__name__)
 
