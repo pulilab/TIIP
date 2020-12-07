@@ -52,6 +52,38 @@ def decline(modeladmin, request, queryset):
 
 
 decline.short_description = "Decline selected items"
+
+
+class ApprovalStateFilter(SimpleListFilter):
+    title = 'State'
+
+    parameter_name = 'state'
+
+    def lookups(self, request, model_admin):
+        return (ApprovalState.APPROVED, ApprovalState.STATES[0][1]), \
+               (ApprovalState.PENDING, ApprovalState.STATES[1][1]), \
+               (ApprovalState.DECLINED, ApprovalState.STATES[2][1])
+
+    def choices(self, cl):  # pragma: no cover
+        for lookup, title in self.lookup_choices:
+            try:
+                selected = int(self.value()) == lookup
+            except TypeError:
+                selected = None
+
+            yield {
+                'selected': selected,
+                'query_string': cl.get_query_string({
+                    self.parameter_name: lookup,
+                }, []),
+                'display': title,
+            }
+
+    def queryset(self, request, queryset):
+        if self.value() is None:
+            self.used_parameters[self.parameter_name] = ApprovalState.PENDING
+        return queryset.filter(state=self.value())
+
     list_display = [
         'name',
     ]
