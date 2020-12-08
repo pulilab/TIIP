@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'ordered_model',
     'rosetta',
+    'adminsortable2',
     'corsheaders',
     'djcelery_email',
     'simple_history',
