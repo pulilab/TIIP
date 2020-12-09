@@ -179,30 +179,28 @@
               </span>
             </p>
 
-            <el-col :span="6">
+            <el-row type="flex">
               <safe-date-picker
                 v-model="end_date"
                 v-validate="rules.end_date"
                 :placeholder="$gettext('Pick a date (optional)') | translate"
                 data-vv-name="end_date"
                 data-vv-as="End date"
-                class="Date"
                 align="left"
               />
-            </el-col>
 
-            <el-col :span="18">
               <el-input
                 key="end_date_note"
                 v-model="end_date_note"
                 v-validate="rules.end_date_note"
+                class="note"
                 data-vv-name="end_date_note"
                 data-vv-as="End date note"
                 :placeholder="$gettext('Add note (optional)') | translate"
               >
                 <i slot="prefix" class="el-input__icon el-icon-document" />
               </el-input>
-            </el-col>
+            </el-row>
           </custom-required-form-item>
         </el-col>
       </el-row>
@@ -233,6 +231,7 @@ export default {
   computed: {
     ...mapState({
       stagesDraft: (state) => state.project.stagesDraft,
+      stateObj: (state) => state.project,
     }),
     ...mapGettersActions({
       start_date: ['project', 'getStartDate', 'setStartDate', 0],
@@ -410,8 +409,11 @@ export default {
   .stage__input--full {
     width: 100%;
   }
+  .note {
+    width: 518px;
+    margin-left: auto;
+  }
 }
-
 // animation toggle
 .toggle-enter {
   opacity: 0;

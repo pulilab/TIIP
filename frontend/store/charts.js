@@ -28,7 +28,7 @@ export const actions = {
     const today = formatDate(new Date())
 
     const labels = [start].concat(
-      stages.filter((i) => i.checked).map((i) => i.date)
+      stages.filter((i) => i.checked).map((i) => formatDate(i.date))
     )
     // const lastLabel = labels[labels.length - 1];
 

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import get from 'lodash/get'
-import { apiReadParser, apiWriteParser, APIError } from '../utilities/api'
-import { projectFields, epochCheck, newStages } from '../utilities/projects'
+import { apiReadParser, apiWriteParser, APIError } from '@/utilities/api'
+import { projectFields, epochCheck, newStages } from '@/utilities/projects'
 
 const cleanState = () => ({
   ...projectFields(),
@@ -40,9 +40,8 @@ export const getters = {
   getEndDateNote: (state) => state.end_date_note,
   getStages: (state) => state.stages,
   getStagesDraft: (state, getters, rootState) => {
-    if (!('stageDraft' in state)) {
+    if (!('stagesDraft' in state)) {
       // initial set
-      console.log(rootState.projects.projectStructure)
       if ('stages' in rootState.projects.projectStructure) {
         return rootState.projects.projectStructure.stages.map((item) => {
           const included =
@@ -151,7 +150,6 @@ export const getters = {
       (ca) => ca.question_id === id
     )
   },
-
   getPublished: (state) => ({
     ...state.published,
     team: state.team,
@@ -162,7 +160,7 @@ export const getters = {
 }
 
 export const actions = {
-  async loadProject({ commit, dispatch, rootGetters }, id) {
+  async loadProject({ state, commit, dispatch, rootGetters }, id) {
     const userProject = rootGetters['projects/getUserProjectList'].find(
       (p) => p.id === id
     )
@@ -181,10 +179,6 @@ export const actions = {
     if (data.published) {
       const published = { ...clean, ...apiReadParser(data.published) }
       published.donors.forEach((d) => donorsToFetch.add(d))
-      commit('SET_STAGES', published.stages)
-      commit('SET_START_DATE', new Date(published.start_date))
-      commit('SET_END_DATE', new Date(published.end_date))
-      commit('SET_END_DATE_NOTE', published.end_date_note)
       commit('SET_PUBLISHED', Object.freeze(published))
     }
     await Promise.all([
@@ -468,12 +462,14 @@ export const actions = {
     await dispatch('setProject', { data, id })
     dispatch('setLoading', false)
   },
-  async publishProject({ getters, dispatch, commit, rootGetters }, id) {
+  async publishProject({ state, getters, dispatch, commit, rootGetters }, id) {
     dispatch('setLoading', 'publish')
     const draft = getters.getProjectData
     draft.organisation = rootGetters['system/getUnicefOrganisation'].id
     draft.donors = [rootGetters['system/getUnicefDonor'].id]
     draft.stages = newStages(state.stagesDraft)
+    // hack to avoid phase error
+    draft.phase = 0
     const parsed = apiWriteParser(
       draft,
       getters.getAllCountryAnswers,
@@ -527,7 +523,7 @@ export const actions = {
     dispatch('projects/updateProject', data, { root: true })
     dispatch('setLoading', false)
   },
-  loadStagesDraft({ getters, dispatch }) {
+  loadStagesDraft({ state, getters, dispatch }) {
     dispatch('setStagesDraft', getters.getStagesDraft)
   },
 }
@@ -636,8 +632,8 @@ export const mutations = {
     state.country_office = get(project, 'country_office', null)
     state.modified = get(project, 'modified', null)
     state.implementation_overview = get(project, 'implementation_overview', '')
-    state.start_date = get(project, 'start_date', '')
-    state.end_date = get(project, 'end_date', '')
+    state.start_date = new Date(get(project, 'start_date', ''))
+    state.end_date = new Date(get(project, 'end_date', ''))
     state.research = project.research
     state.end_date_note = get(project, 'end_date_note', '')
     state.stages = get(project, 'stages', [])
