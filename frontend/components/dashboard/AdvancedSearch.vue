@@ -25,6 +25,7 @@
         class="MultiSelectorFilter"
         source="getRegionalPriorities"
         :placeholder="$gettext('Regional Priorities') | translate"
+        :filter="regionalPrioritiesFilter"
       />
       <multi-selector
         v-model="innovationWays"
@@ -220,6 +221,8 @@ export default {
   },
   computed: {
     ...mapGetters({
+      regionalPrioritiesList: 'projects/getRegionalPriorities',
+      region: 'dashboard/getFilteredRegion',
       goalAreas: 'projects/getGoalAreas',
     }),
     ...mapGettersActions({
@@ -302,6 +305,14 @@ export default {
         0,
       ],
     }),
+    regionalPrioritiesFilter() {
+      if (this.region === null) {
+        return null
+      }
+      return this.regionalPrioritiesList
+        .filter(({ region }) => region === this.region)
+        .map(({ id }) => id)
+    },
     selectedGoalAreaDetails() {
       if (this.selectedGoal) {
         return this.goalAreas.find((g) => g.id === this.selectedGoal)

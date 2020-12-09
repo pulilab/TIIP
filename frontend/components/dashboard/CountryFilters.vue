@@ -81,6 +81,9 @@ export default {
       }
     },
     selectedRegion(newRegion) {
+      if (newRegion === '') {
+        this.selectedRegion = null
+      }
       this.selectedCountries = Number.isInteger(newRegion)
         ? this.selectedCountries.filter((c) => c.unicef_region === newRegion.id)
         : this.selectedCountries

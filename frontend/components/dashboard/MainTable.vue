@@ -66,6 +66,23 @@
       </el-table-column>
 
       <el-table-column
+        v-if="selectedColumns.includes('18')"
+        :resizable="false"
+        :label="$gettext('Regional Office') | translate"
+        sortable="custom"
+        width="180"
+      >
+        <template slot-scope="scope">
+          TODO
+          <platforms-list
+            class="SimpleList"
+            :platforms="scope.row.regional_office"
+            source="getRegionalOffices"
+          />
+        </template>
+      </el-table-column>
+
+      <el-table-column
         v-if="selectedColumns.includes('2')"
         :resizable="false"
         :label="$gettext('Country') | translate"
@@ -105,6 +122,22 @@
       </el-table-column>
 
       <el-table-column
+        v-if="selectedColumns.includes('19')"
+        :resizable="false"
+        :label="$gettext('UNICEF Sector') | translate"
+        sortable="custom"
+        width="180"
+      >
+        <template slot-scope="scope">
+          <platforms-list
+            class="SimpleList"
+            :platforms="scope.row.unicef_sector"
+            source="getSectors"
+          />
+        </template>
+      </el-table-column>
+
+      <el-table-column
         v-if="selectedColumns.includes('11')"
         :resizable="false"
         :label="$gettext('Goal Area') | translate"
@@ -112,6 +145,38 @@
       >
         <template slot-scope="scope">
           <GoalAreaItem :value="scope.row.goal_area" />
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        v-if="selectedColumns.includes('26')"
+        :resizable="false"
+        :label="$gettext('Regional Priorities') | translate"
+        sortable="custom"
+        width="180"
+      >
+        <template slot-scope="scope">
+          <platforms-list
+            class="SimpleList"
+            :platforms="scope.row.regional_priorities"
+            source="getRegionalPriorities"
+          />
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        v-if="selectedColumns.includes('20')"
+        :resizable="false"
+        :label="$gettext('Innovation Ways') | translate"
+        sortable="custom"
+        width="180"
+      >
+        <template slot-scope="scope">
+          <platforms-list
+            class="SimpleList"
+            :platforms="scope.row.innovation_ways"
+            source="getInnovationWays"
+          />
         </template>
       </el-table-column>
 
@@ -126,6 +191,23 @@
             class="SimpleList"
             :platforms="scope.row.innovation_categories"
             source="getInnovationCategories"
+          />
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        v-if="selectedColumns.includes('21')"
+        :resizable="false"
+        :label="$gettext('Phase of Initiative') | translate"
+        sortable="custom"
+        width="180"
+      >
+        <template slot-scope="scope">
+          TODO
+          <platforms-list
+            class="SimpleList"
+            :platforms="scope.row.stage"
+            source="getPhases"
           />
         </template>
       </el-table-column>
@@ -257,6 +339,72 @@
             :row="scope.row"
             :type="col.type"
             :limit="3"
+          />
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        v-if="selectedColumns.includes('22')"
+        :resizable="false"
+        :label="$gettext('Hardware Platforms') | translate"
+        sortable="custom"
+        width="180"
+      >
+        <template slot-scope="scope">
+          <platforms-list
+            class="SimpleList"
+            :platforms="scope.row.hardware"
+            source="getHardware"
+          />
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        v-if="selectedColumns.includes('23')"
+        :resizable="false"
+        :label="
+          $gettext('Programme Innovation/Non-Technology Platforms') | translate
+        "
+        sortable="custom"
+        width="180"
+      >
+        <template slot-scope="scope">
+          <platforms-list
+            class="SimpleList"
+            :platforms="scope.row.nontech"
+            source="getNontech"
+          />
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        v-if="selectedColumns.includes('24')"
+        :resizable="false"
+        :label="$gettext('Platform/Product Function') | translate"
+        sortable="custom"
+        width="180"
+      >
+        <template slot-scope="scope">
+          <platforms-list
+            class="SimpleList"
+            :platforms="scope.row.functions"
+            source="getFunctions"
+          />
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        v-if="selectedColumns.includes('25')"
+        :resizable="false"
+        :label="$gettext('Information Security Classification') | translate"
+        sortable="custom"
+        width="180"
+      >
+        <template slot-scope="scope">
+          <platforms-list
+            class="SimpleList"
+            :platforms="scope.row.isc"
+            source="getInfoSec"
           />
         </template>
       </el-table-column>

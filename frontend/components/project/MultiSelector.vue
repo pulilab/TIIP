@@ -65,6 +65,16 @@ export default {
       return this.sourceList.filter(({ id }) => this.filter.includes(id))
     },
   },
+  watch: {
+    filter(newFilter) {
+      if (!this.platforms) {
+        return
+      }
+      this.changeHandler(
+        this.platforms.filter((value) => (newFilter || []).includes(value))
+      )
+    },
+  },
   methods: {
     changeHandler(value) {
       this.$emit('change', value)
