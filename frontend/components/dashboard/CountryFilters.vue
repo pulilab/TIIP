@@ -11,9 +11,11 @@
       :region="selectedRegion"
       :disabled="disabledCountries"
     />
-    <regional-select
+    <multi-selector
       v-model="selectedRegionalOffice"
       :disabled="disabledCountries"
+      :placeholder="$gettext('Multicountry or Regional Office ') | translate"
+      source="getRegionalOffices"
     />
   </div>
 </template>
@@ -25,14 +27,14 @@ import { mapGettersActions } from '../../utilities/form.js'
 
 import CountrySelect from '../common/CountrySelect'
 import RegionSelect from '../common/RegionSelect'
-import RegionalSelect from '~/components/common/RegionalSelect'
+import MultiSelector from '~/components/project/MultiSelector'
 
 export default {
   components: {
+    MultiSelector,
     CountrySelect,
     CountryOfficeSelect,
     RegionSelect,
-    RegionalSelect,
   },
   computed: {
     ...mapGetters({
@@ -40,7 +42,6 @@ export default {
       regionalOffices: 'projects/getRegionalOffices',
     }),
     ...mapState({
-      office: (state) => state.offices.office,
       offices: (state) => state.offices.offices,
     }),
     ...mapGettersActions({
@@ -84,21 +85,19 @@ export default {
         ? this.selectedCountries.filter((c) => c.unicef_region === newRegion.id)
         : this.selectedCountries
     },
-    async selectedCountryOffice(newOffices) {
+    selectedCountryOffice(newOffices) {
       this.selectedCountries = Array.isArray(newOffices)
         ? this.offices
             .filter((o) => newOffices.includes(o.id))
             .map((c) => c.country)
         : this.offices.filter((o) => newOffices === o.id).map((c) => c.country)
 
-      await this.$store.dispatch(
-        'offices/loadOffice',
-        newOffices ? newOffices[0] : 0
-      )
       this.selectedRegionalOffice =
-        this.office && newOffices && newOffices.length === 1
-          ? [this.office.regional_office]
-          : null
+        newOffices && newOffices.length > 0
+          ? this.offices
+              .filter((o) => newOffices.includes(o.id))
+              .map((c) => c.regional_office)
+          : []
     },
   },
   mounted() {

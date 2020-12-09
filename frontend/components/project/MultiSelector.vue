@@ -3,6 +3,7 @@
     :value="platforms"
     multiple
     filterable
+    :disabled="disabled"
     :placeholder="placeholder || $gettext('Select from list') | translate"
     popper-class="PlatformSelectorDropdown"
     class="PlatformSelector"
@@ -11,7 +12,7 @@
     @blur="$emit('blur')"
   >
     <el-option
-      v-for="platform in sourceList"
+      v-for="platform in filteredList"
       :key="platform.id"
       :label="platform.name"
       :value="platform.id"
@@ -44,10 +45,24 @@ export default {
       type: String,
       default: '',
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    filter: {
+      type: Array,
+      default: null,
+    },
   },
   computed: {
     sourceList() {
       return this.$store.getters['projects/' + this.source]
+    },
+    filteredList() {
+      if (this.filter === null) {
+        return this.sourceList
+      }
+      return this.sourceList.filter(({ id }) => this.filter.includes(id))
     },
   },
   methods: {

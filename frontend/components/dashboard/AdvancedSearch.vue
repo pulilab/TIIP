@@ -4,6 +4,12 @@
     <search-box />
     <country-filters />
     <div class="UnicefSingleSelection">
+      <multi-selector
+        v-model="unicefSectors"
+        class="MultiSelectorFilter"
+        source="getSectors"
+        :placeholder="$gettext('Unicef Sectors') | translate"
+      />
       <goal-areas-selector
         v-model="selectedGoal"
         :placeholder="$gettext('Goal Area') | translate"
@@ -13,6 +19,18 @@
         v-model="selectedResult"
         :goal-area="selectedGoal"
         :placeholder="$gettext('Result Area') | translate"
+      />
+      <multi-selector
+        v-model="regionalPriorities"
+        class="MultiSelectorFilter"
+        source="getRegionalPriorities"
+        :placeholder="$gettext('Regional Priorities') | translate"
+      />
+      <multi-selector
+        v-model="innovationWays"
+        class="MultiSelectorFilter"
+        source="getInnovationWays"
+        :placeholder="$gettext('Innovation Ways') | translate"
       />
       <multi-selector
         v-model="innovationCategories"
@@ -128,6 +146,43 @@
         />
       </filter-item>
     </div>
+    <div>
+      <multi-selector
+        v-model="phaseOfInitiative"
+        :placeholder="$gettext('Phase of Initiative') | translate"
+        source="getPhases"
+        class="MultiSelectorFilter AddMargin"
+      />
+      <multi-selector
+        v-model="hardwarePlatforms"
+        class="MultiSelectorFilter AddMargin"
+        source="getHardware"
+        :placeholder="$gettext('Hardware Platforms') | translate"
+      />
+      <multi-selector
+        v-model="programmePlatforms"
+        class="MultiSelectorFilter AddMargin"
+        source="getNontech"
+        :placeholder="
+          $gettext('Programme Innovation/Non-Technology Platforms') | translate
+        "
+      />
+      <multi-selector
+        v-model="platformFunctions"
+        class="MultiSelectorFilter AddMargin"
+        source="getFunctions"
+        :placeholder="$gettext('Platform/Product Function') | translate"
+      />
+      <multi-selector
+        v-model="informationSecurity"
+        class="MultiSelectorFilter AddMargin"
+        source="getInfoSec"
+        :placeholder="
+          $gettext('Information Security Classification as per Classi')
+            | translate
+        "
+      />
+    </div>
   </div>
 </template>
 
@@ -202,10 +257,48 @@ export default {
         'setSelectedPlatforms',
         0,
       ],
+      unicefSectors: ['dashboard', 'getUnicefSectors', 'setUnicefSectors', 0],
       innovationCategories: [
         'dashboard',
         'getInnovationCategories',
         'setInnovationCategories',
+        0,
+      ],
+      regionalPriorities: [
+        'dashboard',
+        'getRegionalPriorities',
+        'setRegionalPriorities',
+        0,
+      ],
+      innovationWays: [
+        'dashboard',
+        'getInnovationWays',
+        'setInnovationWays',
+        0,
+      ],
+      phaseOfInitiative: ['dashboard', 'getPhase', 'setPhase', 0],
+      programmePlatforms: [
+        'dashboard',
+        'getProgrammePlatforms',
+        'setProgrammePlatforms',
+        0,
+      ],
+      platformFunctions: [
+        'dashboard',
+        'getPlatformFunctions',
+        'setPlatformFunctions',
+        0,
+      ],
+      informationSecurity: [
+        'dashboard',
+        'getInformationSecurity',
+        'setInformationSecurity',
+        0,
+      ],
+      hardwarePlatforms: [
+        'dashboard',
+        'getHardwarePlatforms',
+        'setHardwarePlatforms',
         0,
       ],
     }),
@@ -240,6 +333,9 @@ export default {
   min-height: 100%;
   border-left: 1px solid #eae6e1;
   background-color: @colorWhite;
+  .AddMargin {
+    margin-bottom: 12px;
+  }
   > div {
     padding: 21px;
     border-bottom: 1px solid #eae6e1;
