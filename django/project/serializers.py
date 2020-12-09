@@ -15,7 +15,7 @@ from project.utils import remove_keys
 from tiip.validators import EmailEndingValidator
 from user.models import UserProfile
 from .models import Project, ProjectApproval, ImportRow, ProjectImportV2, Portfolio, ProblemStatement, \
-    ProjectPortfolioState, ReviewScore
+    ProjectPortfolioState, ReviewScore, TechnologyPlatform, HardwarePlatform, NontechPlatform, PlatformFunction
 
 
 class PartnerSerializer(serializers.Serializer):
@@ -42,6 +42,12 @@ class LinkSerializer(serializers.Serializer):
     link_url = serializers.URLField(max_length=2048, required=False, allow_blank=True)
 
 
+class StageSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=True)
+    date = serializers.CharField(required=False, max_length=10, allow_null=True)
+    note = serializers.CharField(required=False, max_length=256, allow_null=True)
+
+
 class ProjectPublishedSerializer(serializers.Serializer):
     # UNICEF Office and co
     country_office = serializers.IntegerField(min_value=1, max_value=100000, required=True)
@@ -55,6 +61,7 @@ class ProjectPublishedSerializer(serializers.Serializer):
     implementation_overview = serializers.CharField(max_length=1024, required=False)
     start_date = serializers.CharField(max_length=256, required=True)
     end_date = serializers.CharField(max_length=256, required=False, allow_blank=True)
+    end_date_note = serializers.CharField(max_length=256, required=False, allow_blank=True)
     contact_name = serializers.CharField(max_length=256)
     contact_email = serializers.EmailField()
 
@@ -115,6 +122,8 @@ class ProjectPublishedSerializer(serializers.Serializer):
     hsc_challenges = serializers.ListField(
         child=serializers.IntegerField(), max_length=64, min_length=0, allow_empty=True, required=False)
     donors = serializers.ListField(child=serializers.IntegerField(), max_length=32, required=False)
+
+    stages = StageSerializer(many=True, required=False, allow_empty=True)
 
     class Meta:
         model = Project
@@ -414,6 +423,50 @@ class ProjectImportV2Serializer(serializers.ModelSerializer):
         for row in rows:
             ImportRow.objects.get(id=row['id']).update(data=row.get('data'))
         return instance
+
+
+class TechnologyPlatformCreateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=512, 
+                                 validators=[UniqueValidator(
+                                     queryset=TechnologyPlatform.objects.all(), lookup='iexact')])
+
+    class Meta:
+        model = TechnologyPlatform
+        fields = '__all__'
+        read_only_fields = ('is_active', 'state', 'added_by')
+
+
+class HardwarePlatformCreateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=512, 
+                                 validators=[UniqueValidator(
+                                     queryset=HardwarePlatform.objects.all(), lookup='iexact')])
+
+    class Meta:
+        model = HardwarePlatform
+        fields = '__all__'
+        read_only_fields = ('is_active', 'state', 'added_by')
+
+
+class NontechPlatformCreateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=512,
+                                 validators=[UniqueValidator(
+                                     queryset=NontechPlatform.objects.all(), lookup='iexact')])
+
+    class Meta:
+        model = NontechPlatform
+        fields = '__all__'
+        read_only_fields = ('is_active', 'state', 'added_by')
+
+
+class PlatformFunctionCreateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=512, 
+                                 validators=[UniqueValidator(
+                                     queryset=PlatformFunction.objects.all(), lookup='iexact')])
+
+    class Meta:
+        model = PlatformFunction
+        fields = '__all__'
+        read_only_fields = ('is_active', 'state', 'added_by')
 
 
 class ProblemStatementSerializer(serializers.ModelSerializer):

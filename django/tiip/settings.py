@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'ordered_model',
     'rosetta',
+    'adminsortable2',
     'corsheaders',
     'djcelery_email',
     'simple_history',
@@ -299,14 +300,6 @@ if SITE_ID in [3, 4]:
             "schedule": datetime.timedelta(days=30),
         },
     }
-    if ODK_SYNC_ENABLED:
-        CELERYBEAT_SCHEDULE.update(
-            {
-                "sync_project_from_odk": {
-                    "task": 'sync_project_from_odk',
-                    "schedule": datetime.timedelta(hours=ODK_SYNC_PERIOD)
-                }
-            })
 
     DEBUG = False
 
