@@ -116,6 +116,8 @@ export const getters = {
       : [],
   getPhases: (state) =>
     state.projectStructure.phases ? [...state.projectStructure.phases] : [],
+  getStages: (state) =>
+    state.projectStructure.stages ? [...state.projectStructure.stages] : [],
   getCpd: (state) =>
     state.projectStructure.cpd ? [...state.projectStructure.cpd] : [],
   getInnovationCategories: (state) =>

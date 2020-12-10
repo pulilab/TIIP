@@ -152,7 +152,7 @@
       <multi-selector
         v-model="phaseOfInitiative"
         :placeholder="$gettext('Phase of Initiative') | translate"
-        source="getPhases"
+        source="getStages"
         class="MultiSelectorFilter AddMargin"
       />
       <multi-selector
