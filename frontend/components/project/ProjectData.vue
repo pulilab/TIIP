@@ -139,6 +139,7 @@
           </simple-field>
 
           <simple-field
+            v-show="!hideInnovationCategories"
             :header="$gettext('Innovation category(ies)') | translate"
           >
             <platforms-list
@@ -420,6 +421,7 @@ export default {
       linkTypes: 'system/getLinkTypes',
       modified: 'project/getModified',
       regionalOffices: 'projects/getRegionalOffices',
+      innovationWays: 'projects/getInnovationWays',
     }),
     location() {
       const { selectedRegionOffice, office, country, selectedRegion } = this
@@ -481,6 +483,10 @@ export default {
     },
     orderedLinkList() {
       return orderBy(this.project.links, ['link_type'], ['asc'])
+    },
+    hideInnovationCategories() {
+      const na = find(this.innovationWays, ({ name }) => name === 'N/A')
+      return na && this.project.innovation_ways.includes(na.id)
     },
   },
   mounted() {

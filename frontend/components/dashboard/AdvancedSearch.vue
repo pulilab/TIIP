@@ -34,6 +34,7 @@
         :placeholder="$gettext('Innovation Ways') | translate"
       />
       <multi-selector
+        v-show="!hideInnovationCategories"
         v-model="innovationCategories"
         class="MultiSelectorFilter"
         source="getInnovationCategories"
@@ -203,6 +204,7 @@ import GoalAreasSelector from '@/components/common/GoalAreasSelector'
 import ResultAreasSelector from '@/components/common/ResultAreasSelector'
 import MultiSelector from '@/components/project/MultiSelector'
 import { mapMutations, mapGetters } from 'vuex'
+import find from 'lodash/find'
 
 export default {
   components: {
@@ -222,6 +224,7 @@ export default {
   computed: {
     ...mapGetters({
       regionalPrioritiesList: 'projects/getRegionalPriorities',
+      innovationWaysList: 'projects/getInnovationWays',
       region: 'dashboard/getFilteredRegion',
       goalAreas: 'projects/getGoalAreas',
     }),
@@ -318,6 +321,17 @@ export default {
         return this.goalAreas.find((g) => g.id === this.selectedGoal)
       }
       return null
+    },
+    hideInnovationCategories() {
+      const na = find(this.innovationWaysList, ({ name }) => name === 'N/A')
+      return na && this.innovationWays.includes(na.id)
+    },
+  },
+  watch: {
+    hideInnovationCategories(hide) {
+      if (hide) {
+        this.innovationCategories = []
+      }
     },
   },
   mounted() {

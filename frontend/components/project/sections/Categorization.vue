@@ -339,7 +339,7 @@
           </custom-required-form-item>
         </el-col>
       </el-row>
-      <el-row :gutter="20" type="flex">
+      <el-row v-show="!hideInnovationCategories" :gutter="20" type="flex">
         <el-col :span="24">
           <custom-required-form-item
             :error="errors.first('innovation_categories')"
@@ -377,6 +377,7 @@
 </template>
 
 <script>
+import find from 'lodash/find'
 import { mapGetters } from 'vuex'
 import { mapGettersActions } from '@/utilities/form'
 // components
@@ -412,6 +413,7 @@ export default {
       getCapabilityCategoriesItems: 'projects/getCapabilityCategories',
       getCapabilitySubcategoriesItems: 'projects/getCapabilitySubcategories',
       country_office: 'project/getCountryOffice',
+      innovationWays: 'projects/getInnovationWays',
     }),
     ...mapGettersActions({
       goal_area: ['project', 'getGoalArea', 'setGoalArea', 0],
@@ -459,6 +461,17 @@ export default {
     }),
     shoDHAFields() {
       return this.goal_area === 1
+    },
+    hideInnovationCategories() {
+      const na = find(this.innovationWays, ({ name }) => name === 'N/A')
+      return na && this.innovation_ways.includes(na.id)
+    },
+  },
+  watch: {
+    hideInnovationCategories(hide) {
+      if (hide) {
+        this.innovation_categories = []
+      }
     },
   },
   methods: {
