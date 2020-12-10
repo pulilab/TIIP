@@ -55,7 +55,6 @@ class ProjectPublicViewSet(ViewSet):
         `currencies`  
         `sectors` = UNICEF Sectors  
         `regional_priorities` = Regional Priorities  
-        `phases` = Phase of Initiative  
         `hardware` = Hardware Platform(s) and Physical Product(s)  
         `nontech` = Programme Innovation(s) and Non-Technology Platform(s)  
         `functions` = Function(s) of Platform  
@@ -115,7 +114,6 @@ class ProjectPublicViewSet(ViewSet):
             currencies=Currency.objects.values('id', 'name', 'code'),
             sectors=UNICEFSector.objects.values('id', 'name').custom_ordered(),
             regional_priorities=RegionalPriority.objects.values('id', 'name', 'region').custom_ordered(),
-            phases=Phase.objects.values('id', 'name').custom_ordered(),
             technology_platforms=TechnologyPlatform.objects.exclude(state=ApprovalState.DECLINED)
                 .values('id', 'name', 'state').custom_ordered(),
             hardware=HardwarePlatform.objects.exclude(state=ApprovalState.DECLINED)
