@@ -71,6 +71,13 @@ class ProjectSearch(ExtendedModel):
     capability_categories = ArrayField(models.IntegerField(), default=list)
     capability_subcategories = ArrayField(models.IntegerField(), default=list)
     innovation_categories = ArrayField(models.IntegerField(), default=list)
+    innovation_ways = ArrayField(models.IntegerField(), default=list)
+    unicef_sector = ArrayField(models.IntegerField(), default=list)
+    hardware = ArrayField(models.IntegerField(), default=list)
+    nontech = ArrayField(models.IntegerField(), default=list)
+    functions = ArrayField(models.IntegerField(), default=list)
+    infosec = models.IntegerField(null=True)
+    regional_priorities = ArrayField(models.IntegerField(), default=list)
 
     @classmethod
     def search(cls, queryset: QuerySet, search_term: str, search_in: List[str]) -> QuerySet:
