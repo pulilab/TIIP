@@ -71,16 +71,25 @@ class SearchViewSet(PortfolioAccessMixin, mixins.ListModelMixin, GenericViewSet)
         `region` eg: region=3  
         `donor` eg: donor=1&donor=2  
         `approved` eg: approved=0 (for not approved), approved=1 (for approved)  
+        `stage` eg: stage=1&stage=2  
 
         ** UNICEF FILTERS **
 
         `co` UNICEF Office eg: co=1&co=2  
+        `ro` Regional Office eg: ro=1&ro=2
         `goal` Goal Area in eg: goal=1&goal=2  
         `result` Result Area in eg: result=1&result=2  
         `cl` Capability Levels overlap eg: cl=1&cl=2  
         `cc` Capability Categories overlap eg: cc=1&cc=2  
         `cs` Capability Sucategories overlap eg: cs=1&cs=2  
         `ic` Innovation Categories overlap eg: ic=1&ic=2  
+        `iw` Innovation Ways eg: iw=1&iw=2  
+        `us` UNICEF Sector eg: us=1&us=2  
+        `hp` Hardware platforms eg: hp=1&hp=2  
+        `pp` Programme Innovation/Non-Technology Platforms eg: pp=1&pp=2  
+        `pf` Platform/Product Function eg: pf=1&pf=2  
+        `is` Information Security Classification eg: is=1&is=2  
+        `rp` Regional Priorities eg: rp=1&rp=2  
 
         ** PORTFOLIO FILTERS **
 
