@@ -26,24 +26,31 @@ class ProjectSearch(ExtendedModel):
 
     FILTER_BY = {
         # query_param: QuerySet param
-        "co": "country_office_id",  # eg: co=1&co=2
-        "country": "country_id",  # eg: country=1&country=2
-        "sw": "software",  # eg: sw=1&sw=2
-        "dhi": "dhi_categories",  # eg: dhi=1&dhi=2
-        "hfa": "hfa_categories",  # eg: hfa=1&hfa=2
-        "hsc": "hsc",  # eg: hsc=1&hsc=2
-        "region": "country_office__region",  # eg: region=3
+        "co": "country_office_id",
+        "country": "country_id",
+        "sw": "software",
+        "dhi": "dhi_categories",
+        "hfa": "hfa_categories",
+        "hsc": "hsc",
+        "region": "country_office__region",
         "donor": "donors",
-        "approved": "project__approval__approved",  # false=> approved=0 ; true=> approved=1
-        "goal": "project__data__goal_area",  # eg: goal=1
-        "result": "project__data__result_area",  # eg: result=1
-        "cl": "capability_levels",  # eg: cl=1&cl=2
-        "cc": "capability_categories",  # eg: cc=1&cc=2
-        "cs": "capability_subcategories",  # eg: cs=1&cs=2
-        "ic": "innovation_categories",  # eg: ic=1&ic=2
-        "portfolio": "project__review_states",  # eg: portfolio=1
-        "ro": "country_office__regional_office",  # eg: portfolio=1
-        "stage": "stages",  # eg: stage=1&stage=2
+        "approved": "project__approval__approved",
+        "goal": "project__data__goal_area",
+        "result": "project__data__result_area",
+        "cl": "capability_levels",
+        "cc": "capability_categories",
+        "cs": "capability_subcategories",
+        "ic": "innovation_categories",
+        "portfolio": "project__review_states",
+        "ro": "country_office__regional_office",
+        "stage": "stages",
+        "iw": "innovation_ways",
+        "us": "unicef_sector",
+        "hp": "hardware",
+        "pp": "nontech",
+        "pf": "functions",
+        "is": "infosec",
+        "rp": "regional_priorities",
     }
 
     project = models.OneToOneField(Project, on_delete=models.CASCADE, primary_key=True, related_name='search')
