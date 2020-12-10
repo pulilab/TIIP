@@ -469,7 +469,7 @@ export const actions = {
     draft.donors = [rootGetters['system/getUnicefDonor'].id]
     draft.stages = newStages(state.stagesDraft)
     // hack to avoid phase error
-    draft.phase = 0
+    // draft.phase = 0
     const parsed = apiWriteParser(
       draft,
       getters.getAllCountryAnswers,

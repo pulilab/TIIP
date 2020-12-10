@@ -8,7 +8,7 @@
       <!-- stages -->
       <el-row>
         <!-- research section -->
-        <el-col :span="24">
+        <!-- <el-col :span="24">
           <div class="research">
             <el-switch
               v-model="research"
@@ -31,7 +31,7 @@
               </span>
             </p>
           </div>
-        </el-col>
+        </el-col> -->
         <!-- research section -->
         <!-- Start date section -->
         <el-col :span="24">
