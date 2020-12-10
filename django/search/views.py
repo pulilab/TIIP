@@ -43,7 +43,7 @@ class SearchViewSet(PortfolioAccessMixin, mixins.ListModelMixin, GenericViewSet)
     found_in = ProjectSearch.found_in
     filter_backends = (filters.OrderingFilter,)
     ordering_fields = ('project__name', 'project__modified', 'organisation__name',
-                       'country__name', 'country_office__region')
+                       'country__name', 'country_office__region', 'country_office__regional_office')
     ordering = ('project_id',)
     pagination_class = ResultsSetPagination
     serializer_class = ListResultSerializer
