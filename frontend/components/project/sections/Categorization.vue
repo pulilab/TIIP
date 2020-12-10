@@ -287,7 +287,6 @@
             <multi-selector
               v-model="regional_priorities"
               v-validate="rules.regional_priorities"
-              :filter="country_office"
               data-vv-name="regional_priorities"
               data-vv-as="Regional Priorities"
               source="getRegionalPriorities"

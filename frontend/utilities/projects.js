@@ -1,3 +1,14 @@
+import { Validator } from 'vee-validate'
+import { format } from 'date-fns'
+
+Validator.extend('isDate', {
+  getMessage(field) {
+    return `${field} should be a valid date, IE: 2017/01/15`
+  },
+  validate(value) {
+    return !!(value instanceof Date && value.toJSON())
+  },
+})
 export const fetchProjectData = async (store, params, error) => {
   try {
     await store.dispatch('projects/setCurrentProject', params.id)
@@ -17,6 +28,33 @@ export const fetchProjectData = async (store, params, error) => {
   }
 }
 
+export const epochCheck = (date, present = true) => {
+  if (date) {
+    const secondsSinceEpoch = Math.round(date.getTime() / 1000)
+    if (secondsSinceEpoch === 0) {
+      return present ? new Date() : ''
+    }
+  }
+  return date
+}
+
+export const newStages = (draft) => {
+  return draft
+    .filter((i) => i.checked)
+    .map((i) => {
+      return {
+        id: i.id,
+        note: i.note || null,
+        date: formatDate(i.date),
+      }
+    })
+}
+
+export const formatDate = (date) =>
+  format(date, 'YYYY-MM-DD') === 'Invalid Date'
+    ? null
+    : format(date, 'YYYY-MM-DD')
+
 export const projectFields = () => ({
   name: null,
   organisation: null,
@@ -24,8 +62,10 @@ export const projectFields = () => ({
   country_office: null,
   modified: null,
   implementation_overview: null,
+  research: false,
   start_date: null,
   end_date: null,
+  end_date_note: null,
   contact_name: null,
   contact_email: null,
   team: [],
@@ -62,7 +102,6 @@ export const projectFields = () => ({
   target_group_reached: null,
   currency: null,
   total_budget: null,
-  phase: null,
   innovation_ways: [],
   isc: null,
 })
@@ -72,10 +111,17 @@ export const draftRules = () => {
     target_group_reached: {},
     currency: {},
     total_budget: {},
-    phase: {},
     cbd: {},
     innovation_ways: {},
     isc: {},
+    start_date: {
+      isDate: true,
+    },
+    end_date: {
+      isDate: true,
+    },
+    end_date_note: {},
+    stages: {},
     partner_name: {
       required: true,
       max: 100,
@@ -190,9 +236,6 @@ export const publishRules = () => {
     wbs: {
       max: 30,
     },
-    phase: {
-      required: true,
-    },
     unicef_sector: {
       required: true,
     },
@@ -230,9 +273,19 @@ export const publishRules = () => {
     },
     start_date: {
       required: true,
+      isDate: true,
     },
     end_date: {
       required: false,
+      isDate: true,
+    },
+    end_date_note: {
+      required: false,
+    },
+    stages: {
+      data: {
+        required: true,
+      },
     },
     contact_name: {
       required: true,
