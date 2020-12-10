@@ -184,6 +184,13 @@ class ProjectSearch(ExtendedModel):
             self.capability_categories = project.data.get('capability_categories')
             self.capability_subcategories = project.data.get('capability_subcategories')
             self.innovation_categories = project.data.get('innovation_categories', [])
+            self.innovation_ways = project.data.get('innovation_ways', [])
+            self.unicef_sector = project.data.get('unicef_sector', [])
+            self.hardware = project.data.get('hardware', [])
+            self.nontech = project.data.get('nontech', [])
+            self.functions = project.data.get('functions', [])
+            self.infosec = project.data.get('isc')
+            self.regional_priorities = project.data.get('regional_priorities', [])
             self.save()
 
     def reset(self):
