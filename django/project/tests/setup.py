@@ -4,7 +4,7 @@ from random import randint
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase, APIClient
 
-from country.models import Country, Donor, CountryOffice
+from country.models import Country, Donor, CountryOffice, RegionalOffice
 from user.models import Organisation, UserProfile
 from user.tests import create_profile_for_user
 
@@ -57,6 +57,7 @@ class TestProjectData:
         country_office, _ = CountryOffice.objects.get_or_create(
             name=f'Test Country Office ({name})',
             region=Country.UNICEF_REGIONS[0][0],
+            regional_office=RegionalOffice.objects.get_or_create(name='RO test')[0],
             country=country,
             city="Zion"
         )
