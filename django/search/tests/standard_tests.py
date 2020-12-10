@@ -3,7 +3,7 @@ import copy
 from django.urls import reverse
 from rest_framework import status
 
-from country.models import Donor, DonorCustomQuestion, CountryCustomQuestion
+from country.models import Donor, DonorCustomQuestion, CountryCustomQuestion, RegionalOffice
 from project.models import Project, DigitalStrategy, HealthFocusArea, HSCChallenge
 from project.tests.setup import SetupTests
 
@@ -229,6 +229,18 @@ class SearchTests(SetupTests):
         self.assertEqual(response.json()['count'], 2)
 
         data = {"region": 1}
+        response = self.test_user_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['count'], 0)
+
+    def test_filter_regional_office(self):
+        url = reverse("search-project-list")
+        data = {"ro": RegionalOffice.objects.get(name='RO test').id}
+        response = self.test_user_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['count'], 2)
+
+        data = {"ro": 999}
         response = self.test_user_client.get(url, data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['count'], 0)
