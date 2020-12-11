@@ -26,22 +26,31 @@ class ProjectSearch(ExtendedModel):
 
     FILTER_BY = {
         # query_param: QuerySet param
-        "co": "country_office_id",  # eg: co=1&co=2
-        "country": "country_id",  # eg: country=1&country=2
-        "sw": "software",  # eg: sw=1&sw=2
-        "dhi": "dhi_categories",  # eg: dhi=1&dhi=2
-        "hfa": "hfa_categories",  # eg: hfa=1&hfa=2
-        "hsc": "hsc",  # eg: hsc=1&hsc=2
-        "region": "country_office__region",  # eg: region=3
+        "co": "country_office_id",
+        "country": "country_id",
+        "sw": "software",
+        "dhi": "dhi_categories",
+        "hfa": "hfa_categories",
+        "hsc": "hsc",
+        "region": "country_office__region",
         "donor": "donors",
-        "approved": "project__approval__approved",  # false=> approved=0 ; true=> approved=1
-        "goal": "project__data__goal_area",  # eg: goal=1
-        "result": "project__data__result_area",  # eg: result=1
-        "cl": "capability_levels",  # eg: cl=1&cl=2
-        "cc": "capability_categories",  # eg: cc=1&cc=2
-        "cs": "capability_subcategories",  # eg: cs=1&cs=2
-        "ic": "innovation_categories",  # eg: ic=1&ic=2
-        "portfolio": "project__review_states",  # eg: portfolio=1
+        "approved": "project__approval__approved",
+        "goal": "project__data__goal_area",
+        "result": "project__data__result_area",
+        "cl": "capability_levels",
+        "cc": "capability_categories",
+        "cs": "capability_subcategories",
+        "ic": "innovation_categories",
+        "portfolio": "project__review_states",
+        "ro": "country_office__regional_office",
+        "stage": "stages",
+        "iw": "innovation_ways",
+        "us": "unicef_sector",
+        "hp": "hardware",
+        "pp": "nontech",
+        "pf": "functions",
+        "is": "project__data__isc",
+        "rp": "regional_priorities",
     }
 
     project = models.OneToOneField(Project, on_delete=models.CASCADE, primary_key=True, related_name='search')
@@ -55,12 +64,19 @@ class ProjectSearch(ExtendedModel):
     dhi_categories = ArrayField(models.IntegerField(), default=list)
     hsc = ArrayField(models.IntegerField(), default=list)
     hfa_categories = ArrayField(models.IntegerField(), default=list)
+    stages = ArrayField(models.IntegerField(), default=list)
 
     # UNICEF fields
     capability_levels = ArrayField(models.IntegerField(), default=list)
     capability_categories = ArrayField(models.IntegerField(), default=list)
     capability_subcategories = ArrayField(models.IntegerField(), default=list)
     innovation_categories = ArrayField(models.IntegerField(), default=list)
+    innovation_ways = ArrayField(models.IntegerField(), default=list)
+    unicef_sector = ArrayField(models.IntegerField(), default=list)
+    hardware = ArrayField(models.IntegerField(), default=list)
+    nontech = ArrayField(models.IntegerField(), default=list)
+    functions = ArrayField(models.IntegerField(), default=list)
+    regional_priorities = ArrayField(models.IntegerField(), default=list)
 
     @classmethod
     def search(cls, queryset: QuerySet, search_term: str, search_in: List[str]) -> QuerySet:
@@ -99,11 +115,12 @@ class ProjectSearch(ExtendedModel):
         if selected_fields:
             for field in selected_fields:
                 if query_params[field]:
-                    if field in ["country", 'co', "region", "goal", "result"]:
+                    if field in ["country", "co", "region", "goal", "result", "ro", "is"]:
                         lookup_param = "in"
                         lookup = lookup_cleanup(query_params.getlist(field))
                     elif field in ["donor", "sw", "dhi", "hfa", "hsc",
-                                   "cl", "cc", "cs", "ic"]:
+                                   "cl", "cc", "cs", "ic", "stage",
+                                   "iw", "us", "hp", "pp", "pf", "rp"]:
                         lookup_param = "overlap"  # This is the OR clause here
                         lookup = lookup_cleanup(query_params.getlist(field))
                     elif field == "approved":
@@ -155,6 +172,7 @@ class ProjectSearch(ExtendedModel):
             self.donors = [int(x) for x in project.data.get("donors", [])]
 
             self.software = project.data.get('platforms')
+            self.stages = [int(x['id']) for x in project.data.get("stages", [])]
             self.hsc = project.data.get('hsc_challenges')
             self.dhi_categories = list(set(filter(None.__ne__,
                                                   [DigitalStrategy.get_parent_id(int(id), 'parent') for
@@ -166,6 +184,12 @@ class ProjectSearch(ExtendedModel):
             self.capability_categories = project.data.get('capability_categories')
             self.capability_subcategories = project.data.get('capability_subcategories')
             self.innovation_categories = project.data.get('innovation_categories', [])
+            self.innovation_ways = project.data.get('innovation_ways', [])
+            self.unicef_sector = project.data.get('unicef_sector', [])
+            self.hardware = project.data.get('hardware', [])
+            self.nontech = project.data.get('nontech', [])
+            self.functions = project.data.get('functions', [])
+            self.regional_priorities = project.data.get('regional_priorities', [])
             self.save()
 
     def reset(self):

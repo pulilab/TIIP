@@ -131,7 +131,15 @@
             />
           </simple-field>
 
+          <simple-field :header="$gettext('Innovation(s)') | translate">
+            <platforms-list
+              :platforms="project.innovation_ways"
+              source="getInnovationWays"
+            />
+          </simple-field>
+
           <simple-field
+            v-show="!hideInnovationCategories"
             :header="$gettext('Innovation category(ies)') | translate"
           >
             <platforms-list
@@ -222,7 +230,7 @@
           <!--          </simple-field>-->
         </collapsible-card>
 
-        <collapsible-card id="phase" :title="$gettext('4. Phase') | translate">
+        <!-- <collapsible-card id="stages" :title="$gettext('4. Phase') | translate">
           <el-row>
             <el-col :span="12">
               <simple-field
@@ -246,7 +254,11 @@
               />
             </el-col>
           </el-row>
-        </collapsible-card>
+        </collapsible-card> -->
+
+        <!-- stage graph -->
+        <stage-history />
+        <!-- stage graph -->
 
         <collapsible-card
           id="partners"
@@ -313,6 +325,13 @@
               source="getFunctions"
             />
           </simple-field>
+          <simple-field
+            :header="
+              $gettext('Information security classification ') | translate
+            "
+          >
+            <list-element :value="project.isc" source="getInfoSec" />
+          </simple-field>
         </collapsible-card>
 
         <div v-if="donors && donors.length > 0" id="donorcustom">
@@ -359,6 +378,7 @@ import find from 'lodash/find'
 import orderBy from 'lodash/orderBy'
 import { mapGetters, mapState, mapActions } from 'vuex'
 // import CountryItem from '../common/CountryItem'
+import StageHistory from '@/components/project/sections/StageHistory'
 import HealthFocusAreasList from '../common/list/HealthFocusAreasList'
 import HealthSystemChallengesList from '../common/list/HealthSystemChallengesList'
 // import DonorsList from '../common/list/DonorsList'
@@ -386,6 +406,7 @@ export default {
     CustomReadonlyField,
     CapabilitiesList,
     ListElement,
+    StageHistory,
   },
   mixins: [handleProjectActions],
   computed: {
@@ -406,6 +427,7 @@ export default {
       linkTypes: 'system/getLinkTypes',
       modified: 'project/getModified',
       regionalOffices: 'projects/getRegionalOffices',
+      innovationWays: 'projects/getInnovationWays',
     }),
     location() {
       const { selectedRegionOffice, office, country, selectedRegion } = this
@@ -467,6 +489,10 @@ export default {
     },
     orderedLinkList() {
       return orderBy(this.project.links, ['link_type'], ['asc'])
+    },
+    hideInnovationCategories() {
+      const na = find(this.innovationWays, ({ name }) => name === 'N/A')
+      return na && this.project.innovation_ways.includes(na.id)
     },
   },
   mounted() {

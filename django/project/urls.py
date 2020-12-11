@@ -7,6 +7,10 @@ from . import views
 router = DefaultRouter()
 router.register(r'import', views.ProjectImportV2ViewSet)
 router.register(r'import-row', views.ImportRowViewSet)
+router.register('software-request', views.TechnologyPlatformRequestViewSet)
+router.register('hardware-request', views.HardwarePlatformRequestViewSet)
+router.register('nontech-request', views.NontechPlatformRequestViewSet)
+router.register('function-request', views.PlatformFunctionRequestViewSet)
 
 urlpatterns = [
     url(r"^projects/", include(router.urls)),
@@ -48,11 +52,6 @@ urlpatterns = [
             'get': 'project_structure'
         }),
         name="get-project-structure"),
-    url(r"^projects/structure/export/$",
-        view=views.ProjectPublicViewSet.as_view({
-            'get': 'project_structure_export'
-        }),
-        name="get-project-structure-export"),
     url(r"^projects/(?P<project_id>\d+)/version/$",
         view=views.ProjectVersionViewSet.as_view({
             'post': 'create'

@@ -27,11 +27,15 @@
             <i class="el-icon-warning warning" />
           </el-tooltip>
         </template>
-        <platform-selector
+        <select-box
           v-model="platforms"
           v-validate="rules.platforms"
+          filterable
+          multiple
+          source="software"
           data-vv-name="platforms"
-          data-vv-as="Software"
+          :options="softwareList"
+          :new-info-title="newInfoSoftware"
         />
       </custom-required-form-item>
 
@@ -59,12 +63,15 @@
                 <i class="el-icon-warning warning" />
               </el-tooltip>
             </template>
-            <multi-selector
+            <select-box
               v-model="hardware"
               v-validate="rules.hardware"
+              filterable
+              multiple
+              source="hardware"
               data-vv-name="hardware"
-              data-vv-as="Hardware Platform(s) and Physical Product(s)"
-              source="getHardware"
+              :options="hardwareList"
+              :new-info-title="newInfoHardware"
             />
             <span class="Hint">
               <fa icon="info-circle" />
@@ -102,12 +109,15 @@
                 <i class="el-icon-warning warning" />
               </el-tooltip>
             </template>
-            <multi-selector
+            <select-box
               v-model="nontech"
               v-validate="rules.nontech"
+              filterable
+              multiple
+              source="nontech"
               data-vv-name="nontech"
-              data-vv-as="Programme Innovation(s) and Non-Technology Platform(s)"
-              source="getNontech"
+              :options="nontechList"
+              :new-info-title="newInfoNontech"
             />
             <span class="Hint">
               <fa icon="info-circle" />
@@ -145,12 +155,15 @@
                 <i class="el-icon-warning warning" />
               </el-tooltip>
             </template>
-            <multi-selector
+            <select-box
               v-model="functions"
               v-validate="rules.functions"
+              filterable
+              multiple
+              source="function"
               data-vv-name="functions"
-              data-vv-as="Function(s) of Platform"
-              source="getFunctions"
+              :options="functionList"
+              :new-info-title="newInfoFunction"
             />
             <span class="Hint">
               <fa icon="info-circle" />
@@ -165,35 +178,96 @@
           </custom-required-form-item>
         </el-col>
       </el-row>
+      <el-row :gutter="20" type="flex">
+        <el-col :span="24">
+          <custom-required-form-item
+            :error="errors.first('isc')"
+            :draft-rule="draftRules.isc"
+            :publish-rule="publishRules.isc"
+          >
+            <template slot="label">
+              <translate key="isc-label">
+                Has the initiative completed a Information Security
+                Classification via UNICEF's Classi Tool?
+              </translate>
+            </template>
+
+            <single-select
+              v-model="isc"
+              v-validate="rules.isc"
+              data-vv-name="isc"
+              data-vv-as="Information Security"
+              source="projects/getInfoSec"
+            />
+            <span class="Hint">
+              <fa icon="info-circle" />
+              <p>
+                <translate>
+                  All digital initiatives at UNICEF are required to undertake an
+                  information security risk classification. Classi is a UNICEF
+                  tool that helps to prioritize and define UNICEF information
+                  assets, their value and how we shall protect them. It helps
+                  evaluate the risk associated in the information in case there
+                  is a loss in confidentiality, integrity and availability. For
+                  more info visit: https://uni.cf/CLASSI
+                </translate>
+              </p>
+            </span>
+          </custom-required-form-item>
+        </el-col>
+      </el-row>
     </collapsible-card>
   </div>
 </template>
 
 <script>
-import MultiSelector from '@/components/project/MultiSelector'
+// import MultiSelector from '@/components/project/MultiSelector'
 import { mapGetters } from 'vuex'
 import { mapGettersActions } from '@/utilities/form'
+// import PlatformSelector from '@/components/project/PlatformSelector'
+import SelectBox from '@/components/project/SelectBox'
 import VeeValidationMixin from '../../mixins/VeeValidationMixin.js'
 import ProjectFieldsetMixin from '../../mixins/ProjectFieldsetMixin.js'
 import CollapsibleCard from '../CollapsibleCard'
-import PlatformSelector from '../PlatformSelector'
+import SingleSelect from '~/components/common/SingleSelect'
 
 export default {
   components: {
     CollapsibleCard,
-    MultiSelector,
-    PlatformSelector,
+    SingleSelect,
+    SelectBox,
   },
   mixins: [VeeValidationMixin, ProjectFieldsetMixin],
+  data() {
+    return {
+      newInfoSoftware: this.$gettext(
+        'DHA Admin will update the Software list to include your new software name'
+      ),
+      newInfoHardware: this.$gettext(
+        'DHA Admin will update the Hardware list to include your new hardware name'
+      ),
+      newInfoNontech: this.$gettext(
+        'DHA Admin will update the Nontech list to include your new nontech name'
+      ),
+      newInfoFunction: this.$gettext(
+        'DHA Admin will update the Function list to include your new function name'
+      ),
+    }
+  },
   computed: {
     ...mapGetters({
       modified: 'project/getModified',
+      softwareList: 'projects/getTechnologyPlatforms',
+      hardwareList: 'projects/getHardware',
+      nontechList: 'projects/getNontech',
+      functionList: 'projects/getFunctions',
     }),
     ...mapGettersActions({
       hardware: ['project', 'getHardware', 'setHardware', 0],
       functions: ['project', 'getFunctions', 'setFunctions', 0],
       nontech: ['project', 'getNontech', 'setNontech', 0],
       platforms: ['project', 'getPlatforms', 'setPlatforms', 0],
+      isc: ['project', 'getInfoSec', 'setInfoSec', 0],
     }),
   },
   methods: {
@@ -208,6 +282,8 @@ export default {
         this.$validator.validate('hardware'),
         this.$validator.validate('nontech'),
         this.$validator.validate('functions'),
+        this.$validator.validate('platforms'),
+        this.$validator.validate('isc'),
       ])
       return validations.reduce((a, c) => a && c, true)
     },

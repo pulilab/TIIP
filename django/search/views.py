@@ -43,8 +43,8 @@ class SearchViewSet(PortfolioAccessMixin, mixins.ListModelMixin, GenericViewSet)
     found_in = ProjectSearch.found_in
     filter_backends = (filters.OrderingFilter,)
     ordering_fields = ('project__name', 'project__modified', 'organisation__name',
-                       'country__name', 'country_office__region')
-    ordering = ('project_id',)
+                       'country__name', 'country_office__region', 'country_office__regional_office')
+    ordering = ('-project__modified',)
     pagination_class = ResultsSetPagination
     serializer_class = ListResultSerializer
 
@@ -61,31 +61,46 @@ class SearchViewSet(PortfolioAccessMixin, mixins.ListModelMixin, GenericViewSet)
         `q` search term eg: q=test  
         `in` search in [optional, defaults to all: in=name&in=org&in=country&in=overview&in=loc]  
 
-        ** FILTER PARAMETERS **
+        ** STANDARD FILTERS **
 
         `country` eg: country=1&country=2  
         `sw` eg: sw=1&sw=2  
         `dhi` eg: dhi=1&dhi=2  
         `hfa` eg: hfa=1&hfa=2  
         `hsc` eg: hsc=1&hsc=2  
-        `his` eg: his=1&his=2  
         `region` eg: region=3  
-        `gov` gov=0 (for false), gov=1&gov=2 (for true values, since there's two types of true)  
         `donor` eg: donor=1&donor=2  
         `approved` eg: approved=0 (for not approved), approved=1 (for approved)  
+        `stage` eg: stage=1&stage=2  
 
-        ** UNICEF filters **
+        ** UNICEF FILTERS **
 
         `co` UNICEF Office eg: co=1&co=2  
+        `ro` Regional Office eg: ro=1&ro=2
         `goal` Goal Area in eg: goal=1&goal=2  
         `result` Result Area in eg: result=1&result=2  
         `cl` Capability Levels overlap eg: cl=1&cl=2  
         `cc` Capability Categories overlap eg: cc=1&cc=2  
         `cs` Capability Sucategories overlap eg: cs=1&cs=2  
         `ic` Innovation Categories overlap eg: ic=1&ic=2  
+        `iw` Innovation Ways eg: iw=1&iw=2  
+        `us` UNICEF Sector eg: us=1&us=2  
+        `hp` Hardware platforms eg: hp=1&hp=2  
+        `pp` Programme Innovation/Non-Technology Platforms eg: pp=1&pp=2  
+        `pf` Platform/Product Function eg: pf=1&pf=2  
+        `is` Information Security Classification eg: is=1&is=2  
+        `rp` Regional Priorities eg: rp=1&rp=2  
+
+        ** PORTFOLIO FILTERS **
+
+        `portfolio`  Portfolio in eg: portfolio=1  
         `sp` Scale Phase in eg: sp=1  
         `ps` Problem Statement in eg: ps=1  
-        `portfolio`  Portfolio in eg: portfolio=1  
+
+        ** PORTFOLIO OPTIONS **
+
+        `portfolio_page` inventory | review | portfolio (defaults to portfolio)  
+        `scores`  include if present (defaults to exclude)  
 
         ** FOUND IN FEATURE **
 
@@ -106,11 +121,6 @@ class SearchViewSet(PortfolioAccessMixin, mixins.ListModelMixin, GenericViewSet)
         ** VIEW AS **
 
         `view_as` donor | country  
-
-        ** PORTFOLIO OPTIONS **  
-
-        `portfolio_page` inventory | review | portfolio (defaults to portfolio)  
-        `scores`  include if present (defaults to exclude)  
 
         """
         results = {}
