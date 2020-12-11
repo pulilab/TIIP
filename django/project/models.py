@@ -394,10 +394,6 @@ class HealthFocusArea(ParentByIDMixin, InvalidateCacheMixin, ExtendedNameOrdered
         ordering = ['health_category__name', 'name']
 
 
-class InteroperabilityLink(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
-    pre = models.CharField(max_length=255)
-
-
 class ApprovalState(models.Model):
     APPROVED = 1
     PENDING = 2
@@ -480,18 +476,6 @@ def process_approval_states(sender, instance, created, **kwargs):
             notify_user_about_approval.apply_async(args=('approve', instance._meta.model_name, instance.pk,))
 
 
-class Licence(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
-    pass
-
-
-class InteroperabilityStandard(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
-    pass
-
-
-class HISBucket(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
-    pass
-
-
 class UNICEFResultArea(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
     goal_area = models.ForeignKey('UNICEFGoal', related_name='result_areas', on_delete=models.CASCADE)
 
@@ -554,11 +538,6 @@ class RegionalPriority(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel
 
     class Meta(ExtendedNameOrderedSoftDeletedModel.Meta):
         verbose_name_plural = 'Regional Priorities'
-
-
-class Phase(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
-    class Meta(ExtendedNameOrderedSoftDeletedModel.Meta):
-        verbose_name_plural = 'Phase of Initiative'
 
 
 class InnovationCategory(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
@@ -701,6 +680,8 @@ class Stage(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
 
     class Meta:
         ordering = ['order', 'name']
+        verbose_name = 'Phase of initiative'
+        verbose_name_plural = 'Phases of initiative'
 
     def __str__(self):  # pragma: no cover
         return self.name
