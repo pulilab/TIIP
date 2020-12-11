@@ -73,10 +73,8 @@
         width="180"
       >
         <template slot-scope="scope">
-          TODO
-          <platforms-list
-            class="SimpleList"
-            :platforms="scope.row.regional_office"
+          <list-element
+            :value="scope.row.regional_office"
             source="getRegionalOffices"
           />
         </template>
@@ -203,11 +201,10 @@
         width="180"
       >
         <template slot-scope="scope">
-          TODO
           <platforms-list
             class="SimpleList"
-            :platforms="scope.row.stage"
-            source="getPhases"
+            :platforms="scope.row.stages"
+            source="getStages"
           />
         </template>
       </el-table-column>
@@ -401,9 +398,9 @@
         width="180"
       >
         <template slot-scope="scope">
-          <platforms-list
+          <list-element
             class="SimpleList"
-            :platforms="scope.row.isc"
+            :value="scope.row.isc"
             source="getInfoSec"
           />
         </template>
@@ -460,6 +457,7 @@ import CurrentPage from '@/components/dashboard/CurrentPage'
 import CapabilitiesList from '@/components/project/CapabilitiesList'
 import PlatformsList from '@/components/project/PlatformsList'
 import { mapGettersActions } from '../../utilities/form.js'
+import ListElement from '~/components/project/ListElement'
 
 export default {
   components: {
@@ -474,6 +472,7 @@ export default {
     GoalAreaItem,
     ResultAreaItem,
     PlatformsList,
+    ListElement,
   },
   data() {
     return {
