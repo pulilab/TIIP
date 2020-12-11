@@ -49,7 +49,7 @@ class ProjectSearch(ExtendedModel):
         "hp": "hardware",
         "pp": "nontech",
         "pf": "functions",
-        "is": "infosec",
+        "is": "project__data__isc",
         "rp": "regional_priorities",
     }
 
@@ -76,7 +76,6 @@ class ProjectSearch(ExtendedModel):
     hardware = ArrayField(models.IntegerField(), default=list)
     nontech = ArrayField(models.IntegerField(), default=list)
     functions = ArrayField(models.IntegerField(), default=list)
-    infosec = models.IntegerField(null=True)
     regional_priorities = ArrayField(models.IntegerField(), default=list)
 
     @classmethod
@@ -116,7 +115,7 @@ class ProjectSearch(ExtendedModel):
         if selected_fields:
             for field in selected_fields:
                 if query_params[field]:
-                    if field in ["country", "co", "region", "goal", "result", "is", "ro"]:
+                    if field in ["country", "co", "region", "goal", "result", "ro", "is"]:
                         lookup_param = "in"
                         lookup = lookup_cleanup(query_params.getlist(field))
                     elif field in ["donor", "sw", "dhi", "hfa", "hsc",
@@ -190,7 +189,6 @@ class ProjectSearch(ExtendedModel):
             self.hardware = project.data.get('hardware', [])
             self.nontech = project.data.get('nontech', [])
             self.functions = project.data.get('functions', [])
-            self.infosec = project.data.get('isc')
             self.regional_priorities = project.data.get('regional_priorities', [])
             self.save()
 
