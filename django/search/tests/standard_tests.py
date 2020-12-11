@@ -482,3 +482,10 @@ class SearchTests(SetupTests):
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
         self.assertEqual(response.json()['count'], 2)
 
+    def test_filter_unicef_sector(self):
+        url = reverse("search-project-list")
+        data = {"us": 2}
+        response = self.test_user_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
+        self.assertEqual(response.json()['count'], 2)
+
