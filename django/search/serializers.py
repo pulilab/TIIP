@@ -45,7 +45,7 @@ class ListResultSerializer(serializers.Serializer):
     hardware = serializers.ReadOnlyField()
     nontech = serializers.ReadOnlyField()
     functions = serializers.ReadOnlyField()
-    isc = serializers.ReadOnlyField(source='infosec')
+    isc = serializers.ReadOnlyField(source="project.data.isc")
     regional_priorities = serializers.ReadOnlyField()
     regional_office = serializers.ReadOnlyField(source='country_office.regional_office.id')
     stages = serializers.ReadOnlyField()
