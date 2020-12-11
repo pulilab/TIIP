@@ -250,15 +250,22 @@ export const actions = {
   setDashboardColumns({ commit }, columns) {
     commit('SET_DASHBOARD_COLUMNS', columns)
   },
-  async loadProjectList({ rootGetters, commit, dispatch }) {
+  async loadProjectList({ rootState, rootGetters, commit, dispatch }) {
     const data = await dispatch('loadProjects', { type: 'list' })
     await dispatch('user/refreshProfile', {}, { root: true })
     const user = rootGetters['user/getProfile']
+    const offices = rootState.offices.offices
     commit(
       'SET_PROJECT_LIST',
       data.results.projects.map((i) => {
+        let regional_office = null
+        if (i.country_office > 0) {
+          const office = offices.find(({ id }) => id === i.country_office)
+          regional_office = office ? office.regional_office : null
+        }
         return {
           ...i,
+          regional_office,
           favorite: user ? user.favorite.includes(i.id) : undefined,
         }
       })
