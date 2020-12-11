@@ -130,6 +130,8 @@ class TestProjectData:
                 "date": str(datetime.today().date()),
                 "note": "stage 2 note",
             }],
+            "innovation_ways": [3, 2],
+            "isc": 3
         }}, org, country, country_office, d1, d2
 
     def create_new_project(self, test_user_client=None, name=None):
