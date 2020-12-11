@@ -477,7 +477,7 @@ class SearchTests(SetupTests):
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
         self.assertEqual(response.json()['count'], 2)
 
-        url = url + '?iw=1&ic=3'
+        url = url + '?iw=3&ic=2'
         response = self.test_user_client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
         self.assertEqual(response.json()['count'], 2)
