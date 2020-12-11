@@ -48,6 +48,7 @@ class ListResultSerializer(serializers.Serializer):
     isc = serializers.ReadOnlyField(source='infosec')
     regional_priorities = serializers.ReadOnlyField()
     regional_office = serializers.ReadOnlyField(source='country_office.regional_office.id')
+    stages = serializers.ReadOnlyField()
 
     def get_country_custom_answers(self, obj):
         if self.context.get('has_country_permission'):
