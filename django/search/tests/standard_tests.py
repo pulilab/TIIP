@@ -489,3 +489,20 @@ class SearchTests(SetupTests):
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
         self.assertEqual(response.json()['count'], 2)
 
+    def test_filter_infosec(self):
+        url = reverse("search-project-list")
+        data = {"is": 3}
+        response = self.test_user_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
+        self.assertEqual(response.json()['count'], 2)
+
+        data = {"is": 1}
+        response = self.test_user_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
+        self.assertEqual(response.json()['count'], 0)
+
+        url = url + '?is=3&is=1'
+        response = self.test_user_client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
+        self.assertEqual(response.json()['count'], 2)
+
