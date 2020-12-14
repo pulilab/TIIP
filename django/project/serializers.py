@@ -44,7 +44,7 @@ class LinkSerializer(serializers.Serializer):
 
 class StageSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=True)
-    date = serializers.CharField(required=False, max_length=10, allow_null=True)
+    date = serializers.CharField(required=True, max_length=10)
     note = serializers.CharField(required=False, max_length=256, allow_null=True)
 
 
@@ -123,6 +123,7 @@ class ProjectPublishedSerializer(serializers.Serializer):
     donors = serializers.ListField(child=serializers.IntegerField(), max_length=32, required=False)
 
     stages = StageSerializer(many=True, required=False, allow_empty=True)
+    phase = serializers.IntegerField(required=False)
 
     class Meta:
         model = Project
