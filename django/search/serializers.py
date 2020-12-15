@@ -90,13 +90,13 @@ class ListResultSerializer(serializers.Serializer):
                 return {donor_id: private_fields[donor_id]
                         for donor_id in private_fields if donor_id == str(self.context['donor'].id)}
 
-    def get_start_date(self, obj):
+    def get_start_date(self, obj):  # pragma: no cover
         return obj.project.data.get('start_date').strftime('%Y-%m-%d')
 
-    def get_project_end_date(self, obj):
+    def get_project_end_date(self, obj):  # pragma: no cover
         return obj.project.data.get('end_date').strftime('%Y-%m-%d')
 
-    def get_currency(self, obj):
+    def get_currency(self, obj):  # pragma: no cover
         if 'currency' in obj.project.data:
             try:
                 return Currency.objects.get(id=obj.project.data.get('currency')).name
