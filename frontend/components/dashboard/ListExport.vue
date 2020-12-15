@@ -110,8 +110,6 @@ export default {
           if (this.selectedCol.includes(i.id)) selectedCols.push(i.key)
         })
         selectedCols = flatten(selectedCols)
-        console.log(s)
-        console.log(parsed)
         return pick(
           pickBy(parsed, (v) => v !== undefined && v !== null),
           selectedCols
