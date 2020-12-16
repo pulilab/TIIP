@@ -23,11 +23,11 @@ def _migrate_phases_to_stages(data: Dict, modified: datetime):
         return True
 
 
-def migrate_project_phases(instance: 'project.Project'):
+def migrate_project_phases(project):
     if settings.MIGRATE_PHASES:
         if not ID_MAP or not isinstance(ID_MAP, dict):  # pragma: no cover
             print('ID MAPPING has not been completed, please run `manage.py fill_phase_mapping_table` first')
         else:
-            if any([_migrate_phases_to_stages(instance.data, instance.modified), 
-                    _migrate_phases_to_stages(instance.draft, instance.modified)]):
-                instance.save(update_fields=['draft', 'data'])
+            if any([_migrate_phases_to_stages(project.data, project.modified), 
+                    _migrate_phases_to_stages(project.draft, project.modified)]):
+                project.save(update_fields=['draft', 'data'])
