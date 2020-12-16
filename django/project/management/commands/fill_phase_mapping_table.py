@@ -35,13 +35,9 @@ class Command(BaseCommand):
 
             data['id_map'] = id_map
 
-            f.truncate(0)
-            f.seek(0)
-            f.write(json.dumps(data, indent=4))
+            json.dump(data, f, indent=4)
 
             with open(self.py_path, 'w') as py_file:
-                py_file.truncate(0)
-                py_file.seek(0)
                 py_file.write('ID_MAP = ')
                 json.dump(id_map, py_file)
 
