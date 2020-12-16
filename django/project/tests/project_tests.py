@@ -1135,9 +1135,7 @@ class ProjectTests(SetupTests):
         self.assertTrue('stages' not in response.json()['draft'])
         self.assertTrue('phase' not in response.json()['draft'])
         self.assertFalse(response.json()['published'])
-        
 
-        self.assertTrue(ID_MAP)
         migratable_phase = random.choice(list(ID_MAP.keys()))
         data['project'].update(dict(
             name="Test Project5",
