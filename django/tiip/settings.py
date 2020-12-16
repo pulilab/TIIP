@@ -421,3 +421,4 @@ PORTFOLIO_PROBLEMSTATEMENT_TRESHOLDS = {
 }
 
 NOTIFICATION_PROJECT_REVIEW_DAYS = 30  # subject to change, check with client
+MIGRATE_PHASES = os.environ.get('MIGRATE_PHASES', False)
