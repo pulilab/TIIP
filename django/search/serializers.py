@@ -102,7 +102,7 @@ class ListResultSerializer(serializers.Serializer):
 
     def get_links(self, obj):
         if 'links' in obj.project.data:
-            return [f"{LinkSerializer.LINK_TYPE[x['link_type']][1]}: {x['link_url']}"
+            return [f"{LinkSerializer.LINK_TYPE[x['link_type']][1]}: {x.get('link_url')}"
                     for x in obj.project.data.get('links')]
 
     def get_partners(self, obj):
