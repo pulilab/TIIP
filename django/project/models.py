@@ -22,7 +22,6 @@ from toolkit.toolkit_data import toolkit_default
 from user.models import UserProfile
 
 
-
 class ProjectManager(models.Manager):
     use_in_migrations = True
 
@@ -189,7 +188,7 @@ def on_create_init(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Project)
 def migrate_project_phases_signal(sender, instance, **kwargs):
     migrate_project_phases(instance)
-    
+
 
 class PortfolioManager(models.Manager):
     use_in_migrations = True
