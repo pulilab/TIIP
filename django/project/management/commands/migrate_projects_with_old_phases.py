@@ -17,7 +17,7 @@ class Command(BaseCommand):
         self.stdout.write(f'Migrating {projects.count()} initiatives')
         self.stdout.write(f'DEBUG IDs {list(projects.values_list("id", flat=True))}')
         self.stdout.write(f'DEBUG NAMEs {list(projects.values_list("name", flat=True))}')
-        
+
         if conflicting_projects:
             self.stdout.write('')
             self.stdout.write(f'WARNING: {conflicting_projects.count()} initiatives have both stages and phase set')
