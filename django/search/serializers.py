@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from project.models import Portfolio
-from project.serializers import ProjectPortfolioStateManagerSerializer
+from project.serializers import ProjectPortfolioStateManagerSerializer, PartnerSerializer, LinkSerializer
 
 from project.models import CPD
 from country.models import Currency
@@ -49,12 +49,11 @@ class ListResultSerializer(serializers.Serializer):
     nontech = serializers.ReadOnlyField()
     functions = serializers.ReadOnlyField()
     isc = serializers.ReadOnlyField(source="project.data.isc")
-    # isc = serializers.SerializerMethodField(required=False)
     regional_priorities = serializers.ReadOnlyField()
     regional_office = serializers.ReadOnlyField(source='country_office.regional_office.id')
     stages = serializers.ReadOnlyField()
     start_date = serializers.ReadOnlyField(source="project.data.start_date")
-    project_end_date = serializers.ReadOnlyField(source="project.data.end_date")
+    end_date = serializers.ReadOnlyField(source="project.data.end_date")
     target_group_reached = serializers.ReadOnlyField(source="project.data.target_group_reached")
     program_targets = serializers.ReadOnlyField(source="project.data.program_targets")
     program_targets_achieved = serializers.ReadOnlyField(source="project.data.program_targets_archieved")
@@ -90,12 +89,6 @@ class ListResultSerializer(serializers.Serializer):
                 return {donor_id: private_fields[donor_id]
                         for donor_id in private_fields if donor_id == str(self.context['donor'].id)}
 
-    def get_start_date(self, obj):  # pragma: no cover
-        return obj.project.data.get('start_date').strftime('%Y-%m-%d')
-
-    def get_project_end_date(self, obj):  # pragma: no cover
-        return obj.project.data.get('end_date').strftime('%Y-%m-%d')
-
     def get_currency(self, obj):  # pragma: no cover
         if 'currency' in obj.project.data:
             try:
@@ -109,12 +102,14 @@ class ListResultSerializer(serializers.Serializer):
 
     def get_links(self, obj):
         if 'links' in obj.project.data:
-            return [x['link_url'] for x in obj.project.data.get('links')]
+            return [f"{LinkSerializer.LINK_TYPE[x['link_type']][1]}: {x['link_url']}"
+                    for x in obj.project.data.get('links')]
 
     def get_partners(self, obj):
         if 'partners' in obj.project.data:
-            return [f"{p['partner_type']}, {p['partner_name']}, {p['partner_email']}, "
-                    f"{p['partner_contact']}, {p['partner_website']}" for p in obj.project.data.get('partners')]
+            return [f"{PartnerSerializer.PARTNER_TYPE[p['partner_type']][1]}, {p['partner_name']}, "
+                    f"{p['partner_email']}, {p['partner_contact']}, {p['partner_website']}"
+                    for p in obj.project.data.get('partners')]
 
 
 class PortfolioResultSerializer(ListResultSerializer):
