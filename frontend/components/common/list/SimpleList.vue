@@ -10,8 +10,9 @@
 export default {
   props: {
     items: {
-      type: [Array, String],
+      // type: [Array, String],
       required: true,
+      validator: (prop) => Array.isArray(prop) || prop === null,
     },
   },
 }
