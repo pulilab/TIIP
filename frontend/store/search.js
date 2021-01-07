@@ -126,6 +126,16 @@ export const actions = {
     commit('SET_SEARCH', { key: 'cl', val: [] })
     commit('SET_SEARCH', { key: 'cc', val: [] })
     commit('SET_SEARCH', { key: 'cs', val: [] })
+    // new fields Jan 7
+    commit('SET_SEARCH', { key: 'ro', val: [] })
+    commit('SET_SEARCH', { key: 'us', val: [] })
+    commit('SET_SEARCH', { key: 'rp', val: [] })
+    commit('SET_SEARCH', { key: 'iw', val: [] })
+    commit('SET_SEARCH', { key: 'stage', val: [] })
+    commit('SET_SEARCH', { key: 'hp', val: [] })
+    commit('SET_SEARCH', { key: 'pp', val: [] })
+    commit('SET_SEARCH', { key: 'pf', val: [] })
+    commit('SET_SEARCH', { key: 'is', val: [] })
   },
   loadProjectsMap({ state, commit, dispatch }, projects) {
     commit('SET_PROJECT_MAP', projects)
