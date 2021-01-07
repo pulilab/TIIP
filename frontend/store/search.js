@@ -52,6 +52,16 @@ export const state = () => ({
     // ** PORTFOLIO OPTIONS **
     portfolio_page: 'inventory', // `portfolio_page` inventory | review | portfolio (defaults to portfolio)
     // `scores`  include if present (defaults to exclude)
+    // new fields JAN 7
+    ro: [],
+    us: [],
+    rp: [],
+    iw: [],
+    stage: [],
+    hp: [],
+    pp: [],
+    pf: [],
+    is: [],
   },
 })
 
