@@ -1,0 +1,8 @@
+{
+  "env": {
+    "server": "http://localhost:3000/",
+    "login_url": "http://localhost:3000/en/-/login/",
+    "test_user": "pulitest@pulilab.com",
+    "test_pw": "puli1234"
+  }
+}

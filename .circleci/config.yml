@@ -112,6 +112,22 @@ jobs:
           command: |
             fab dev deploy
           no_output_timeout: "20m"
+  e2e-dev:
+    docker:
+      - image: cypress/included:4.5.0
+    working_directory: ~/tiip
+    steps:
+      - checkout
+      - run:
+          name: e2e tests against DEV
+          working_directory: ~/tiip/e2e
+          command: |
+            cypress run -C cypress.dev.json
+          no_output_timeout: "20m"
+      - store_artifacts:
+          path: /root/tiip/e2e/cypress/videos
+      - store_artifacts:
+          path: /root/tiip/e2e/cypress/screenshots
 
 workflows:
   build-and-deploy:
@@ -123,6 +139,19 @@ workflows:
       - deploy:
           requires:
             - build-and-test
+          filters:
+            branches:
+              only: development
+          post-steps:
+            - jira/notify:
+                environment_type: development
+                job_type: deployment
+                issue_regexp: '[A-Z0-9]{2,30}-[0-9]+'
+                environment: DEV  # DEV, PROD, QA
+      - e2e-dev:
+          requires:
+            - build-and-test
+            - deploy
           filters:
             branches:
               only: development
