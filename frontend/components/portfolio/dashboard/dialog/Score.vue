@@ -145,6 +145,8 @@
                 trigger="hover"
                 popper-class="score-popover left"
               >
+                <!-- not recommended -->
+                <!-- <p v-html="scope.row.question.guidance"></p> -->
                 <p>{{ scope.row.question.guidance }}</p>
               </el-popover>
               <el-select
@@ -361,6 +363,7 @@ export default {
     letter-spacing: 0;
     line-height: 21px;
     padding: 17px 20px 23px;
+    white-space: pre-line;
   }
   .popper__arrow {
     display: inline;
