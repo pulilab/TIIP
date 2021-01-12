@@ -1,12 +1,15 @@
-describe('End to end tests', function() {
+describe('Basic interactions test', function() {
+  before(function () {
+    cy.logIn();
+  });
 
-  it('Failed log in test', function() {
-    cy.log('Failed log in test');
-    cy.visit(Cypress.env('login_url'));
-    cy.get(':nth-child(1) > :nth-child(2) > div > input').type('pulitest@pulilab.com');
-    cy.get(':nth-child(2) > :nth-child(2) > :nth-child(1) > input').type('puli12345');
-    cy.get('.el-button--medium > span > span').click();
-    cy.get('.el-form').submit();
-    cy.get(':nth-child(2) > :nth-child(2) > :nth-child(2)').contains('Unable to log in with provided credentials.');
-  })
+  after(function () {
+    cy.logOut();
+  });
+
+  it('Basic UI items check', function() {
+    cy.log('UI checkup');
+    cy.visit('http://localhost:3000/en/-/inventory/list?country=1', {headers: {}});
+    cy.get(':nth-child(1) > :nth-child(2) > a > span').contains('Innovation Portfolios');
+  });
 });
