@@ -4,11 +4,13 @@ from fabric.context_managers import warn_only
 
 # ENVIRONMENTS #
 PROD_HOST_STRING = ''
+DEV_HOST_STRING = ''
+STAGING_HOST_STRING = 'whomaps@tipp.pulilab.com'
 
 
 def dev():
     """Configure dev"""
-    env.host_string = ''
+    env.host_string = DEV_HOST_STRING
     env.name = 'dev'
     env.port = 22
     env.branch = "development"
@@ -32,8 +34,7 @@ def production():
 
 def staging():
     """Configure staging"""
-    # env.host_string = 'whomaps@157.230.27.132'
-    env.host_string = 'whomaps@tipp.pulilab.com'
+    env.host_string = STAGING_HOST_STRING
     env.name = 'staging'
     env.port = 22
     env.branch = "master"
@@ -244,7 +245,7 @@ def down():
 
 
 def up():
-    local("docker-compose up -d")
+    local("docker-compose up")
 
 
 def up_debug():
