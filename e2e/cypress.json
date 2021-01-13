@@ -1,7 +1,7 @@
 {
   "env": {
-    "server": "http://localhost:3000/",
-    "login_url": "http://localhost:3000/en/-/login/",
+    "url_base": "http://localhost/",
+    "login_suffix": "en/-/login/",
     "test_user": "pulitest@pulilab.com",
     "test_pw": "puli_1928"
   }

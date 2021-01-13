@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from user.models import UserProfile, Organisation
 from country.models import Country
 
+
 class Command(BaseCommand):
     help = """
     Generates test user with profile if needed

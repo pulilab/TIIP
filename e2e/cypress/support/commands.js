@@ -26,26 +26,27 @@
 
 
 Cypress.Commands.add('signUp', () => {
-  cy.visit(Cypress.env('server'));
-  cy.randomAlphaNumeric(10).then((response) => {
-    Cypress.env('testUser', "cypress_test_user_" + response + "@example.com");  // save user to env
-    cy.get('input[id="email"]').type(Cypress.env('testUser'));
-    cy.get('input[id="password"]').type('puli1234');
-    cy.get('input[id="passwordAgain"]').type('puli1234');
-    cy.contains('Sign up now').click();
-    cy.location('pathname', {timeout: 5000}).should('include', '/edit-profile');
-  });
+    cy.visit(Cypress.env('server'));
+    cy.randomAlphaNumeric(10).then((response) => {
+        Cypress.env('testUser', "cypress_test_user_" + response + "@example.com");  // save user to env
+        cy.get('input[id="email"]').type(Cypress.env('testUser'));
+        cy.get('input[id="password"]').type('puli1234');
+        cy.get('input[id="passwordAgain"]').type('puli1234');
+        cy.contains('Sign up now').click();
+        cy.location('pathname', {timeout: 5000}).should('include', '/edit-profile');
+    });
 });
 
 Cypress.Commands.add('logIn', () => {
-    cy.visit(Cypress.env('login_url'));
+    cy.log('Logging in...')
+    cy.visit(Cypress.env('url_base') + Cypress.env('login_suffix'));
     cy.get(':nth-child(1) > :nth-child(2) > div > input').type(Cypress.env('test_user'));
     cy.get(':nth-child(2) > :nth-child(2) > :nth-child(1) > input').type(Cypress.env('test_pw'));
     cy.get('.el-form').submit();
-    cy.url().should('include', Cypress.env('server') + 'en/-/inventory/list?country=')
+    cy.url().should('include', Cypress.env('url_base') + 'en/-/inventory/list?country=')
     cy.get(':nth-child(1) > :nth-child(1) > :nth-child(6) > :nth-child(1) > :nth-child(2) > span')
         .contains('Puli Test User');
-})
+});
 
 Cypress.Commands.add('logOut', () => {
     cy.get(':nth-child(2) > :nth-child(1) > :nth-child(1) > :nth-child(6) > :nth-child(1) > button').click();

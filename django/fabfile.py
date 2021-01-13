@@ -245,7 +245,7 @@ def down():
 
 
 def up():
-    local("docker-compose up")
+    local("docker-compose up -d")
 
 
 def up_debug():

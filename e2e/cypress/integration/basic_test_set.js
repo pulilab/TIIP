@@ -9,7 +9,8 @@ describe('Basic interactions test', function() {
 
   it('Basic UI items check', function() {
     cy.log('UI checkup');
-    cy.visit('http://localhost:3000/en/-/inventory/list?country=1', {headers: {}});
+    // TODO get one of the FE guys to fix this, I'm stupid for JavaScript
+    cy.visit(Cypress.env('url_base') + 'en/-/inventory/list?country=1', {headers: {}});
     cy.get(':nth-child(1) > :nth-child(2) > a > span').contains('Innovation Portfolios');
   });
 });
