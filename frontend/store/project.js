@@ -298,8 +298,8 @@ export const actions = {
   setPlatforms({ commit }, value) {
     commit('SET_PLATFORMS', value)
   },
-  setSectors({ commit }, value) {
-    commit('SET_SECTORS', value)
+  setSectors({ commit, rootGetters }, value) {
+    commit('SET_SECTORS', naFilter(rootGetters['projects/getSectors'], value))
   },
   setRegionalPriorities({ commit }, value) {
     commit('SET_REGIONAL_PRIORITIES', value)
@@ -316,8 +316,11 @@ export const actions = {
   setInfoSec({ commit }, value) {
     commit('SET_DATA', { key: 'isc', value })
   },
-  setInnovationWays({ commit }, value) {
-    commit('SET_DATA', { key: 'innovation_ways', value })
+  setInnovationWays({ commit, rootGetters }, value) {
+    commit('SET_DATA', {
+      key: 'innovation_ways',
+      value: naFilter(rootGetters['projects/getInnovationWays'], value),
+    })
   },
   setOverview({ commit }, value) {
     commit('SET_DATA', { key: 'overview', value })
@@ -337,11 +340,17 @@ export const actions = {
   setPhase({ commit }, value) {
     commit('SET_DATA', { key: 'phase', value })
   },
-  setCpd({ commit }, value) {
-    commit('SET_DATA', { key: 'cpd', value })
+  setCpd({ commit, rootGetters }, value) {
+    commit('SET_DATA', {
+      key: 'cpd',
+      value: naFilter(rootGetters['projects/getCpd'], value),
+    })
   },
-  setInnovationCategories({ commit }, value) {
-    commit('SET_DATA', { key: 'innovation_categories', value })
+  setInnovationCategories({ commit, rootGetters }, value) {
+    commit('SET_DATA', {
+      key: 'innovation_categories',
+      value: naFilter(rootGetters['projects/getInnovationCategories'], value),
+    })
   },
   setLinks({ commit }, value) {
     commit('SET_DATA', { key: 'links', value })
@@ -704,4 +713,19 @@ export const mutations = {
   SET_ORIGINAL: (state, project) => {
     state.original = project
   },
+}
+
+const naFilter = (items, selected) => {
+  const targets = items
+    ? items.filter((i) => i.name === 'N/A' || i.name === 'No')
+    : undefined
+
+  let newSelected = selected
+  targets.forEach((target) => {
+    console.log(target)
+    if (target !== undefined && selected.includes(target.id)) {
+      newSelected = [target.id]
+    }
+  })
+  return newSelected
 }
