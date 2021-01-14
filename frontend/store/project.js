@@ -295,8 +295,11 @@ export const actions = {
   setViewers({ commit }, value) {
     commit('SET_VIEWERS', value)
   },
-  setPlatforms({ commit }, value) {
-    commit('SET_PLATFORMS', value)
+  setPlatforms({ commit, rootGetters }, value) {
+    commit(
+      'SET_PLATFORMS',
+      naFilter(rootGetters['projects/getTechnologyPlatforms'], value)
+    )
   },
   setSectors({ commit, rootGetters }, value) {
     commit('SET_SECTORS', naFilter(rootGetters['projects/getSectors'], value))
@@ -304,14 +307,17 @@ export const actions = {
   setRegionalPriorities({ commit }, value) {
     commit('SET_REGIONAL_PRIORITIES', value)
   },
-  setHardware({ commit }, value) {
-    commit('SET_HARDWARE', value)
+  setHardware({ commit, rootGetters }, value) {
+    commit('SET_HARDWARE', naFilter(rootGetters['projects/getHardware'], value))
   },
-  setNontech({ commit }, value) {
-    commit('SET_NONTECH', value)
+  setNontech({ commit, rootGetters }, value) {
+    commit('SET_NONTECH', naFilter(rootGetters['projects/getNontech'], value))
   },
-  setFunctions({ commit }, value) {
-    commit('SET_FUNCTIONS', value)
+  setFunctions({ commit, rootGetters }, value) {
+    commit(
+      'SET_FUNCTIONS',
+      naFilter(rootGetters['projects/getFunctions'], value)
+    )
   },
   setInfoSec({ commit }, value) {
     commit('SET_DATA', { key: 'isc', value })
