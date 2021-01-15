@@ -15,13 +15,17 @@ from user.models import Organisation
 
 class ProjectSearch(ExtendedModel):
     SEARCH_BY = {
-        # query_param: QuerySet param | eg: in=name&in=org
+        # query_param: QuerySet param | eg: in=name&in=overview
         "name": "project__name",
+        "overview": "project__data__implementation_overview",
+        "desc": "project__data__overview",
+        "ach": "project__data__current_achievements",
+        "partner": "partner_names",
+        # DEPRECATION WARNING: still used on the landing page search
         "org": "organisation__name",
         "co": "country_office__name",
         "country": "country__name",
         "region": "country_office__region",
-        "overview": "project__data__implementation_overview",
     }
 
     FILTER_BY = {
