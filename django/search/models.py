@@ -195,6 +195,8 @@ class ProjectSearch(ExtendedModel):
             self.nontech = project.data.get('nontech', [])
             self.functions = project.data.get('functions', [])
             self.regional_priorities = project.data.get('regional_priorities', [])
+            self.partner_names = ", ".join([x.get('partner_name', "") for x in project.data.get("partners")]) \
+                if project.data.get("partners") else ""
             self.save()
 
     def reset(self):
