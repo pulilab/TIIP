@@ -63,6 +63,7 @@ class ProjectSearch(ExtendedModel):
     organisation = models.ForeignKey(Organisation, null=True, on_delete=models.SET_NULL)
 
     donors = ArrayField(models.IntegerField(), default=list)
+    partner_names = models.TextField(null=True, blank=True)
 
     software = ArrayField(models.IntegerField(), default=list)
     dhi_categories = ArrayField(models.IntegerField(), default=list)
