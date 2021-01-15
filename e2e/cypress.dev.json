@@ -1,5 +1,5 @@
 {
   "env": {
-    "server": "https://qa.invent.pulilab.com/"
+    "server": "https://dev.invent.pulilab.com/"
   }
 }
