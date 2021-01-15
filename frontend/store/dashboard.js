@@ -13,11 +13,11 @@ import {
 
 export const searchIn = () => [
   'name',
-  'org',
   'overview',
   'partner',
-  'donor',
-  'loc',
+  'desc',
+  'ach',
+  'partner',
 ]
 export const defaultSelectedColumns = () => [
   '1',
