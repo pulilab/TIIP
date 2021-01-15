@@ -4,8 +4,8 @@ from fabric.context_managers import warn_only
 
 # ENVIRONMENTS #
 PROD_HOST_STRING = ''
-DEV_HOST_STRING = 'whomaps@dev.invent.pulilab.com'
-QA_HOST_STRING = 'whomaps@qa.invent.pulilab.com'
+DEV_HOST_STRING = 'root@dev.invent.pulilab.com'
+QA_HOST_STRING = 'root@qa.invent.pulilab.com'
 TEST_HOST_STRING = 'whomaps@tipp.pulilab.com'
 
 
