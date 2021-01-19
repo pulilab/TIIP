@@ -376,7 +376,8 @@ export const getters = {
       cl: state.selectedCapabilityLevels,
       cc: state.selectedCapabilityCategories,
       cs: state.selectedCapabilitySubcategories,
-      view_as: rootGetters['user/getAccountApproved'] ? 'donor' : '',
+      // view_as: rootGetters['user/getAccountApproved'] ? 'donor' : '',  # TODO: fix this, causes infinite loop
+      view_as: '',
       sc: state.selectedColumns,
       // new
       ro: state.filteredRegionalOffice,
