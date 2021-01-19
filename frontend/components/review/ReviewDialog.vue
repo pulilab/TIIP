@@ -125,7 +125,9 @@
           <el-input
             v-model="score[`${question}_comment`]"
             type="textarea"
-            :rows="3"
+            maxlength="255"
+            show-word-limit
+            :rows="4"
             :placeholder="$gettext('Type here...') | translate"
           />
         </template>
