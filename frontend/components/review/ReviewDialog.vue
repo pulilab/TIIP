@@ -5,6 +5,8 @@
     width="800px"
     top="8vh"
     custom-class="review-dialog"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
     @close="resetForm(false)"
     @open="handleReviewFeed()"
   >
@@ -125,7 +127,9 @@
           <el-input
             v-model="score[`${question}_comment`]"
             type="textarea"
-            :rows="3"
+            maxlength="255"
+            show-word-limit
+            :rows="4"
             :placeholder="$gettext('Type here...') | translate"
           />
         </template>
@@ -138,14 +142,27 @@
       class="dialog-footer"
     >
       <el-button type="info" @click="resetForm(false)">Cancel</el-button>
-      <el-button
-        type="primary"
-        :loading="loadingReview"
-        :disabled="disabled"
-        @click="handleSubmit"
+      <el-popconfirm
+        :confirm-button-text="$gettext('Yes') | translate"
+        :cancel-button-text="$gettext('No') | translate"
+        icon="el-icon-info"
+        icon-color="#f26a21"
+        :title="
+          $gettext(
+            'Are you sure you want to submit? \nonce submitted, the review can\'t be changed'
+          ) | translate
+        "
+        @confirm="handleSubmit"
       >
-        <translate>Send</translate>
-      </el-button>
+        <el-button
+          slot="reference"
+          type="primary"
+          :loading="loadingReview"
+          :disabled="disabled"
+        >
+          <translate>Send</translate>
+        </el-button>
+      </el-popconfirm>
     </span>
   </el-dialog>
 </template>
@@ -191,6 +208,7 @@ export default {
       dialogReview: (state) => state.projects.dialogReview,
       currentProjectReview: (state) => state.projects.currentProjectReview,
       loadingReview: (state) => state.projects.loadingReview,
+      errorReview: (state) => state.projects.errorReview,
       questionType: (state) => state.portfolio.questionType,
       reviewQuestions: (state) => state.system.review_questions,
     }),
@@ -247,11 +265,16 @@ export default {
         ps_comment: '',
       }
     },
-    handleSubmit() {
-      this.addReview({
+    async handleSubmit() {
+      await this.addReview({
         ...this.score,
         id: this.currentProjectReview.reviewId,
       })
+      if (this.errorReview) {
+        this.$message.error(
+          this.$gettext('Opps, it seems your review have some errors.')
+        )
+      }
     },
     handleReviewFeed() {
       const {
@@ -297,6 +320,10 @@ export default {
 
 <style lang="less">
 @import '~assets/style/variables.less';
+
+.el-popconfirm__main {
+  width: 250px;
+}
 
 .el-dialog {
   .el-dialog__header {
