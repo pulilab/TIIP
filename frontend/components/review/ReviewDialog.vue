@@ -270,7 +270,7 @@ export default {
       })
       if (this.errorReview) {
         this.$message.error(
-          this.$gettext('Opps, it seems you review have some errors.')
+          this.$gettext('Opps, it seems your review have some errors.')
         )
       }
     },
