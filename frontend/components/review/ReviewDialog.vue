@@ -127,7 +127,9 @@
           <el-input
             v-model="score[`${question}_comment`]"
             type="textarea"
-            :rows="3"
+            maxlength="255"
+            show-word-limit
+            :rows="4"
             :placeholder="$gettext('Type here...') | translate"
           />
         </template>
@@ -206,6 +208,7 @@ export default {
       dialogReview: (state) => state.projects.dialogReview,
       currentProjectReview: (state) => state.projects.currentProjectReview,
       loadingReview: (state) => state.projects.loadingReview,
+      errorReview: (state) => state.projects.errorReview,
       questionType: (state) => state.portfolio.questionType,
       reviewQuestions: (state) => state.system.review_questions,
     }),
@@ -262,11 +265,16 @@ export default {
         ps_comment: '',
       }
     },
-    handleSubmit() {
-      this.addReview({
+    async handleSubmit() {
+      await this.addReview({
         ...this.score,
         id: this.currentProjectReview.reviewId,
       })
+      if (this.errorReview) {
+        this.$message.error(
+          this.$gettext('Opps, it seems your review have some errors.')
+        )
+      }
     },
     handleReviewFeed() {
       const {
