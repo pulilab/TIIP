@@ -19,17 +19,18 @@
       >
         <fieldset>
           <el-form-item :label="$gettext('E-mail') | translate" prop="username">
-            <el-input v-model="username" type="text" />
+            <el-input v-model="username" data-id="username" type="text" />
           </el-form-item>
 
           <el-form-item
             :label="$gettext('Password') | translate"
             prop="password"
           >
-            <el-input v-model="password" type="password" />
+            <el-input v-model="password" data-id="password" type="password" />
             <div
               v-if="nonFieldErrors"
               class="el-form-item__error ModifiedFormError"
+              data-id="error"
             >
               {{ nonFieldErrors }}
             </div>
@@ -45,6 +46,7 @@
           >
             <el-col :span="6" class="SecondaryAction">
               <el-button
+                data-id="forgot"
                 type="text"
                 size="small"
                 class="CancelButton"
@@ -54,7 +56,12 @@
               </el-button>
             </el-col>
             <el-col :span="6" class="PrimaryAction">
-              <el-button type="primary" size="medium" native-type="submit">
+              <el-button
+                data-id="login"
+                type="primary"
+                size="medium"
+                native-type="submit"
+              >
                 <translate>Log in</translate>
               </el-button>
             </el-col>
@@ -102,6 +109,7 @@
           >
             <el-col :span="6" class="SecondaryAction">
               <el-button
+                data-id="back"
                 type="text"
                 size="small"
                 @click="showForgotten = false"
@@ -110,7 +118,12 @@
               </el-button>
             </el-col>
             <el-col :span="6" class="PrimaryAction">
-              <el-button type="primary" size="medium" native-type="submit">
+              <el-button
+                data-id="reset"
+                type="primary"
+                size="medium"
+                native-type="submit"
+              >
                 <translate>Reset</translate>
               </el-button>
             </el-col>
@@ -146,6 +159,7 @@
           <el-col :span="6" class="SecondaryAction" />
           <el-col :span="6" class="PrimaryAction">
             <el-button
+              data-id="back"
               type="primary"
               size="medium"
               @click="successfulReset = false"

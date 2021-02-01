@@ -57,6 +57,7 @@
                     localePath({ name: 'organisation-portfolio-innovation' })
                   "
                   class="HeaderBtn"
+                  data-id="portfolioLink"
                 >
                   <translate>Innovation Portfolios</translate>
                 </nuxt-link>
