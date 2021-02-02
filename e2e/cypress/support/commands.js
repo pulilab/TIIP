@@ -56,7 +56,6 @@ Cypress.Commands.add("logOut", () => {
   // cy.url().should('include', Cypress.env('server') + 'en/auth')
   // cy.get(':nth-child(3) > :nth-child(1) > div > button > :nth-child(1) > span').contains('Login');
 });
-// cy.contains('Logout').click();
 
 Cypress.Commands.add("randomAlphaNumeric", (length) => {
   const characters =
