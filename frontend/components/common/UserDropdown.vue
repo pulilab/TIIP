@@ -8,7 +8,7 @@
     >
       <el-button
         slot="reference"
-        data-id="userDropdown"
+        data-test="user-dropdown"
         type="text"
         class="ButtonPopper"
       >
@@ -114,7 +114,7 @@
         </div>
 
         <div class="DropdownLink" @click="logout">
-          <el-button type="text" data-id="logout">
+          <el-button type="text" data-test="logout-submit">
             <span class="MenuIcon">
               <fa icon="power-off" />
             </span>

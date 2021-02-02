@@ -18,19 +18,32 @@
         @submit.native.prevent="loginLocal"
       >
         <fieldset>
-          <el-form-item :label="$gettext('E-mail') | translate" prop="username">
-            <el-input v-model="username" data-id="username" type="text" />
+          <el-form-item
+            data-test="signin-username-item"
+            :label="$gettext('E-mail') | translate"
+            prop="username"
+          >
+            <el-input
+              v-model="username"
+              data-test="signin-username"
+              type="text"
+            />
           </el-form-item>
 
           <el-form-item
+            data-test="signin-password-item"
             :label="$gettext('Password') | translate"
             prop="password"
           >
-            <el-input v-model="password" data-id="password" type="password" />
+            <el-input
+              v-model="password"
+              data-test="signin-password"
+              type="password"
+            />
             <div
               v-if="nonFieldErrors"
               class="el-form-item__error ModifiedFormError"
-              data-id="error"
+              data-test="signin-error"
             >
               {{ nonFieldErrors }}
             </div>
@@ -46,7 +59,7 @@
           >
             <el-col :span="6" class="SecondaryAction">
               <el-button
-                data-id="forgot"
+                data-test="signin-forgot"
                 type="text"
                 size="small"
                 class="CancelButton"
@@ -57,7 +70,7 @@
             </el-col>
             <el-col :span="6" class="PrimaryAction">
               <el-button
-                data-id="login"
+                data-test="signin-submit"
                 type="primary"
                 size="medium"
                 native-type="submit"
@@ -109,7 +122,7 @@
           >
             <el-col :span="6" class="SecondaryAction">
               <el-button
-                data-id="back"
+                data-test="back"
                 type="text"
                 size="small"
                 @click="showForgotten = false"
@@ -119,7 +132,7 @@
             </el-col>
             <el-col :span="6" class="PrimaryAction">
               <el-button
-                data-id="reset"
+                data-test="reset"
                 type="primary"
                 size="medium"
                 native-type="submit"
@@ -159,7 +172,7 @@
           <el-col :span="6" class="SecondaryAction" />
           <el-col :span="6" class="PrimaryAction">
             <el-button
-              data-id="back"
+              data-test="back"
               type="primary"
               size="medium"
               @click="successfulReset = false"
