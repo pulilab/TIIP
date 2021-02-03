@@ -296,7 +296,7 @@ export default {
           links: () => this.parseLinks(),
           partners: () => this.parsePartners(),
           unicef_sector: () => this.findProjectCollectionValue('sectors', true),
-          functions: () => this.findProjectCollectionValue('functions', true), // bad
+          functions: () => this.findProjectCollectionValue('functions', true),
           currency: () => this.findProjectCollectionValue('currencies', false),
           phase: () => this.findProjectCollectionValue('phases', false),
           hardware: () => this.findProjectCollectionValue('hardware', true),
