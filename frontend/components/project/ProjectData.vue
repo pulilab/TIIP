@@ -22,6 +22,7 @@
           />
 
           <simple-field
+            v-if="project.mplementation_overview"
             :content="project.implementation_overview"
             :header="$gettext('Narrative of the initiative') | translate"
           />
@@ -45,7 +46,10 @@
             <simple-field :header="$gettext('Team members') | translate">
               <team-list :value="project.team" />
             </simple-field>
-            <simple-field :header="$gettext('Viewers') | translate">
+            <simple-field
+              v-if="project.viewers.length > 0"
+              :header="$gettext('Viewers') | translate"
+            >
               <team-list :value="project.viewers" />
             </simple-field>
           </div>
@@ -73,6 +77,7 @@
           />
 
           <simple-field
+            v-if="resultArea.name"
             :header="$gettext('Result Area') | translate"
             :content="resultArea.name"
           />
@@ -126,6 +131,7 @@
           </template>
 
           <simple-field
+            v-if="project.regional_priorities.length > 0"
             :header="$gettext('Regional priority(ies)') | translate"
           >
             <platforms-list
@@ -134,7 +140,10 @@
             />
           </simple-field>
 
-          <simple-field :header="$gettext('Innovation(s)') | translate">
+          <simple-field
+            v-if="project.innovation_ways.length > 0"
+            :header="$gettext('Innovation(s)') | translate"
+          >
             <platforms-list
               :platforms="project.innovation_ways"
               source="getInnovationWays"
@@ -142,7 +151,7 @@
           </simple-field>
 
           <simple-field
-            v-show="!hideInnovationCategories"
+            v-if="project.innovation_categories.length > 0"
             :header="$gettext('Innovation category(ies)') | translate"
           >
             <platforms-list
@@ -201,9 +210,9 @@
             />
           </template>
           <template v-else>
-            <translate>
+            <!-- <translate>
               There's no implemantation overview for the initiative.
-            </translate>
+            </translate> -->
           </template>
         </collapsible-card>
 
@@ -252,7 +261,7 @@
             </div>
           </template>
           <template v-else>
-            <translate>There's no partners for the initiative.</translate>
+            <!-- <translate>There's no partners for the initiative.</translate> -->
           </template>
         </collapsible-card>
 
@@ -528,10 +537,6 @@ export default {
     orderedLinkList() {
       return orderBy(this.project.links, ['link_type'], ['asc'])
     },
-    hideInnovationCategories() {
-      const na = find(this.innovationWays, ({ name }) => name === 'N/A')
-      return na && this.project.innovation_ways.includes(na.id)
-    },
   },
   mounted() {
     this.loadOffice(this.project.country_office)
@@ -584,8 +589,8 @@ export default {
 </script>
 
 <style lang="less">
-@import '../../assets/style/variables.less';
-@import '../../assets/style/mixins.less';
+@import '~assets/style/variables.less';
+@import '~assets/style/mixins.less';
 
 .ProjectData {
   .limitPageWidth();
@@ -597,13 +602,10 @@ export default {
 
   > .el-row {
     > .el-col {
-      // form fieldsets
       &:first-child {
         width: calc(100% - @projectAsideNavWidth - 20px);
         margin-right: 20px;
       }
-
-      // aside navigation
       &:last-child {
         width: @projectAsideNavWidth;
       }
