@@ -21,6 +21,15 @@ services:
             - ./django:/src
             - log_data:/var/log/django
             - ssh_data:/root/.ssh
+    
+    nuxt:
+        restart: always
+        build: ./frontend
+        expose:
+        - "3000"
+        links:
+        - django
+
     nginx:
         volumes:
         - ./nginx/site:/usr/share/nginx/html:rw

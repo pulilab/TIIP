@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  nuxt:
+    restart: always
+    build: ./frontend
+    expose:
+      - "3000"
+    links:
+      - django
+
+volumes:
+  postgres_data:
+  log_data:
+  media_data:
