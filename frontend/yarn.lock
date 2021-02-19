@@ -9296,6 +9296,7 @@ mocha@^5.2.0:
     supports-color "5.4.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 =======
@@ -9309,6 +9310,8 @@ moment@2.24.0:
 =======
 >>>>>>> 2496cbe (Merge with dev branch)
 >>>>>>> d9f9cc9 (Merge with dev)
+=======
+>>>>>>> e5cbc81 (Fix merge with dev)
 moment@^2.10.2:
   version "2.29.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
