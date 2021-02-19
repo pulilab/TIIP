@@ -22,7 +22,7 @@
           />
 
           <simple-field
-            v-if="project.mplementation_overview"
+            v-if="project.implementation_overview"
             :content="project.implementation_overview"
             :header="$gettext('Narrative of the initiative') | translate"
           />
@@ -47,7 +47,7 @@
               <team-list :value="project.team" />
             </simple-field>
             <simple-field
-              v-if="project.viewers.length > 0"
+              v-if="isEmptyArr(project.viewers)"
               :header="$gettext('Viewers') | translate"
             >
               <team-list :value="project.viewers" />
@@ -131,7 +131,7 @@
           </template>
 
           <simple-field
-            v-if="project.regional_priorities.length > 0"
+            v-if="isEmptyArr(project.regional_priorities)"
             :header="$gettext('Regional priority(ies)') | translate"
           >
             <platforms-list
@@ -141,7 +141,7 @@
           </simple-field>
 
           <simple-field
-            v-if="project.innovation_ways.length > 0"
+            v-if="isEmptyArr(project.innovation_ways)"
             :header="$gettext('Innovation(s)') | translate"
           >
             <platforms-list
@@ -151,7 +151,7 @@
           </simple-field>
 
           <simple-field
-            v-if="project.innovation_categories.length > 0"
+            v-if="isEmptyArr(project.innovation_categories)"
             :header="$gettext('Innovation category(ies)') | translate"
           >
             <platforms-list
@@ -170,7 +170,7 @@
               <simple-field
                 v-if="
                   ['cpd', 'wbs'].includes(field.type)
-                    ? project[field.type].length > 0
+                    ? isEmptyArr(project[field.type])
                     : project[field.type]
                 "
                 :key="field.type"
@@ -224,7 +224,7 @@
           id="partners"
           :title="$gettext('5. Partners') | translate"
         >
-          <template v-if="project.partners.length > 0">
+          <template v-if="isEmptyArr(project.partners)">
             <div
               v-for="partner in project.partners"
               :key="partner.email"
@@ -270,14 +270,14 @@
           :title="$gettext('6. Technology') | translate"
         >
           <simple-field
-            v-if="project.platforms.length > 0"
+            v-if="isEmptyArr(project.platforms)"
             :header="$gettext('Software platform(s)') | translate"
           >
             <platforms-list :platforms="project.platforms" />
           </simple-field>
 
           <simple-field
-            v-if="project.hardware.length > 0"
+            v-if="isEmptyArr(project.hardware)"
             :header="$gettext('Hardware platform(s)') | translate"
           >
             <platforms-list
@@ -286,13 +286,13 @@
             />
           </simple-field>
           <simple-field
-            v-if="project.nontech.length > 0"
+            v-if="isEmptyArr(project.nontech)"
             :header="$gettext('Non-technology platform(s)') | translate"
           >
             <platforms-list :platforms="project.nontech" source="getNontech" />
           </simple-field>
           <simple-field
-            v-if="project.functions.length > 0"
+            v-if="isEmptyArr(project.functions)"
             :header="$gettext('Platform functions') | translate"
           >
             <platforms-list
@@ -311,7 +311,7 @@
         </collapsible-card>
 
         <collapsible-card
-          v-if="countryQuestions && countryQuestions.length > 0"
+          v-if="countryQuestions && isEmptyArr(countryQuestions)"
           id="countrycustom"
           :title="customFieldsName(country.name)"
         >
@@ -325,7 +325,7 @@
           />
         </collapsible-card>
 
-        <div v-if="donors && donors.length > 0" id="donorcustom">
+        <div v-if="donors && isEmptyArr(donors)" id="donorcustom">
           <collapsible-card
             v-for="donor in donors"
             :key="donor.id"
@@ -583,6 +583,9 @@ export default {
         return true
       }
       return false
+    },
+    isEmptyArr(arr) {
+      return arr.length > 0
     },
   },
 }
