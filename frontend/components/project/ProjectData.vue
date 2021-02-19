@@ -210,9 +210,15 @@
             />
           </template>
           <template v-else>
+<<<<<<< HEAD
             <!-- <translate>
               There's no implemantation overview for the initiative.
             </translate> -->
+=======
+            <translate>
+              There's no implemantation overview for the initiative.
+            </translate>
+>>>>>>> d0c1b73 (Merge with dev)
           </template>
         </collapsible-card>
 
@@ -261,7 +267,11 @@
             </div>
           </template>
           <template v-else>
+<<<<<<< HEAD
             <!-- <translate>There's no partners for the initiative.</translate> -->
+=======
+            <translate>There's no partners for the initiative.</translate>
+>>>>>>> d0c1b73 (Merge with dev)
           </template>
         </collapsible-card>
 
