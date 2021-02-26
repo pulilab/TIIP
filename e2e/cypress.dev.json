@@ -1,5 +1,5 @@
 {
-  "baseUrl": "http://localhost:3000",
+  "baseUrl": "https://dev.invent.pulilab.com",
   "projectId": "7s5okt",
   "integrationFolder": "cypress/tests",
   "viewportHeight": 1000,
