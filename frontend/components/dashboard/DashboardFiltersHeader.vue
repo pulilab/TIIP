@@ -5,6 +5,16 @@
         {total} initiative(s) to show
       </translate>
     </span>
+    <span class="CopyUrl" v-if="canCopy">
+      <div class="Label Button"  @click="copyUrlToClipboard" v-if="!urlCopied">
+        <fa class="left" :icon="['far', 'copy']" size="lg" />
+        <translate>Copy URL</translate>
+      </div>
+      <div class="Label" v-else>
+        <fa class="left" :icon="['fas', 'check-circle']" size="lg"  />        
+        <span>Copied</span>
+      </div>
+    </span>
     <!-- <el-button class="ToggleFiltersButton">
       <fa icon="chevron-right" />
     </el-button> -->
@@ -14,6 +24,22 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
+  data() {
+    return {
+      canCopy: false,
+      urlCopied: false
+    }
+  },
+  mounted() {
+    this.canCopy = navigator.clipboard
+  },
+  methods: {
+    async copyUrlToClipboard() {
+      this.urlCopied = true
+      await navigator.clipboard.writeText(window.location.href)
+      setTimeout(() => { this.urlCopied = false }, 5000)
+    }    
+  },
   computed: {
     ...mapGetters({
       total: 'dashboard/getTotal',
@@ -29,12 +55,13 @@ export default {
 .DashboardFiltersHeader {
   background-color: @colorBrandPrimaryDark;
   transform: translateX(40px);
+  position: relative;
 
   .ProjectToShow {
     display: inline-block;
     box-sizing: border-box;
     padding-left: 20px;
-    width: @advancedSearchWidth - @actionBarHeight;
+    max-width: @advancedSearchWidth - @actionBarHeight;
     color: @colorWhite;
     font-size: @fontSizeBase;
     font-weight: 700;
@@ -43,6 +70,34 @@ export default {
     .svg-inline--fa {
       margin-right: 4px;
     }
+  }
+
+  .CopyUrl {
+    position: absolute;
+    right: 20px;
+    top: 0;
+    bottom: 0;
+    display: inline-flex;
+    align-items: center;
+
+    .Label {
+      color: @colorWhite;
+      font-size: @fontSizeBase;
+    }
+
+    .Button {
+      cursor: pointer;
+      opacity: .9;
+    }
+
+    .Button:hover {
+      opacity: 1;
+    }
+
+    .left {
+      margin-right: 4px;
+    }
+
   }
 
   .ToggleFiltersButton {
