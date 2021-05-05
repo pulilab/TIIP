@@ -5,13 +5,13 @@
         {total} initiative(s) to show
       </translate>
     </span>
-    <span class="CopyUrl" v-if="canCopy">
-      <div class="Label Button"  @click="copyUrlToClipboard" v-if="!urlCopied">
+    <span v-if="canCopy" class="CopyUrl">
+      <div v-if="!urlCopied" class="Label Button" @click="copyUrlToClipboard">
         <fa class="left" :icon="['far', 'copy']" size="lg" />
         <translate>Copy URL</translate>
       </div>
-      <div class="Label" v-else>
-        <fa class="left" :icon="['fas', 'check-circle']" size="lg"  />        
+      <div v-else class="Label">
+        <fa class="left" :icon="['fas', 'check-circle']" size="lg" />
         <span>Copied</span>
       </div>
     </span>
@@ -27,8 +27,13 @@ export default {
   data() {
     return {
       canCopy: false,
-      urlCopied: false
+      urlCopied: false,
     }
+  },
+  computed: {
+    ...mapGetters({
+      total: 'dashboard/getTotal',
+    }),
   },
   mounted() {
     this.canCopy = navigator.clipboard
@@ -37,13 +42,10 @@ export default {
     async copyUrlToClipboard() {
       this.urlCopied = true
       await navigator.clipboard.writeText(window.location.href)
-      setTimeout(() => { this.urlCopied = false }, 5000)
-    }    
-  },
-  computed: {
-    ...mapGetters({
-      total: 'dashboard/getTotal',
-    }),
+      setTimeout(() => {
+        this.urlCopied = false
+      }, 5000)
+    },
   },
 }
 </script>
@@ -87,7 +89,7 @@ export default {
 
     .Button {
       cursor: pointer;
-      opacity: .9;
+      opacity: 0.9;
     }
 
     .Button:hover {
@@ -97,7 +99,6 @@ export default {
     .left {
       margin-right: 4px;
     }
-
   }
 
   .ToggleFiltersButton {
