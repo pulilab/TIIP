@@ -378,11 +378,6 @@ export default {
       text-align: left;
       padding-left: 12px;
     }
-
-    .cance-btn {
-      background-color: transparent;
-      font-weight: normal;
-    }
   }
 
   .info-box {
