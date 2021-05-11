@@ -1,4 +1,4 @@
-import { toInteger, remove } from 'lodash'
+import { toInteger } from 'lodash'
 
 export const state = () => ({
   loading: false,
