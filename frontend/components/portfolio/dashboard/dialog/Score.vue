@@ -73,33 +73,12 @@
               :content="$gettext('Delete Review Data') | translate"
               placement="top"
             >
-              <el-popover
+              <confirm-popover
                 placement="bottom"
                 width="240"
-                popper-class="confirm-popper"
                 trigger="click"
-                content="this is content, this is content, this is content"
-              >
-                <div>
-                  <p class="confirm-text">
-                    Be aware that removing the reviewer, also deletes all scores
-                    the reviewer saved. <br />
-                    Are you sure you want to remove all review data?
-                  </p>
-                  <div>
-                    <el-button text size="mini"> Cancel </el-button>
-                    <el-button type="danger" text size="mini">
-                      Yes, remove all
-                    </el-button>
-                  </div>
-                </div>
-                <el-button
-                  slot="reference"
-                  icon="el-icon-close"
-                  circle
-                  class="header-icon-btn"
-                ></el-button>
-              </el-popover>
+                @confirmed="handleScoreDelete(reviewHeader)"
+              />
             </el-tooltip>
           </span>
         </template>
@@ -274,11 +253,13 @@
 import { mapState, mapActions } from 'vuex'
 import PsaList from '@/components/portfolio/dashboard/table/PsaList'
 import InfoPopover from '@/components/common/InfoPopover'
+import ConfirmPopover from '@/components/common/ConfirmPopover'
 
 export default {
   components: {
     PsaList,
     InfoPopover,
+    ConfirmPopover,
   },
   data() {
     return {
@@ -365,6 +346,7 @@ export default {
       })
     },
     reviewHeaders() {
+      console.log(this.review.review_scores)
       if (this.review.review_scores) {
         return this.review.review_scores.map((i) => {
           return {
@@ -391,9 +373,15 @@ export default {
     ...mapActions({
       setScoreDialog: 'portfolio/setScoreDialog',
       addScore: 'portfolio/addScore',
+      removeScore: 'portfolio/removeScore',
     }),
     handleScoreSubmit() {
       this.addScore({ id: this.review.id, data: { ...this.score } })
+    },
+    handleScoreDelete(reviewHeader) {
+      console.log(reviewHeader)
+      this.removeScore({ ...reviewHeader })
+      // this.addScore({ id: this.review.id, data: { ...this.score } })
     },
     handleScoreFeed() {
       this.score = {
@@ -462,11 +450,11 @@ export default {
   }
 
   .header-status-icon {
-    width: 17px;
-    height: 17px;
+    width: 16px;
+    height: 16px;
     opacity: 0.8;
     position: relative;
-    top: 2px;
+    top: 1px;
   }
 
   .header-status-icon:hover {
@@ -527,17 +515,6 @@ export default {
 
   .remove-icon:hover {
     opacity: 1;
-  }
-
-  .confirm-text {
-    margin-top: 0;
-    font-size: 0.9em;
-    font-weight: 500;
-    text-align: left;
-  }
-
-  .confirm-popper.el-popover {
-    border: none !important;
   }
 
   .cell.score-general-header {
