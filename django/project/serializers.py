@@ -512,6 +512,7 @@ class ProjectPortfolioStateSerializer(serializers.ModelSerializer):
 
 
 class ReviewScoreSerializer(serializers.ModelSerializer):
+    status = serializers.ChoiceField(choices=ReviewScore.STATUS_CHOICES)
     reviewer = UserProfileSerializer(read_only=True)
 
     class Meta:
@@ -615,6 +616,8 @@ class PortfolioStateChangeSerializer(PortfolioSerializer):
 
 
 class ReviewScoreFillSerializer(serializers.ModelSerializer):
+    status = serializers.ChoiceField(required=False, choices=ReviewScore.STATUS_CHOICES, allow_blank=False)
+
     class Meta:
         model = ReviewScore
         fields = ('psa', 'psa_comment', 'rnci', 'rnci_comment', 'ratp', 'ratp_comment', 'ra', 'ra_comment', 'ee',
@@ -635,6 +638,7 @@ class ReviewScoreDetailedSerializer(serializers.ModelSerializer):
     project = serializers.ReadOnlyField(source='get_project_data')
     portfolio = PortfolioSerializer(read_only=True, source='get_portfolio')
     portfolio_review = ProjectPortfolioStateSerializer(read_only=True)
+    status = serializers.ChoiceField(choices=ReviewScore.STATUS_CHOICES)
 
     class Meta:
         model = ReviewScore
