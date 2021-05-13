@@ -500,7 +500,7 @@ class ReviewScoreBriefSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ReviewScore
-        fields = ('id', 'created', 'modified', 'reviewer', 'portfolio_review', 'complete')
+        fields = ('id', 'created', 'modified', 'reviewer', 'portfolio_review', 'status')
 
 
 class ProjectPortfolioStateSerializer(serializers.ModelSerializer):
@@ -541,7 +541,7 @@ class ProjectPortfolioStateManagerSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_averages(obj):
-        complete_scores = obj.review_scores.filter(complete=True)
+        complete_scores = obj.review_scores.filter(status=ReviewScore.STATUS_COMPLETE)
 
         def calc_avg(in_list: list):
             return (sum(in_list) / len(in_list)) if in_list else None
@@ -618,13 +618,15 @@ class ReviewScoreFillSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReviewScore
         fields = ('psa', 'psa_comment', 'rnci', 'rnci_comment', 'ratp', 'ratp_comment', 'ra', 'ra_comment', 'ee',
-                  'ee_comment', 'nst', 'nst_comment', 'nc', 'nc_comment', 'ps', 'ps_comment')
+                  'ee_comment', 'nst', 'nst_comment', 'nc', 'nc_comment', 'ps', 'ps_comment', 'status')
 
     def update(self, instance, validated_data):
         """
-        Override serializer to set 'complete' to True
+        Override serializer to set status
         """
-        instance.complete = True
+        if instance.status != ReviewScore.STATUS_COMPLETE:
+            instance.status = ReviewScore.STATUS_DRAFT
+
         instance = super().update(instance, validated_data)
         return instance
 
