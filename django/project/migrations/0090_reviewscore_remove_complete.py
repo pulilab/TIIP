@@ -5,7 +5,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('project', '0090_reviewscore_remove_complete'),
+        ('project', '0089_reviewscore_fill_status'),
     ]
 
     operations = [
