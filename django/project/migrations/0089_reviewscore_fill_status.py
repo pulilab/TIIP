@@ -1,6 +1,6 @@
 # Generated manually
 
-from django.db import migrations, models
+from django.db import migrations
 
 def migrate_completion_data(apps, schema_editor):
     ReviewScore = apps.get_model('project', 'ReviewScore')

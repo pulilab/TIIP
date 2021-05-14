@@ -1,20 +1,16 @@
 # Generated manually
 
-from django.db import migrations, models
-
-def migrate_completion_data(apps, schema_editor):
-    ReviewScore = apps.get_model('project', 'ReviewScore')
-    for score in ReviewScore.objects.filter(complete=True):
-        score.status = 'CMP'
-        score.save()
-
+from django.db import migrations
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('project', '0089_reviewscore_fill_status'),
+        ('project', '0090_reviewscore_remove_complete'),
     ]
 
     operations = [
-        migrations.RunPython(migrate_completion_data, migrations.RunPython.noop),
+        migrations.RemoveField(
+            model_name='reviewscore',
+            name='complete',
+        ),
     ]
