@@ -472,7 +472,6 @@ export const mutations = {
   },
   REMOVE_SCORE: (state, id) => {
     const index = state.review.review_scores.findIndex((i) => i.id === id)
-    console.log('found at', index)
     state.review.review_scores.splice(index, 1)
   },
 }
