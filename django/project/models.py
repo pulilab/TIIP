@@ -656,7 +656,6 @@ class ProjectPortfolioState(BaseScore):
         default_manager_name = 'objects'
         base_manager_name = 'objects'
 
-
     def __str__(self):  # pragma: no cover
         return f"{self.portfolio}: {self.project}"
 
