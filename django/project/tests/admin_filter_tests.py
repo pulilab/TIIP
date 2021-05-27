@@ -1,26 +1,13 @@
-import mock
-from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
-from django.template.response import TemplateResponse
-from django.test import TestCase, Client, RequestFactory
-from django.urls import reverse
-from django.core import mail
-from django.contrib.admin.sites import AdminSite
-from django.contrib.auth.models import User, Permission
-from rest_framework import status
+from django.test import RequestFactory
 
 from country.models import Country
 from project.admin import ProjectAdmin
 from user.models import UserProfile
-from project.models import Project, DigitalStrategy, TechnologyPlatform, Portfolio
+from project.models import Project
 
-from project.tests.setup import MockRequest, SetupTests
-from core.utils import make_admin_list
+from project.tests.setup import SetupTests
 
-from core.admin import AllObjectsAdmin
-
-from project.admin_filters import IsPublishedFilter, OverViewFilter, CountryFilter, DescriptionFilter, \
-    RegionFilter
+from project.admin_filters import IsPublishedFilter, CountryFilter, RegionFilter
 from project.tests.admin_tests import TestAdmin
 
 
