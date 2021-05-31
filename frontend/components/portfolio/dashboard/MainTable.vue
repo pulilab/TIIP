@@ -27,6 +27,7 @@
         sortable="custom"
         prop="project__name"
         width="240"
+        class-name="project-td"
       >
         <template slot-scope="scope">
           <project-card :project="scope.row" hide-borders show-verified />
@@ -616,7 +617,7 @@
         width="240"
       >
         <template slot-scope="scope">
-          <p>{{ scope.row.target_group_reached }}</p>
+          <p>{{ scope.row.target_group_reached | formatNumber }}</p>
         </template>
       </el-table-column>
 
@@ -627,7 +628,7 @@
         width="240"
       >
         <template slot-scope="scope">
-          <p>{{ scope.row.total_budget }}</p>
+          <p>{{ scope.row.total_budget | formatNumber }}</p>
         </template>
       </el-table-column>
 
@@ -1017,11 +1018,15 @@ export default {
 
     td {
       padding: 10px 16px 10px 12px;
+      &.project-td {
+        padding: 10px 10px 10px 12px;
+      }
       > .cell {
         min-height: 37px;
         line-height: 17px;
         word-break: normal;
         padding: 0;
+        overflow: initial !important;
         p {
           position: relative;
           margin: 0;

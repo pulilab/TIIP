@@ -4,15 +4,42 @@ from fabric.context_managers import warn_only
 
 # ENVIRONMENTS #
 PROD_HOST_STRING = ''
+DEV_HOST_STRING = 'root@dev.invent.pulilab.com'
+QA_HOST_STRING = 'root@qa.invent.pulilab.com'
+TEST_HOST_STRING = 'whomaps@tipp.pulilab.com'
 
 
 def dev():
     """Configure dev"""
-    env.host_string = ''
+    env.host_string = DEV_HOST_STRING
     env.name = 'dev'
     env.port = 22
-    env.branch = "development"
-    env.project_root = '/home/tiip/tiip'
+    env.branch = "dev"
+    env.project_root = '~/TIIP'
+    env.backend_root = 'django'
+    env.frontend_root = 'frontend'
+    env.webpack_options = ''
+
+
+def qa():
+    """Configure qa"""
+    env.host_string = QA_HOST_STRING
+    env.name = 'production'
+    env.port = 22
+    env.branch = "tags/2.1.5"
+    env.project_root = '~/TIIP'
+    env.backend_root = 'django'
+    env.frontend_root = 'frontend'
+    env.webpack_options = '-live'
+
+
+def staging():
+    """Configure staging"""
+    env.host_string = TEST_HOST_STRING
+    env.name = 'staging'
+    env.port = 22
+    env.branch = "master"
+    env.project_root = '~/TIIP'
     env.backend_root = 'django'
     env.frontend_root = 'frontend'
     env.webpack_options = ''
@@ -23,31 +50,18 @@ def production():
     env.host_string = PROD_HOST_STRING
     env.name = 'production'
     env.port = 22
-    env.branch = "tags/3.5.24"
-    env.project_root = '/home/tiip/tiip'
+    env.branch = "tags/2.1.5"
+    env.project_root = '~/TIIP'
     env.backend_root = 'django'
     env.frontend_root = 'frontend'
     env.webpack_options = '-live'
 
 
-def staging():
-    """Configure staging"""
-    # env.host_string = 'whomaps@157.230.27.132'
-    env.host_string = 'whomaps@tipp.pulilab.com'
-    env.name = 'staging'
-    env.port = 22
-    env.branch = "master"
-    env.project_root = '/home/tiip/tiip'
-    env.backend_root = 'django'
-    env.frontend_root = 'frontend'
-    env.webpack_options = ''
-
-
 # COMMANDS #
 
 def clone_prod_to(server):
-    if server not in ['dev', 'staging']:
-        print("Error. Valid servers are 'dev', 'staging'.")
+    if server not in ['dev', 'qa', 'staging']:
+        print("Error. Valid servers are 'dev', 'qa', 'staging'.")
         exit(1)
     # Dump prod data and tag
     production()
@@ -100,7 +114,7 @@ def deploy():
         run('git fetch')
         if env.name == 'production':
             with warn_only():
-                run('rm ~/tiip/nginx/conf.d/production.conf')
+                run('rm ~/TIIP/nginx/conf.d/production.conf')
         run('git checkout %s' % env.branch)
         run('git pull origin %s' % env.branch)
         time.sleep(10)

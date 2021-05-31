@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  nuxt:
+    restart: always
+    build: ./frontend
+    expose:
+      - "3000"
+    links:
+      - django
+
+  nginx:
+    restart: always
+    image: nginx:1.15.6
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d.e2e:/etc/nginx/conf.d:ro
+    links:
+      - django
+      - nuxt
