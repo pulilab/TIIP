@@ -604,7 +604,12 @@ class ImportRow(models.Model):
     parent = models.ForeignKey(ProjectImportV2, null=True, related_name="rows", on_delete=models.SET_NULL)
 
 
-class BaseScore(ExtendedModel):
+class BaseScoreManager(ActiveQuerySet, models.Manager):
+    use_in_migrations = True
+    use_for_related_fields = True
+
+
+class BaseScore(SoftDeleteModel, ExtendedModel):
     BASE_CHOICES = [(i, i) for i in range(1, 6)]
     psa = models.ManyToManyField(ProblemStatement, blank=True)  # Problem Statement Alignment
     rnci = models.IntegerField(choices=BASE_CHOICES, null=True, blank=True)  # Reach: Number of Children Impacted
@@ -615,8 +620,16 @@ class BaseScore(ExtendedModel):
     nc = models.IntegerField(choices=BASE_CHOICES, null=True, blank=True)  # Newness of Challenge
     ps = models.IntegerField(choices=BASE_CHOICES, null=True, blank=True)  # Path to Scale
 
+    objects = BaseScoreManager.as_manager()
+
     class Meta:
         abstract = True
+        default_manager_name = 'objects'
+
+
+class ProjectPortfolioStateManager(ActiveQuerySet, models.Manager):
+    use_in_migrations = True
+    use_for_related_fields = True
 
 
 class ProjectPortfolioState(BaseScore):
@@ -636,8 +649,12 @@ class ProjectPortfolioState(BaseScore):
     reviewed = models.BooleanField(default=False)
     approved = models.BooleanField(default=False)
 
+    objects = ProjectPortfolioStateManager.as_manager()
+
     class Meta:
         unique_together = ('portfolio', 'project')
+        default_manager_name = 'objects'
+        base_manager_name = 'objects'
 
     def __str__(self):  # pragma: no cover
         return f"{self.portfolio}: {self.project}"
@@ -664,13 +681,27 @@ class ReviewScore(BaseScore):
     nc_comment = models.CharField(max_length=255, null=True, blank=True)  # NC - reviewer's comment field
     ps_comment = models.CharField(max_length=255, null=True, blank=True)  # PS - reviewer's comment field
 
-    complete = models.BooleanField(default=False)
+    STATUS_PENDING = 'PD'
+    STATUS_DRAFT = 'DR'
+    STATUS_COMPLETE = 'CMP'
+    STATUS_CHOICES = (
+        (STATUS_PENDING, _('Pending')),
+        (STATUS_DRAFT, _('Draft')),
+        (STATUS_COMPLETE, _('Complete'))
+    )
+
+    status = models.CharField(
+        max_length=3,
+        choices=STATUS_CHOICES,
+        default=STATUS_PENDING
+    )
 
     def __str__(self):  # pragma: no cover
         return f'{self.reviewer} - {self.portfolio_review.project} - {self.portfolio_review.portfolio}'
 
     class Meta:
         unique_together = ('reviewer', 'portfolio_review')
+        default_manager_name = 'objects'
 
     def get_project_data(self):
         return self.portfolio_review.project.to_representation()

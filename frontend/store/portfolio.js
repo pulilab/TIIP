@@ -376,6 +376,16 @@ export const actions = {
       console.log(e.response.data)
     }
   },
+  async removeScore({ commit, dispatch }, { id }) {
+    return await this.$axios
+      .delete(`/api/project-review/${id}/`)
+      .then((res) => {
+        if (res.status === 204) {
+          commit('REMOVE_SCORE', id)
+          dispatch('getPortfolioProjects')
+        }
+      })
+  },
   async getManagerScore({ state, commit, dispatch }, { id, name }) {
     try {
       const { data } = await this.$axios.get(
@@ -459,6 +469,10 @@ export const mutations = {
   },
   SET_SELECTED_ROWS: (state, rows) => {
     state.selectedRows = rows
+  },
+  REMOVE_SCORE: (state, id) => {
+    const index = state.review.review_scores.findIndex((i) => i.id === id)
+    state.review.review_scores.splice(index, 1)
   },
 }
 
