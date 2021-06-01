@@ -15,6 +15,9 @@ from core.utils import make_admin_list
 # This has to stay here to use the proper celery instance with the djcelery_email package
 import scheduler.celery # noqa
 
+from import_export.admin import ExportActionMixin
+from project.resources import ProjectResource
+
 
 class ViewOnlyPermissionMixin:
     def has_add_permission(self, request):
@@ -153,11 +156,12 @@ class HSCChallengeAdmin(ViewOnlyPermissionMixin, AllObjectsAdmin):
     pass
 
 
-class ProjectAdmin(AllObjectsAdmin):
+class ProjectAdmin(ExportActionMixin, AllObjectsAdmin):
     list_display = ['__str__', 'modified', 'get_country', 'get_team', 'get_published', 'is_active']
-    readonly_fields = ['name', 'team', 'viewers', 'link', 'created', 'modified']
+    readonly_fields = ['name', 'team', 'viewers', 'link', 'created', 'modified', 'data', 'draft']
     fields = ['is_active'] + readonly_fields
     search_fields = ['name']
+    resource_class = ProjectResource
 
     def get_country(self, obj):
         return obj.get_country() if obj.public_id else obj.get_country(draft_mode=True)
