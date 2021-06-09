@@ -173,11 +173,6 @@ export default {
       // settings
       columnSelectorOpen: false,
       selectedColumns: [],
-      selectedTabColumns: {
-        inventory: [],
-        review: [],
-        portfolio: []
-      },
     }
   },
   computed: {
@@ -224,10 +219,6 @@ export default {
         this.columns.length
       })`
     },
-  },
-  mounted() {
-    // this.popperOpenHandler()
-    // this.updateColumns()
   },
   methods: {
     ...mapActions({

@@ -3,7 +3,6 @@ import { mapGetters, mapState } from 'vuex'
 import pickBy from 'lodash/pickBy'
 import pick from 'lodash/pick'
 import flatten from 'lodash/flatten'
-import { max } from 'date-fns'
 
 export default {
   props: {
