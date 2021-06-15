@@ -12,6 +12,9 @@ from .models import TechnologyPlatform, DigitalStrategy, HealthFocusArea, \
     Phase
 from core.utils import make_admin_list
 
+from project.admin_filters import IsPublishedFilter, UserFilter, OverViewFilter, CountryFilter, DescriptionFilter, \
+    RegionFilter
+
 # This has to stay here to use the proper celery instance with the djcelery_email package
 import scheduler.celery # noqa
 
@@ -158,6 +161,8 @@ class HSCChallengeAdmin(ViewOnlyPermissionMixin, AllObjectsAdmin):
 
 class ProjectAdmin(ExportActionMixin, AllObjectsAdmin):
     list_display = ['__str__', 'modified', 'get_country', 'get_team', 'get_published', 'is_active']
+    list_filter = (IsPublishedFilter, UserFilter, OverViewFilter, DescriptionFilter, RegionFilter, CountryFilter)
+
     readonly_fields = ['name', 'team', 'viewers', 'link', 'created', 'modified', 'data', 'draft']
     fields = ['is_active'] + readonly_fields
     search_fields = ['name']

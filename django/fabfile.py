@@ -51,7 +51,7 @@ def production():
     env.name = 'production'
     env.port = 22
     env.branch = "tags/2.1.5"
-    env.project_root = '/home/tiip/tiip'
+    env.project_root = '~/TIIP'
     env.backend_root = 'django'
     env.frontend_root = 'frontend'
     env.webpack_options = '-live'
@@ -114,7 +114,7 @@ def deploy():
         run('git fetch')
         if env.name == 'production':
             with warn_only():
-                run('rm ~/tiip/nginx/conf.d/production.conf')
+                run('rm ~/TIIP/nginx/conf.d/production.conf')
         run('git checkout %s' % env.branch)
         run('git pull origin %s' % env.branch)
         time.sleep(10)
@@ -246,6 +246,13 @@ def rebuild_db():
     local("docker-compose exec postgres dropdb -U postgres postgres")
     local("docker-compose exec postgres createdb -U postgres postgres")
     local("cat ./dump.sql | docker exec -i $(docker-compose ps -q postgres) psql -Upostgres")
+
+
+def add_base_db_data():
+    """
+    Adds basic data set to the db, like organizations, country and unicef offices
+    """
+    local("cat ./project/test-data/basic_data.sql | docker exec -i $(docker-compose ps -q postgres) psql -Upostgres")
 
 
 def backup_db():

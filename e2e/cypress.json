@@ -1,0 +1,23 @@
+{
+  "baseUrl": "http://localhost/",
+  "projectId": "7s5okt",
+  "integrationFolder": "cypress/tests",
+  "viewportHeight": 1000,
+  "viewportWidth": 1280,
+  "firefoxGcInterval": null,
+  "retries": {
+    "runMode": 2,
+    "openMode": 1
+  },
+  "env": {
+    "loginSuffix": "/en/-/login/",
+    "testUser": "test@pulilab.com",
+    "testPw": "puli1234",
+    "username": "Puli Test",
+    "coverage": false,
+    "codeCoverage": {
+      "url": "http://localhost:3001/__coverage__"
+    }
+  },
+  "experimentalStudio": true
+}
