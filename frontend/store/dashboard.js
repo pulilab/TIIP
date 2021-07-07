@@ -508,8 +508,7 @@ export const actions = {
   },
   setSelectedRows({ commit, state }, rows) {
     if (state.selectAll && state.selectedRows.length > rows.length) {
-      console.log('set selection?')
-      // commit('SET_SELECT_ALL', false) // ?? what that?
+      commit('SET_SELECT_ALL', false)
     }
     commit('SET_SELECTED_ROWS', rows)
   },
