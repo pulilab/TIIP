@@ -186,13 +186,11 @@ class SearchViewSet(PortfolioAccessMixin, mixins.ListModelMixin, GenericViewSet)
             query_params._mutable = True
             query_params.pop('ps', None)
             query_params.pop('sp', None)
-            reviews_alive = list(
-                ProjectPortfolioState.objects.filter(portfolio=portfolio_id).values_list('id', flat=True))
 
             if portfolio_page == "inventory":
-                qs = qs.exclude(project__review_states__in=reviews_alive)
-                # qs = qs.exclude(project__review_states__portfolio_id=portfolio_id,
-                #                 project__review_states__is_active=True)
+                active_reviews_for_portfolio = list(
+                    ProjectPortfolioState.objects.filter(portfolio=portfolio_id).values_list('pk', flat=True))
+                qs = qs.exclude(project__review_states__in=active_reviews_for_portfolio)
                 # edge case scenario where we need to ignore all the portfolio reliant query params from here
                 query_params.pop('portfolio', None)
             elif portfolio_page == "review":
