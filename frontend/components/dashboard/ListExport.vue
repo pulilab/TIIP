@@ -368,7 +368,6 @@ export default {
       const exportCols = []
 
       // create header row
-      // let newLine = []
       let row = []
       this.colKeyValues.forEach((i) => {
         if (this.selectedCol.includes(i.id)) {
@@ -378,13 +377,13 @@ export default {
           exportCols.push(i)
         }
       })
-      if (this.portfolioPage === 'review') {
+      if (this.portfolioPage !== 'inventory') {
         // official score header
         if (this.selectedCol.includes('62')) {
           row.push(...['', ...this.officialScoreFields])
         }
         if (this.selectedCol.includes('61')) {
-          // get the max of reviews per project
+          // get the max of reviews per project, then generate header for each one of them
           const maxReviewColGroups = this.projects.reduce((maxGroup, p) => {
             return p.review_states.review_scores.length > maxGroup
               ? p.review_states.review_scores.length
@@ -415,7 +414,7 @@ export default {
 
         // generate reviews
         if (
-          this.portfolioPage === 'review' &&
+          this.portfolioPage !== 'inventory' &&
           this.selectedCol.includes('61')
         ) {
           row.push(...this.parseReviews(p.review_states.review_scores))
