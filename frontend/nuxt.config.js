@@ -86,6 +86,14 @@ const config = {
     '@nuxtjs/proxy',
     'nuxt-fontawesome',
     '@nuxtjs/sentry',
+    [
+      'nuxt-matomo',
+      {
+        matomoUrl: process.env.MATOMO_URL,
+        siteId: process.env.MATOMO_SITEID,
+        debug: process.env.MATOMO_DEBUG,
+      },
+    ],
     // 'nuxt-purgecss',
     [
       'nuxt-i18n',
