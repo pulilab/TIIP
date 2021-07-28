@@ -9,7 +9,7 @@
           Deselect all {total} initiatives
         </translate>
       </el-button>
-      <list-export :projects="rowToExport">
+      <ListExport :projects="rowToExport">
         <template #default="{ parsedScores }">
           <xlsx-workbook>
             <xlsx-sheet :collection="parsedScores" sheet-name="export" />
@@ -40,7 +40,7 @@
             </xlsx-download>
           </xlsx-workbook>
         </template>
-      </list-export>
+      </ListExport>
       <el-select v-model="exportType" :disabled="disabled" size="small">
         <el-option label="CSV" value="CSV" />
         <el-option label="XLSX" value="XLSX" />
@@ -80,13 +80,14 @@
                   width="360"
                   class="hint-icon"
                   :icon="['fas', 'info-circle']"
-                >
-                  <translate v-if="c.id === '61'" key="noexport">
-                    This field represents the reviewers' scores and inputs assigned to the project. They will be exported horizontally in the projects' row.
-                  </translate>
-                  <translate v-else>
-                    Official scores will be exported horizontally in the projects' row.
-                  </translate>
+                  ><translate v-if="c.id === '61'" key="noexport"
+                    >This field represents the reviewers' scores and inputs
+                    assigned to the project. They will be exported horizontally
+                    in the projects' row.</translate
+                  ><translate v-else
+                    >Official scores will be exported horizontally in the
+                    projects' row.</translate
+                  >
                 </info-popover>
                 {{ c.label }}
               </li>

@@ -28,7 +28,7 @@
         <template slot-scope="scope">
           <div class="content">
             <p>{{ scope.row.question.name }}</p>
-            <info-popover
+            <InfoPopover
               ref="question"
               placement="right"
               :title="$gettext('Question Description') | translate"
@@ -38,7 +38,7 @@
               <p>
                 <b>{{ scope.row.question.text_bold }}</b>
               </p>
-            </info-popover>
+            </InfoPopover>
           </div>
         </template>
       </el-table-column>
@@ -93,8 +93,15 @@
               :items="scope.row[reviewHeader.reviewer][scope.row.type]"
               :problem-statements="problemStatements"
             />
-            <!-- N/A -->
-            <p v-else class="na psa"></p>
+            <p v-else class="na psa">
+              <span
+                v-if="
+                  scope.row[reviewHeader.reviewer][`${scope.row.type}_comment`]
+                "
+                >N/A</span
+              >
+              <span v-else>—</span>
+            </p>
           </template>
           <p
             v-else-if="scope.row[reviewHeader.reviewer][scope.row.type]"
@@ -102,10 +109,21 @@
           >
             {{ scope.row[reviewHeader.reviewer][scope.row.type] }}
           </p>
-          <!-- N/A -->
-          <p v-else class="na"></p>
+          <p
+            v-else-if="
+              scope.row.type === 'overal_summary' &&
+              scope.row[reviewHeader.reviewer][`${scope.row.type}_comment`]
+            "
+          >
+            &nbsp;
+          </p>
+          <p v-else class="na">—</p>
           <el-popover
-            v-if="scope.row[reviewHeader.reviewer][`${scope.row.type}_comment`]"
+            v-if="
+              scope.row[reviewHeader.reviewer][`${scope.row.type}_comment`] ||
+              scope.row[reviewHeader.reviewer][scope.row.type] ===
+                'overal_summary'
+            "
             placement="right"
             :title="$gettext('Comment') | translate"
             width="360"
@@ -121,7 +139,9 @@
               "
               slot="reference"
               :class="`comment-icon ${
-                scope.row.type === 'psa' && 'comment-psa'
+                (scope.row.type === 'psa' ||
+                  scope.row.type === 'overal_summary') &&
+                'comment-psa'
               }`"
               :icon="['fas', 'comment-alt']"
             />
@@ -167,7 +187,28 @@
                 />
               </template>
               <template v-else>
-                <p class="statement">{{ reviewScoreText(scope.row.type) }}</p>
+                <p v-if="scope.row.type !== 'overal_summary'" class="statement">
+                  {{ reviewScoreText(scope.row.type) }}
+                </p>
+                <p v-else>
+                  <el-popover
+                    v-if="review.overall_reviewer_feedback"
+                    placement="left"
+                    :title="$gettext('Overall Summary') | translate"
+                    width="360"
+                    trigger="hover"
+                    popper-class="score-popover"
+                  >
+                    <div class="text-info">
+                      <p>{{ review.overall_reviewer_feedback }}</p>
+                    </div>
+                    <fa
+                      slot="reference"
+                      class="summary-icon"
+                      :icon="['fas', 'comment-alt']"
+                    />
+                  </el-popover>
+                </p>
               </template>
             </template>
             <template v-else>
@@ -188,6 +229,9 @@
                   class="statement-options"
                 />
               </el-select>
+              <div v-else-if="scope.row.type === 'overal_summary'">
+                <ScoreSummaryPopover placement="left" width="420" />
+              </div>
               <el-select
                 v-else-if="scope.row.type === 'scale_phase'"
                 v-model="score[scope.row.type]"
@@ -211,6 +255,7 @@
                 <el-option v-for="i in points" :key="i" :label="i" :value="i" />
               </el-select>
               <info-popover
+                v-if="scope.row.type !== 'overal_summary'"
                 ref="guidance"
                 placement="left"
                 :title="$gettext('Scoring Guidance') | translate"
@@ -250,12 +295,14 @@ import { mapState, mapActions } from 'vuex'
 import PsaList from '@/components/portfolio/dashboard/table/PsaList'
 import InfoPopover from '@/components/common/InfoPopover'
 import ConfirmPopover from '@/components/common/ConfirmPopover'
+import ScoreSummaryPopover from '@/components/portfolio/dashboard/ScoreSummaryPopover.vue'
 
 export default {
   components: {
     PsaList,
     InfoPopover,
     ConfirmPopover,
+    ScoreSummaryPopover,
   },
   data() {
     return {
@@ -286,6 +333,7 @@ export default {
         nst: null,
         nc: null,
         ps: null,
+        overal_summary: null,
         impact: null,
         scale_phase: null,
       },
@@ -322,13 +370,16 @@ export default {
     },
     scoreTable() {
       return this.questionType.map((type) => {
-        // will generate custom reviwers rows
+        // will generate custom reviewers rows
         const reviewers = []
         if (this.review.review_scores) {
           this.review.review_scores.forEach((i) => {
             reviewers[i.reviewer.name] = {
-              [type]: i[type],
-              [`${type}_comment`]: i[`${type}_comment`],
+              [type]: type === 'overal_summary' ? '' : i[type],
+              [`${type}_comment`]:
+                type === 'overal_summary'
+                  ? i.overall_reviewer_feedback
+                  : i[`${type}_comment`],
             }
           })
         }
@@ -368,13 +419,16 @@ export default {
     ...mapActions({
       setScoreDialog: 'portfolio/setScoreDialog',
       addScore: 'portfolio/addScore',
+      addScoreSummary: 'portfolio/addScoreSummary',
       removeScore: 'portfolio/removeScore',
     }),
     handleScoreSubmit() {
       this.addScore({ id: this.review.id, data: { ...this.score } })
     },
+    handleScoreSummarySubmit() {
+      this.addScore({ id: this.review.id, data: { overal_summary: '' } })
+    },
     handleScoreDelete(reviewHeader) {
-      console.log('reviewHeader', reviewHeader)
       this.removeScore({ ...reviewHeader })
         .then((res) => {
           this.$message({
@@ -400,6 +454,7 @@ export default {
         nst: this.review.nst,
         nc: this.review.nc,
         ps: this.review.ps,
+        overal_summary: this.review.overall_reviewer_feedback,
         impact: this.review.impact,
         scale_phase: this.review.scale_phase,
       }
@@ -454,11 +509,11 @@ export default {
   }
 
   .header-status-icon {
-    width: 16px;
-    height: 16px;
+    width: 17px;
+    height: 17px;
     opacity: 0.8;
     position: relative;
-    top: 0;
+    top: 1px;
   }
 
   .header-status-icon:hover {
@@ -551,11 +606,11 @@ export default {
           width: 100%;
         }
         p {
-          margin-bottom: 0px !important;
-          font-size: 14px !important;
-          font-weight: bold !important;
-          letter-spacing: 0 !important;
-          line-height: 21px !important;
+          margin-bottom: 0px;
+          font-size: 14px;
+          font-weight: bold;
+          letter-spacing: 0;
+          line-height: 21px;
           min-width: 207px;
         }
         input {
@@ -585,6 +640,10 @@ export default {
       }
     }
     &.user-row {
+      &.na {
+        background-color: #eae6e1;
+        color: #a8a8a9;
+      }
       .user-score {
         // display: inline-block;
         font-size: 14px;
@@ -623,6 +682,17 @@ export default {
           text-align: center;
         }
       }
+    }
+  }
+  .summary-icon {
+    position: absolute;
+    top: 16px;
+    right: 94px;
+    cursor: pointer;
+    color: @colorBrandPrimary;
+    font-size: 18px;
+    &:hover {
+      color: @colorTextPrimary;
     }
   }
 }

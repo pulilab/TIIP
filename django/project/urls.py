@@ -144,10 +144,12 @@ urlpatterns = [
     path('project-review/<int:pk>/fill/',
          view=views.ReviewScoreAnswerViewSet.as_view({
              'post': 'update',
+             'patch': 'partial_update'
          }), name='review-score-fill'),
     path('project-review/manager/<int:pk>/',
          view=views.ProjectPortfolioStateManagerViewSet.as_view({
              'get': 'retrieve',
-             'post': 'update'
+             'post': 'update',
+             'patch': 'partial_update'
          }), name='portfolio-project-manager-review')
 ]

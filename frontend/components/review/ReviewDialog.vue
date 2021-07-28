@@ -60,6 +60,9 @@
           </p>
         </template>
       </div>
+      <div class="question question-info">
+        <!-- overall summary -->
+      </div>
     </template>
     <!-- review form -->
     <template v-else>
@@ -82,7 +85,15 @@
         :key="question"
         class="question"
       >
-        <template v-if="!(question === 'impact' || question === 'scale_phase')">
+        <template
+          v-if="
+            !(
+              question === 'overal_summary' ||
+              question === 'scale_phase' ||
+              question === 'scale_phase'
+            )
+          "
+        >
           <p class="label">
             {{ `${idx + 1}/A: ` }}
             {{ reviewQuestions[question].name }}
@@ -133,6 +144,31 @@
             :placeholder="$gettext('Type here...') | translate"
           />
         </template>
+      </div>
+      <div class="question">
+        <p class="label">
+          {{ `${questionType.length}:` }}
+          Overall Summary <translate class="mr-8">(optional)</translate>
+          <info-popover
+            placement="right"
+            :title="$gettext('Scoring Guidance') | translate"
+            width="360"
+          >
+            <p>{{ reviewQuestions['overal_summary'].guidance }}</p>
+            <p>
+              <b>{{ reviewQuestions['overal_summary'].guidance_bold }}</b>
+            </p>
+          </info-popover>
+        </p>
+
+        <el-input
+          v-model="score.overall_reviewer_feedback"
+          type="textarea"
+          maxlength="1024"
+          show-word-limit
+          :rows="4"
+          :placeholder="$gettext('Type here...') | translate"
+        />
       </div>
     </template>
     <!-- footer -->
@@ -209,6 +245,7 @@ export default {
         nst_comment: '',
         nc_comment: '',
         ps_comment: '',
+        overall_reviewer_feedback: '',
       },
     }
   },
@@ -255,6 +292,7 @@ export default {
     },
     resetForm(val) {
       this.setReviewDialog(val)
+      this.confirmPublishing = false
       this.score = {
         psa: [],
         rnci: null,
@@ -272,6 +310,7 @@ export default {
         nst_comment: '',
         nc_comment: '',
         ps_comment: '',
+        overall_reviewer_feedback: '',
       }
     },
     async handleSubmit(status = 'DR') {
@@ -304,6 +343,7 @@ export default {
         nst_comment,
         nc_comment,
         ps_comment,
+        overall_reviewer_feedback,
       } = this.currentProjectReview
       this.score = {
         psa,
@@ -322,6 +362,7 @@ export default {
         nst_comment,
         nc_comment,
         ps_comment,
+        overall_reviewer_feedback,
       }
     },
   },
@@ -330,6 +371,10 @@ export default {
 
 <style lang="less">
 @import '~assets/style/variables.less';
+
+.mr-8 {
+  margin-right: 10px;
+}
 
 .el-popconfirm__main {
   width: 250px;
@@ -347,6 +392,9 @@ export default {
 }
 
 .review-dialog {
+  textarea {
+    word-break: normal;
+  }
   .dialog-header {
     .title {
       font-size: 20px;
