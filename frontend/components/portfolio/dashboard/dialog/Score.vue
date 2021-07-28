@@ -461,7 +461,7 @@ export default {
     },
     reviewScoreText(type) {
       if (type === 'scale_phase') {
-        return this.scalePhases.find((i) => i.id === this.score[type])?.name
+        return this.scalePhases.find((i) => i.id === this.score[type]).name
       }
       return this.score[type] === null ? ' ' : this.score[type] // N/A
     },
