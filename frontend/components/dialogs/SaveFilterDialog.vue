@@ -5,7 +5,7 @@
     modal
     top="30vh"
     width="30vw"
-    custom-class="SaveFiltersDialog"
+    class="SaveFiltersDialog"
     @close="handleCancel"
   >
     <el-form
@@ -84,6 +84,7 @@ export default {
     },
     handleSave() {
       this.newFilter(this.form.name)
+      this.$matomo.trackEvent('Click', 'Filter action', 'Save')
       this.setDialog(false)
       this.form.name = ''
     },
@@ -91,7 +92,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 @import '~assets/style/variables.less';
 @import '~assets/style/mixins.less';
 
@@ -99,6 +100,9 @@ export default {
   .el-form,
   .el-form-item {
     margin: 20px 0;
+  }
+  ::v-deep .el-dialog__body {
+    overflow: auto;
   }
 }
 </style>

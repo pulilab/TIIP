@@ -835,6 +835,9 @@ export default {
       }
       this.$nextTick(() => {
         this.alignFixedTableWidthForRTL()
+        this.$refs.mainTable.$el
+          .querySelector('.el-table__body-wrapper')
+          .addEventListener('scroll', _.debounce(this.trackScroll, 1500))
       })
     }, 500)
   },
@@ -850,6 +853,9 @@ export default {
       addFavorite: 'projects/addFavorite',
       removeFavorite: 'projects/removeFavorite',
     }),
+    trackScroll(event) {
+      this.$matomo.trackEvent('Scroll', 'Table scroll', 'Portfolio')
+    },
     customHeaderRenderer(h, { column, $index }) {
       return h('span', { attrs: { title: column.label } }, column.label)
     },

@@ -172,6 +172,7 @@ export default {
       this.searchString = null
     },
     search() {
+      this.$matomo.trackEvent('Search', 'Search submit', 'Landing page search')
       this.searchString = this.localSearchString
     },
     show() {

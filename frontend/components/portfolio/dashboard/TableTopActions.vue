@@ -265,6 +265,12 @@ export default {
           this.$refs.pdfExport.printPdf()
         } else {
           xlsxDownloadFunction()
+          this.$matomo.trackEvent(
+            'Click',
+            'Export list',
+            'Portfolio',
+            this.rowToExport.length
+          )
         }
         this.$nuxt.$loading.finish('pdf')
       }, 500)

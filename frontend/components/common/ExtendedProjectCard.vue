@@ -1,7 +1,7 @@
 <template>
   <el-card :body-style="{ padding: '0px' }" class="ExtendedProjectCard rounded">
     <div>
-      <review-card-stripe v-if="type === 'review'" :item="project" />
+      <ReviewCardStripe v-if="type === 'review'" :item="project" />
       <el-row
         type="flex"
         align="middle"
@@ -15,8 +15,8 @@
             </el-col>
           </el-row>
           <el-row type="flex" align="middle" class="SecondSubRow">
-            <country-item :id="project.country" :show-flag="true" />
-            <organisation-item :id="project.organisation" />
+            <CountryItem :id="project.country" :show-flag="true" />
+            <OrganisationItem :id="project.organisation" />
           </el-row>
         </el-col>
         <el-row type="flex" align="center" justify="end">
@@ -38,9 +38,8 @@
             </div>
           </el-col>
           <el-col class="legend">
-            <project-legend :id="id" />
-            <!-- favorite -->
-            <favorite
+            <ProjectLegend :id="id" />
+            <Favorite
               v-if="project.isPublished"
               :id="id"
               :favorite="project.favorite"
@@ -65,7 +64,7 @@
           </div>
         </el-col>
         <el-col>
-          <project-card-actions
+          <ProjectCardActions
             :project="project"
             :force-show="false"
             :show-unpublish="user.member.includes(project.id)"

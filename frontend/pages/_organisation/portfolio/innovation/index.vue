@@ -23,7 +23,12 @@
       </translate>
     </p>
 
-    <el-collapse v-model="activePortfolio" accordion class="MainAccordion">
+    <el-collapse
+      v-model="activePortfolio"
+      accordion
+      class="MainAccordion"
+      @change="trackCollapseEvent"
+    >
       <el-collapse-item
         v-for="portfolio in portfolios"
         :key="portfolio.name"
@@ -125,6 +130,12 @@ export default {
   methods: {
     path(icon) {
       return icon === 'breast_feeding' || icon === 'mother_and_baby'
+    },
+    trackCollapseEvent(itemIndex) {
+      const portfolio = this.portfolios.find((p) => p.id === itemIndex)
+      if (portfolio) {
+        this.$matomo.trackEvent('Expand', 'Portfolio Expanded', portfolio.name)
+      }
     },
   },
 }

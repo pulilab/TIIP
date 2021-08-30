@@ -160,6 +160,7 @@ export default {
     },
     handleFilterSelect(name) {
       this.setFilters(name)
+      this.$matomo.trackEvent('Click', 'Filter action', 'Select')
     },
     async handleDelete(name) {
       try {
@@ -175,6 +176,7 @@ export default {
           }
         )
         await this.deleteFilter(name)
+        this.$matomo.trackEvent('Click', 'Filter action', 'Delete')
       } catch (e) {
         this.$message(this.$gettext('Operation successfully aborted'))
       }

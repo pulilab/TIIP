@@ -190,6 +190,12 @@ export default {
         },
       },
       // tabs information handle
+      trackTabs: [
+        'ambition matrix',
+        'risk-impact matrix',
+        'problem statement matrix',
+        'map view',
+      ],
       tabs: [
         {
           id: 1,
@@ -286,6 +292,12 @@ export default {
     },
     setTab(id) {
       this.tab = id
+      console.log('🚀 ~ file: _id.vue ~ setTab ~ this.tab', this.tab)
+      this.$matomo.trackEvent(
+        'Click',
+        'Tab change',
+        `Tab: ${this.trackTabs[id - 1].toUpperCase()}`
+      )
     },
   },
 }

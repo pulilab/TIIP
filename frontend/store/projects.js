@@ -22,6 +22,12 @@ export const state = () => ({
   errorReview: false,
   currentProjectReview: {},
   problemStatements: [],
+  trackingPages: {
+    inventory: 'Inventory',
+    table: 'Portfolio',
+    initiatives: 'My Initiatives list',
+    detail: 'Initiative detail',
+  },
 })
 
 const getTodayString = () => {
@@ -427,6 +433,12 @@ export const actions = {
   async setFavorite({ state, commit, dispatch }, { id, type, action }) {
     try {
       await this.$axios.put(`/api/projects/favorites/${action}/${id}`)
+      console.log(`Click - Favorite ${action} on ${state.trackingPages[type]}`)
+      this.$matomo.trackEvent(
+        'Click',
+        `Favorite ${action}`,
+        state.trackingPages[type]
+      )
       switch (type) {
         case 'initiatives':
           await dispatch('getInitiatives')
@@ -442,7 +454,7 @@ export const actions = {
           break
       }
     } catch (e) {
-      console.log(e.response.data)
+      console.log(e)
     }
   },
   async setNewItem({ commit, dispatch }, { type, name }) {

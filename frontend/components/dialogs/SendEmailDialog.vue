@@ -7,6 +7,7 @@
     top="10vh"
     width="70vw"
     custom-class="SendEmailDialog"
+    @opened="setSelectEvent"
   >
     <el-form @submit.native.prevent>
       <el-form-item :label="emailAddressString(rows)">
@@ -17,6 +18,7 @@
           readonly
           class="AddressesArea"
           type="textarea"
+          @select="trackSelection"
         />
       </el-form-item>
     </el-form>
@@ -83,10 +85,9 @@ export default {
     emailAddressString(rows) {
       return this.$gettext('Email addresses ({rows})', { rows })
     },
-    copy() {
-      const area = this.$refs.emailArea.$el.querySelectorAll('textarea')[0]
-      area.select()
-      document.execCommand('copy')
+    async copy() {
+      await navigator.clipboard.writeText(this.selectable)
+      this.trackCopyButton()
       this.$message({
         message: this.$gettext(
           'Email address(es) successfully copied in your clipboard'
@@ -99,6 +100,23 @@ export default {
         .map((a) => a.contact_email)
         .join(',')}`
       window.open(mailto)
+    },
+    setSelectEvent() {
+      this.$refs.emailArea.$el.addEventListener('select', this.trackSelection)
+    },
+    trackSelection(event) {
+      this.$matomo.trackEvent(
+        'Select',
+        'Select focal points',
+        'Focal points selected'
+      )
+    },
+    trackCopyButton() {
+      this.$matomo.trackEvent(
+        'Click',
+        'Copy to clipboard',
+        'Focal points copied to clipboard'
+      )
     },
   },
 }
