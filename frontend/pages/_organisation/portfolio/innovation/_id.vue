@@ -292,7 +292,6 @@ export default {
     },
     setTab(id) {
       this.tab = id
-      console.log('🚀 ~ file: _id.vue ~ setTab ~ this.tab', this.tab)
       this.$matomo.trackEvent(
         'Click',
         'Tab change',
