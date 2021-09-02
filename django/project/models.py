@@ -174,6 +174,29 @@ class Project(SoftDeleteModel, ExtendedModel):
         self.search.reset()
 
 
+class ProjectVersion(ExtendedModel):
+    version = models.IntegerField(default=1)
+    project = models.ForeignKey(Project, blank=False, null=True, on_delete=models.CASCADE, related_name='versions')
+    name = models.CharField(max_length=255)
+    data = JSONField(default=dict)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='project_versions', blank=True,
+                             null=True)
+    published = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('project', 'version')
+        ordering = ['modified']
+
+    def save(self, *args, **kwargs):
+        """
+        Custom save method to auto-increment the version field
+        """
+        if not self.id:
+            qs = ProjectVersion.objects.filter(project=self.project)
+            self.version = qs.count() + 1
+        super().save(*args, **kwargs)
+
+
 @receiver(post_save, sender=Project)
 def on_create_init(sender, instance, created, **kwargs):
     if created:
