@@ -31,7 +31,7 @@ def migrate_project_phases(project):
                 project.save(update_fields=['draft', 'data'])
 
 
-def project_status_change(version_1: 'project.ProjectVersion', version_2: 'project.ProjectVersion') -> dict:
+def project_status_change(version_1, version_2) -> dict:
     return dict(
         published=not version_1.published and version_2.published,
         unpublished=not version_2.published and version_1.published,

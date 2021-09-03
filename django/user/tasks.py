@@ -1,6 +1,3 @@
-import paramiko
-
-from django.conf import settings
 from celery.utils.log import get_task_logger
 
 from core.utils import send_mail_wrapper
