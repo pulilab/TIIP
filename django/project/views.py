@@ -176,7 +176,8 @@ class ProjectListViewSet(TokenAuthMixin, GenericViewSet):
             data = data_serializer.data
         else:
             raise ValidationError({'list_name': 'Unknown list type'})  # pragma: no cover
-        return Response(data)
+
+        return self.get_paginated_response(data)
 
 
 class ProjectRetrieveViewSet(TeamTokenAuthMixin, ViewSet):
