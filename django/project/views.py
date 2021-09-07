@@ -147,10 +147,12 @@ class ProjectListViewSet(TokenAuthMixin, GenericViewSet):
             data.append(project.to_response_dict(published=published, draft=draft))
         return data
 
-    @staticmethod
-    def favorite_list(user):
+
+    def favorite_list(self, user):
         data = []
-        for project in Project.objects.published_only().filter(favorited_by=user.userprofile):
+        qs = Project.objects.published_only().filter(favorited_by=user.userprofile).order_by('-modified')
+        page = self.paginate_queryset(qs)
+        for project in page:
             published = project.to_representation()
             data.append(project.to_response_dict(published=published, draft=None))
         return data
