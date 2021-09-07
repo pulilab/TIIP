@@ -967,7 +967,8 @@ class ProjectTests(SetupTests):
         response = user_x_client.get(url_fav_list)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['count'], 3)
-        self.assertEqual(set([p['id'] for p in response.json()['results']]), {project_ids[0], project_ids[1], project_ids[2]})
+        self.assertEqual(set([p['id'] for p in response.json()['results']]),
+                         {project_ids[0], project_ids[1], project_ids[2]})
         # unpublish projects[1]
         url = reverse('project-unpublish', kwargs={'project_id': project_ids[1]})
         response = self.test_user_client.put(url, format='json')

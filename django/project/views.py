@@ -147,7 +147,6 @@ class ProjectListViewSet(TokenAuthMixin, GenericViewSet):
             data.append(project.to_response_dict(published=published, draft=draft))
         return data
 
-
     def favorite_list(self, user):
         data = []
         qs = Project.objects.published_only().filter(favorited_by=user.userprofile).order_by('-modified')
