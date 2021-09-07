@@ -21,6 +21,7 @@ from project.models import HSCGroup, ProjectApproval, ProjectImportV2, ImportRow
     HardwarePlatform, NontechPlatform, PlatformFunction, CPD, InnovationCategory, InnovationWay, ISC, \
     ApprovalState, Stage, Phase, ProjectVersion
 from project.permissions import InCountryAdminForApproval
+from search.views import ResultsSetPagination
 from toolkit.models import Toolkit, ToolkitVersion
 from .models import Project, CoverageVersion, TechnologyPlatform, DigitalStrategy, \
     HealthCategory, HSCChallenge, Portfolio, ProjectPortfolioState, ReviewScore
@@ -133,9 +134,8 @@ class ProjectPublicViewSet(ViewSet):
         )
 
 
-class ProjectListViewSet(TokenAuthMixin, ViewSet):
-    @staticmethod
-    def member_list(user):
+class ProjectListViewSet(TokenAuthMixin, GenericViewSet):
+    pagination_class = ResultsSetPagination
         data = []
         for project in Project.objects.member_of(user):
             published = project.to_representation()
