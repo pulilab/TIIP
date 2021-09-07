@@ -136,8 +136,12 @@ class ProjectPublicViewSet(ViewSet):
 
 class ProjectListViewSet(TokenAuthMixin, GenericViewSet):
     pagination_class = ResultsSetPagination
+
+    def member_list(self, user):
         data = []
-        for project in Project.objects.member_of(user):
+        qs = Project.objects.member_of(user).order_by('-modified')
+        page = self.paginate_queryset(qs)
+        for project in page:
             published = project.to_representation()
             draft = project.to_representation(draft_mode=True)
             data.append(project.to_response_dict(published=published, draft=draft))
