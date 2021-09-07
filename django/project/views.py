@@ -170,8 +170,9 @@ class ProjectListViewSet(TokenAuthMixin, GenericViewSet):
             # Bug: Reverse lookup does not work here for filtering
             qs = ReviewScore.objects.exclude(status=ReviewScore.STATUS_COMPLETE).\
                 filter(portfolio_review__is_active=True, reviewer=request.user.userprofile). \
-                exclude(portfolio_review__project__public_id__exact='')
-            data_serializer = ReviewScoreDetailedSerializer(qs.all(), many=True)
+                exclude(portfolio_review__project__public_id__exact='').order_by('-id')
+            page = self.paginate_queryset(qs)
+            data_serializer = ReviewScoreDetailedSerializer(page, many=True)
             data = data_serializer.data
         else:
             raise ValidationError({'list_name': 'Unknown list type'})  # pragma: no cover
