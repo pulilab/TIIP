@@ -227,10 +227,6 @@ export const actions = {
   },
   async resetProjectState({ commit, rootGetters, dispatch }) {
     const clean = cleanState()
-    console.log(
-      '🚀 ~ file: project.js ~ line 230 ~ resetProjectState ~ clean',
-      clean
-    )
     const profile = rootGetters['user/getProfile']
     if (profile) {
       const donor = rootGetters['system/getUnicefDonor'].id
