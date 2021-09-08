@@ -99,6 +99,7 @@ export const getters = {
     state.innovation_ways.length === 0 ? [null] : state.innovation_ways,
   getInfoSec: (state) => state.isc,
   getOverview: (state) => state.overview,
+  getCoverImage: (state) => state.coverImage,
   getProgramTargets: (state) => state.program_targets,
   getProgramTargetsAchieved: (state) => state.program_targets_achieved,
   getCurrentAchievements: (state) => state.current_achievements,
@@ -226,6 +227,10 @@ export const actions = {
   },
   async resetProjectState({ commit, rootGetters, dispatch }) {
     const clean = cleanState()
+    console.log(
+      '🚀 ~ file: project.js ~ line 230 ~ resetProjectState ~ clean',
+      clean
+    )
     const profile = rootGetters['user/getProfile']
     if (profile) {
       const donor = rootGetters['system/getUnicefDonor'].id
@@ -350,6 +355,9 @@ export const actions = {
   },
   setOverview({ commit }, value) {
     commit('SET_DATA', { key: 'overview', value })
+  },
+  setCoverImage({ commit }, value) {
+    commit('SET_DATA', { key: 'coverImage', value })
   },
   setPartnershipNeeds({ commit }, value) {
     commit('SET_DATA', { key: 'partnership_needs', value })
@@ -727,6 +735,7 @@ export const mutations = {
     state.nontech = get(project, 'nontech', [])
     state.regional_priorities = get(project, 'regional_priorities', [])
     state.overview = get(project, 'overview', '')
+    state.coverImage = get(project, 'coverImage', [])
     state.program_targets = get(project, 'program_targets', '')
     state.program_targets_achieved = get(
       project,

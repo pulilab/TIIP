@@ -288,6 +288,29 @@
             </p>
           </span>
         </custom-required-form-team-item>
+        <custom-required-form-team-item>
+          <template slot="label">
+            <translate key="cover">Upload initiative’s cover image</translate>
+          </template>
+          <file-upload
+            :files.sync="coverImage"
+            preview-title="Cover image"
+            @clear="coverImage = []"
+          />
+          <span class="Hint">
+            <fa icon="info-circle" />
+            <p>
+              <translate>
+                Upload the best quality image you have for the initiative.
+                Uploaded image will be formatted to match the pages in the
+                future, and the better quality the original image, the better
+                result it will have displayed on invent. Image should be .png 
+                or .jpg and minimum height: 520px.
+              </translate>
+            </p>
+          </span>
+        </custom-required-form-team-item>
+
         <custom-required-form-team-item
           v-model="viewers"
           :error="errors.first('viewers')"
@@ -334,6 +357,7 @@
 import { format } from 'date-fns'
 import { mapGetters, mapState } from 'vuex'
 import CustomRequiredFormTeamItem from '@/components/proxy/CustomRequiredFormTeamItem'
+import FileUpload from '@/components/common/FileUpload'
 import VeeValidationMixin from '../../mixins/VeeValidationMixin.js'
 import ProjectFieldsetMixin from '../../mixins/ProjectFieldsetMixin.js'
 import CollapsibleCard from '../CollapsibleCard'
@@ -347,6 +371,7 @@ export default {
     CountryOfficeSelect,
     TeamSelector,
     CustomRequiredFormTeamItem,
+    FileUpload,
   },
   mixins: [VeeValidationMixin, ProjectFieldsetMixin],
   computed: {
@@ -366,6 +391,7 @@ export default {
       country: ['project', 'getCountry', 'setCountry', 0],
       country_office: ['project', 'getCountryOffice', 'setCountryOffice', 0],
       overview: ['project', 'getOverview', 'setOverview', 0],
+      coverImage: ['project', 'getCoverImage', 'setCoverImage', 0],
       implementation_overview: [
         'project',
         'getImplementationOverview',

@@ -7,7 +7,7 @@
     <el-form ref="projectForm" label-position="top" @submit.native.prevent>
       <el-row v-show="showForm" type="flex">
         <el-col :span="18">
-          <general-overview
+          <GeneralOverview
             key="generalOverview"
             ref="generalOverview"
             :use-publish-rules="usePublishRules"
@@ -18,7 +18,7 @@
             @hook:mounted="mountedHandler"
             @hook:created="createdHandler"
           />
-          <categorization
+          <Categorization
             key="categorization"
             ref="categorization"
             :rules="rules"
@@ -28,7 +28,7 @@
             @hook:mounted="mountedHandler"
             @hook:created="createdHandler"
           />
-          <implementation-overview
+          <ImplementationOverview
             ref="implementationOverview"
             :rules="rules"
             :draft-rules="draftRules"
@@ -37,7 +37,7 @@
             @hook:mounted="mountedHandler"
             @hook:created="createdHandler"
           />
-          <stage-overview
+          <StageOverview
             ref="stageOverview"
             :use-publish-rules="usePublishRules"
             :rules="rules"
@@ -47,7 +47,7 @@
             @hook:mounted="mountedHandler"
             @hook:created="createdHandler"
           />
-          <partners
+          <Partners
             ref="partners"
             :rules="rules"
             :draft-rules="draftRules"
@@ -56,7 +56,7 @@
             @hook:mounted="mountedHandler"
             @hook:created="createdHandler"
           />
-          <technology
+          <Technology
             ref="technology"
             :rules="rules"
             :draft-rules="draftRules"
@@ -65,7 +65,7 @@
             @hook:mounted="mountedHandler"
             @hook:created="createdHandler"
           />
-          <donor-custom
+          <DonorCustom
             ref="donorCustom"
             :use-publish-rules="usePublishRules"
             :draft-rules="draftRules"
@@ -74,7 +74,7 @@
             @hook:mounted="mountedHandler"
             @hook:created="createdHandler"
           />
-          <country-custom
+          <CountryCustom
             ref="countryCustom"
             :use-publish-rules="usePublishRules"
             :draft-rules="draftRules"
@@ -85,7 +85,7 @@
           />
         </el-col>
         <el-col :span="6">
-          <project-navigation
+          <ProjectNavigation
             @saveDraft="doSaveDraft"
             @discardDraft="doDiscardDraft"
             @publishProject="doPublishProject"
@@ -130,6 +130,7 @@ export default {
       createdElements: 0,
       usePublishRules: false,
       apiErrors: {},
+      coverImage: null,
     }
   },
   computed: {
