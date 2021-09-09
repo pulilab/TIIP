@@ -683,8 +683,8 @@ class ProjectCardSerializer(serializers.ModelSerializer):
     def get_team(self, obj):
         qs = obj.team.all()
         request = self.context.get('request')
-        user_in_team = request and request.user and request.user.userprofile \
-                  and obj.team.filter(id=request.user.userprofile.id).exists()
+        user_in_team = request and request.user and request.user.userprofile and obj.team.filter(
+            id=request.user.userprofile.id).exists()
 
         if user_in_team:
             my_index = list(qs.values_list('id', flat=True)).index(request.user.userprofile.id)
