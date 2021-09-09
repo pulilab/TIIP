@@ -679,3 +679,9 @@ class ProjectCardSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_country(obj):
         return obj.get_country_id(draft_mode=obj.public_id == '')
+
+    def get_team(self, obj):
+        qs = obj.team.all()
+        request = self.context.get('request')
+        user_in_team = request and request.user and request.user.userprofile \
+                  and obj.team.filter(id=request.user.userprofile.id).exists()
