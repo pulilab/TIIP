@@ -658,3 +658,24 @@ class ProjectCardSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'name', 'modified', 'is_draft', 'description', 'unicef_office', 'country', 'team')
         fields = read_only_fields
 
+    @staticmethod
+    def get_name(obj):
+        return obj.name if obj.public_id else obj.draft.get('name', '')
+
+    @staticmethod
+    def get_is_draft(obj):
+        return obj.public_id == ''
+
+    @staticmethod
+    def get_description(obj):
+        data = obj.data if obj.public_id else obj.draft
+        return data.get('implementation_overview', '')
+
+    @staticmethod
+    def get_unicef_office(obj):
+        data = obj.data if obj.public_id else obj.draft
+        return data.get('country_office', '')
+
+    @staticmethod
+    def get_country(obj):
+        return obj.get_country_id(draft_mode=obj.public_id == '')
