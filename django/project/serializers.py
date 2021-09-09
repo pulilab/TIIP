@@ -643,3 +643,18 @@ class ReviewScoreDetailedSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReviewScore
         fields = '__all__'
+
+
+class ProjectCardSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
+    team = serializers.SerializerMethodField()
+    is_draft = serializers.SerializerMethodField()
+    unicef_office = serializers.SerializerMethodField()
+    country = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Project
+        read_only_fields = ('id', 'name', 'modified', 'is_draft', 'description', 'unicef_office', 'country', 'team')
+        fields = read_only_fields
+
