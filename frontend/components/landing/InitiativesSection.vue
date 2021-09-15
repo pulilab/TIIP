@@ -1,7 +1,7 @@
 <template>
   <div class="InitiativesSection">
     <div class="initiative-wrapper">
-      <Header v-if="myInitiatives.length > 0">
+      <Header v-if="landingProjects.my_initiatives.length > 0">
         <template #title>
           <translate>My Initiatives</translate>
         </template>
@@ -13,7 +13,7 @@
         </template>
       </Header>
       <div class="content">
-        <InitiativeCard v-for="project in myInitiatives" :key="project.id" :project="project" />
+        <InitiativeCard v-for="project in landingProjects.my_initiatives" :key="project.id" :project="project" />
         <Header v-if="showRecents.length > 0" :postion="recentHeaderPosition">
           <template #title>
             {{ recentTitle }}
@@ -23,11 +23,11 @@
           v-for="project in showRecents"
           :key="project.id"
           :project="project"
-          :minimal="myInitiatives.length > 0"
+          :minimal="landingProjects.my_initiatives.length > 0"
         />
       </div>
     </div>
-    <FeaturedCards class="featured-wrapper" :projects="featuredInitiatives" />
+    <FeaturedCards class="featured-wrapper" :projects="landingProjects.featured" />
   </div>
 </template>
 
@@ -48,9 +48,6 @@ export default {
   data() {
     return {
       recentCounts: [3, 3, 1, 0],
-      myInitiatives: [],
-      recentInitiatives: [],
-      featuredInitiatives: [],
     }
   },
   computed: {
@@ -63,21 +60,16 @@ export default {
       })
     },
     showRecents() {
-      return this.recentInitiatives.slice(0, this.recentCounts[this.myInitiatives.length])
+      return this.landingProjects.recents.slice(0, this.recentCounts[this.landingProjects.my_initiatives.length])
     },
     recentHeaderPosition() {
-      return this.myInitiatives.length === 0 ? 'top' : 'between'
+      return this.landingProjects.my_initiatives.length === 0 ? 'top' : 'between'
     },
     recentTitle() {
-      return this.myInitiatives.length === 0
+      return this.landingProjects.my_initiatives.length === 0
         ? this.$gettext('Recently Updated Initiatives')
         : this.$gettext('Recently Updated')
     },
-  },
-  mounted() {
-    this.myInitiatives = this.landingProjects.my_initiatives
-    this.recentInitiatives = this.landingProjects.recents
-    this.featuredInitiatives = this.landingProjects.featured
   },
 }
 </script>
