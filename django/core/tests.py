@@ -167,5 +167,3 @@ class TestStaticDataEndpoint(TestCase):
         review_questions_data = response.json()['review_questions']
         self.assertNotEqual(len(review_questions_data['nst']['text_bold']), 0)
         self.assertNotEqual(len(review_questions_data['ra']['guidance_bold']), 0)
-
-
