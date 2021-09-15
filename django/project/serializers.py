@@ -694,3 +694,7 @@ class ProjectCardSerializer(serializers.ModelSerializer):
 
             return UserProfileSerializer(team_list, many=True).data
         return UserProfileSerializer(qs, many=True).data
+class ProjectImageUploadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ('id', 'image')
