@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'djcelery_email',
     'simple_history',
+    'sorl.thumbnail',
     'user',
     'core',
     'project',
