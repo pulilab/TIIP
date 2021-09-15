@@ -372,6 +372,7 @@ LOCALE_PATHS = [
 for arg in sys.argv:
     if 'test' in arg:
         DEFAULT_FILE_STORAGE = 'inmemorystorage.InMemoryStorage'
+        PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
 
 if SITE_ID == 4:
     ENVIRONMENT_NAME = "PRODUCTION"
