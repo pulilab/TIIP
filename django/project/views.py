@@ -33,7 +33,7 @@ from .serializers import ProjectDraftSerializer, ProjectGroupSerializer, Project
     ProjectPortfolioStateManagerSerializer, PortfolioSerializer, \
     PortfolioStateChangeSerializer, ReviewScoreDetailedSerializer, TechnologyPlatformCreateSerializer, \
     HardwarePlatformCreateSerializer, NontechPlatformCreateSerializer, PlatformFunctionCreateSerializer, \
-    ProjectCardSerializer
+    ProjectCardSerializer, ProjectImageUploadSerializer
 from user.serializers import UserProfileSerializer
 from .tasks import notify_superusers_about_new_pending_approval
 
@@ -911,3 +911,8 @@ class ProjectModifyFavoritesViewSet(TokenAuthMixin, RetrieveModelMixin, GenericV
 
         data_serializer = UserProfileSerializer(self.request.user.userprofile)
         return Response(data_serializer.data, status=status.HTTP_200_OK)
+
+
+class ProjectImageUploadViewSet(TokenAuthMixin, UpdateModelMixin, GenericViewSet):
+    queryset = Project.objects.all()
+    serializer_class = ProjectImageUploadSerializer
