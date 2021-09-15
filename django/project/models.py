@@ -73,6 +73,8 @@ class Project(SoftDeleteModel, ExtendedModel):
     featured = models.BooleanField(default=False)
     featured_rank = models.PositiveSmallIntegerField(default=0)
 
+    image = ImageField(upload_to='source_images', null=True, blank=True)
+
     def __str__(self):  # pragma: no cover
         return self.name
 
