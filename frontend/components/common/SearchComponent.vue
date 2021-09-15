@@ -8,7 +8,7 @@
               <el-input
                 ref="searchcontrol"
                 v-model="localSearchString"
-                :placeholder="$gettext('Create your search here') | translate"
+                :placeholder="$gettext('Type something') | translate"
                 @keyup.enter.native="search"
               >
                 <fa slot="prepend" icon="search" />
@@ -72,7 +72,7 @@
     <transition name="el-zoom-in-top">
       <el-button v-show="!shown && !searchString" class="SearchButton" @click="show">
         <fa icon="search" />
-        <translate key="st">Create your search here</translate>
+        <translate key="st">Quick search</translate>
       </el-button>
     </transition>
 
