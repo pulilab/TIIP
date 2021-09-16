@@ -703,6 +703,12 @@ class ProjectCardSerializer(serializers.ModelSerializer):
 
 
 class ProjectImageUploadSerializer(serializers.ModelSerializer):
+    thumbnail = serializers.SerializerMethodField()
+
     class Meta:
         model = Project
-        fields = ('id', 'image')
+        fields = ('id', 'image', 'thumbnail')
+
+    @staticmethod
+    def get_thumbnail(obj):
+        return obj.thumbnail.url if obj.thumbnail else None
