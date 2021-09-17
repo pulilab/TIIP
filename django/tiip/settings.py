@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'djcelery_email',
     'simple_history',
+    'sorl.thumbnail',
     'user',
     'core',
     'project',
@@ -371,6 +372,7 @@ LOCALE_PATHS = [
 for arg in sys.argv:
     if 'test' in arg:
         DEFAULT_FILE_STORAGE = 'inmemorystorage.InMemoryStorage'
+        PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
 
 if SITE_ID == 4:
     ENVIRONMENT_NAME = "PRODUCTION"
@@ -411,3 +413,9 @@ PORTFOLIO_PROBLEMSTATEMENT_TRESHOLDS = {
 
 NOTIFICATION_PROJECT_REVIEW_DAYS = 30  # subject to change, check with client
 MIGRATE_PHASES = os.environ.get('MIGRATE_PHASES', False)
+
+THUMBNAIL_PRESERVE_FORMAT = False
+THUMBNAIL_PADDING = True
+# THUMBNAIL_RATIO = 14.56/9
+THUMBNAIL_HEIGHT = 520
+# THUMBNAIL_WIDTH = round(THUMBNAIL_HEIGHT*THUMBNAIL_RATIO)
