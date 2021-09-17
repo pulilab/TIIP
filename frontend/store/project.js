@@ -476,12 +476,10 @@ export const actions = {
       draft.stages = newStages(state.stagesDraft)
       const parsed = apiWriteParser(draft, getters.getAllCountryAnswers, getters.getAllDonorsAnswers)
 
-      console.log('🚀 ~ line 478 ~ saveDraft ~ state.coverImage', state.coverImage)
       let file = ''
       if (state.coverImage.length > 0) {
         file = state.coverImage[0].status === 'ready' ? state.coverImage[0].raw : 'nochange'
       }
-      console.log('🚀 ~ file: project.js ~ line 480 ~ saveDraft ~ file', file)
       if (file !== 'nochange') {
         const formData = new FormData()
         formData.append('image', file)
