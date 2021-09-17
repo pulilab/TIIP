@@ -1201,8 +1201,4 @@ class ProjectTests(SetupTests):
         response = self.test_user_client.put(url, data=data, format='multipart', HTTP_ACCEPT_LANGUAGE='en')
         self.assertEqual(response.status_code, 200)
         self.assertTrue('source_images/image.png' in response.json()['image'])
-
-        url = reverse("project-landing")
-        response = self.test_user_client.get(url, format="json")
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.json()['my_initiatives'][0]['thumbnail'])
+        self.assertTrue(response.json()['thumbnail'])
