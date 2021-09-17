@@ -125,7 +125,7 @@ export default {
     }
   }
 
-  .thumbnail {
+  .cover {
     flex-basis: 213px;
     background-repeat: no-repeat;
     background-size: cover;
@@ -174,6 +174,7 @@ export default {
     }
     .location {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 8px;
       color: #7995a2;
