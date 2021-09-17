@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, UpdateModelMixin, CreateModelMixin, \
     DestroyModelMixin
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
@@ -916,3 +917,4 @@ class ProjectModifyFavoritesViewSet(TokenAuthMixin, RetrieveModelMixin, GenericV
 class ProjectImageUploadViewSet(TokenAuthMixin, UpdateModelMixin, GenericViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectImageUploadSerializer
+    parser_classes = (MultiPartParser,)
