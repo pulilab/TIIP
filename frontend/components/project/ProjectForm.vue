@@ -163,18 +163,12 @@ export default {
       this.$nextTick(() => {
         this.$nuxt.$loading.start()
         try {
-          const stored = JSON.parse(
-            window.localStorage.getItem('rescuedProject')
-          )
+          const stored = JSON.parse(window.localStorage.getItem('rescuedProject'))
           this.initProjectState(stored)
         } catch (e) {
-          this.$alert(
-            this.$gettext('Failed to restore auto-saved project'),
-            this.$gettext('Warning'),
-            {
-              confirmButtonText: this.$gettext('OK'),
-            }
-          )
+          this.$alert(this.$gettext('Failed to restore auto-saved project'), this.$gettext('Warning'), {
+            confirmButtonText: this.$gettext('OK'),
+          })
         }
         window.localStorage.removeItem('rescuedProject')
         this.$router.replace({ ...this.$route, query: undefined })
@@ -192,14 +186,10 @@ export default {
       initProjectState: 'project/initProjectState',
     }),
     digitalHealthInterventionsValidator(rule, value, callback) {
-      const ownDhi = this.project.digitalHealthInterventions.filter(
-        (dhi) => dhi.platform === value && dhi.id
-      )
+      const ownDhi = this.project.digitalHealthInterventions.filter((dhi) => dhi.platform === value && dhi.id)
       if (ownDhi.length === 0) {
         const error = {
-          message: this.$gettext(
-            'Please select one or more Digital Health Intervetions for this Software'
-          ),
+          message: this.$gettext('Please select one or more Digital Health Intervetions for this Software'),
           field: rule.fullField,
         }
         callback(error)
@@ -209,23 +199,18 @@ export default {
     },
     async unCaughtErrorHandler(errors) {
       if (this.$sentry) {
-        this.$sentry.captureMessage(
-          'Un-caught validation error in project page',
-          {
-            level: 'error',
-            extra: {
-              apiErrors: this.apiErrors,
-              errors,
-            },
-          }
-        )
+        this.$sentry.captureMessage('Un-caught validation error in project page', {
+          level: 'error',
+          extra: {
+            apiErrors: this.apiErrors,
+            errors,
+          },
+        })
       }
 
       try {
         await this.$confirm(
-          this.$gettext(
-            'There was an un-caught validation error an automatic report has been submitted'
-          ),
+          this.$gettext('There was an un-caught validation error an automatic report has been submitted'),
           this.$gettext('Warning'),
           {
             confirmButtonText: this.$gettext('Recover & Reload'),
@@ -239,10 +224,7 @@ export default {
         }
         const toStore = JSON.stringify(project)
         window.localStorage.setItem('rescuedProject', toStore)
-        const newUrl =
-          window.location.origin +
-          this.$route.path +
-          `?reloadDataFromStorage=true`
+        const newUrl = window.location.origin + this.$route.path + `?reloadDataFromStorage=true`
         window.location.href = newUrl
       } catch (e) {
         console.log('User declined the option to save, just reloading')
@@ -307,13 +289,9 @@ export default {
               await this.saveDraft(this.$route.params.id)
               location.reload()
             }
-            this.$alert(
-              this.$gettext('Your draft has been saved successfully'),
-              this.$gettext('Congratulation'),
-              {
-                confirmButtonText: this.$gettext('Close'),
-              }
-            )
+            this.$alert(this.$gettext('Your draft has been saved successfully'), this.$gettext('Congratulation'), {
+              confirmButtonText: this.$gettext('Close'),
+            })
             return
           } catch (e) {
             if (e.response) {
@@ -330,9 +308,7 @@ export default {
     async doDiscardDraft() {
       try {
         await this.$confirm(
-          this.$gettext(
-            'The current draft will be overwritten by the published version'
-          ),
+          this.$gettext('The current draft will be overwritten by the published version'),
           this.$gettext('Attention'),
           {
             confirmButtonText: this.$gettext('Ok'),
@@ -366,13 +342,9 @@ export default {
               params: { ...this.$route.params },
             })
             this.$router.push(localised)
-            this.$alert(
-              this.$gettext('Your draft has been published successfully'),
-              this.$gettext('Congratulation'),
-              {
-                confirmButtonText: this.$gettext('Close'),
-              }
-            )
+            this.$alert(this.$gettext('Your draft has been published successfully'), this.$gettext('Congratulation'), {
+              confirmButtonText: this.$gettext('Close'),
+            })
             return
           } catch (e) {
             console.log(e)
