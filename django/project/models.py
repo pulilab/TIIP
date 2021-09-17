@@ -126,6 +126,7 @@ class Project(SoftDeleteModel, ExtendedModel):
             name=self.draft.get('name', '') if draft_mode else self.name,
             approved=self.approval.approved if hasattr(self, 'approval') else None,
             modified=self.modified,
+            image=self.image.url if self.image else None,
             thumbnail=self.thumbnail.url if self.thumbnail else None
         )
 
