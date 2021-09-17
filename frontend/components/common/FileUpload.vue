@@ -100,7 +100,6 @@ export default {
       this.previewDialog = true
     },
     handleRemove(file) {
-      console.log(file)
       this.$emit('clear')
       this.$refs.uploader.clearFiles()
     },
