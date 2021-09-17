@@ -8,7 +8,6 @@
       :on-change="handleChange"
       :list-type="listType"
       :file-list="files"
-      :accept="accept"
       class="FileUpload"
       action="doing it manually, so this prop isnt used, still needed"
     >
@@ -21,8 +20,14 @@
         </div>
       </el-row>
       <template slot="file" slot-scope="{ file }">
-        <img :src="file.url" class="el-upload-list__item-thumbnail" @click="handleImageCardPreview(file)" />
-        <span class="el-upload-list__item-name"> <i class="el-icon-document"></i>{{ file.name }} </span>
+        <img
+          :src="file.url"
+          class="el-upload-list__item-thumbnail"
+          @click="handleImageCardPreview(file)"
+        />
+        <span class="el-upload-list__item-name">
+          <i class="el-icon-document"></i>{{ file.name }}
+        </span>
         <label class="el-upload-list__item-status-label">
           <i class="el-icon-upload-success el-icon-check"></i>
         </label>
@@ -40,10 +45,11 @@
     >
       <img ref="preview" :src="previewImage" />
       <template slot="footer">
-        <strong><translate>Dimensions</translate>:</strong>
-        <span><translate>Width</translate>:</span>
+        <strong>Dimensions:</strong>
+        <span>Width:</span>
         <span>{{ previewImageWidth }}px,</span>
-        <span><translate>Height</translate>:</span>
+        <span>-</span>
+        <span>Height:</span>
         <span>{{ previewImageHeight }}px</span>
       </template>
     </el-dialog>
@@ -72,10 +78,6 @@ export default {
     previewTitle: {
       type: String,
       default: 'Image',
-    },
-    accept: {
-      type: String,
-      default: '',
     },
   },
   data() {
