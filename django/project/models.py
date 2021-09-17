@@ -89,6 +89,10 @@ class Project(SoftDeleteModel, ExtendedModel):
         except OSError:  # pragma: no cover
             return None
 
+    @property
+    def image_url(self):
+        return self.image.url if self.image else None
+
     def get_country_id(self, draft_mode=False):
         return self.draft.get('country') if draft_mode else self.data.get('country')
 
@@ -126,7 +130,7 @@ class Project(SoftDeleteModel, ExtendedModel):
             name=self.draft.get('name', '') if draft_mode else self.name,
             approved=self.approval.approved if hasattr(self, 'approval') else None,
             modified=self.modified,
-            image=self.image.url if self.image else None,
+            image=self.image_url,
             thumbnail=self.thumbnail.url if self.thumbnail else None
         )
 
