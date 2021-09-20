@@ -297,14 +297,15 @@ export const actions = {
     let reviewPage = 1
     let initiativePage = 1
     let favoritesPages = 1
+    console.log('🚀 ~ file: projects.js ~ line 301 ~ getInitiatives ~ state.tab', state.tab)
     switch (state.tab) {
-      case 0:
+      case 1:
         initiativePage = state.page
         break
-      case 1:
+      case 2:
         reviewPage = state.page
         break
-      case 2:
+      case 3:
         favoritesPages = state.page
         break
     }
