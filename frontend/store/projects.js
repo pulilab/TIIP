@@ -297,7 +297,6 @@ export const actions = {
     let reviewPage = 1
     let initiativePage = 1
     let favoritesPages = 1
-    console.log('🚀 ~ file: projects.js ~ line 301 ~ getInitiatives ~ state.tab', state.tab)
     switch (state.tab) {
       case 1:
         initiativePage = state.page
