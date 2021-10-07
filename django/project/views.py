@@ -1,8 +1,10 @@
 import copy
 from collections import OrderedDict
 
+from django.contrib.postgres.fields.jsonb import KeyTextTransform
 from django.db import transaction
-from django.db.models import QuerySet
+from django.db.models import QuerySet, IntegerField, Q
+from django.db.models.functions import Cast
 from rest_framework import status
 from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, UpdateModelMixin, CreateModelMixin, \
@@ -156,6 +158,27 @@ class ProjectListViewSet(TokenAuthMixin, GenericViewSet):
         for project in page:
             published = project.to_representation()
             data.append(project.to_response_dict(published=published, draft=None))
+        return data
+
+    def country_manager_list(self, user):
+        data = []
+        user_managed_offices = list(user.userprofile.manager_of.values_list('id', flat=True))
+
+        if not user_managed_offices:
+            return data
+
+        qs = Project.objects.annotate(
+            co_id=Cast(KeyTextTransform('country_office', 'data'), output_field=IntegerField())).annotate(
+            draft_co_id=Cast(KeyTextTransform('country_office', 'draft'), output_field=IntegerField()))
+
+        qs = qs.filter(
+            Q(co_id__in=user_managed_offices) | Q(draft_co_id__in=user_managed_offices)).order_by('-modified')
+
+        page = self.paginate_queryset(qs)
+        for project in page:
+            published = project.to_representation()
+            draft = project.to_representation(draft_mode=True)
+            data.append(project.to_response_dict(published=published, draft=draft))
         return data
 
     def list(self, request, *args, **kwargs):
