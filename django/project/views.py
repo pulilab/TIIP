@@ -190,6 +190,8 @@ class ProjectListViewSet(TokenAuthMixin, GenericViewSet):
             data = self.member_list(request.user)
         elif list_name == 'favorite':
             data = self.favorite_list(request.user)
+        elif list_name == 'country-manager':
+            data = self.country_manager_list(request.user)
         elif list_name == 'review':
             # Bug: Reverse lookup does not work here for filtering
             qs = ReviewScore.objects.exclude(status=ReviewScore.STATUS_COMPLETE).\
