@@ -10,6 +10,7 @@ import {
   strArrayFromQs,
   parseCustomAnswers,
 } from '../utilities/api'
+import _ from 'lodash'
 
 export const searchIn = () => ['name', 'overview', 'partner', 'desc', 'ach']
 export const defaultSelectedColumns = () => [
@@ -59,7 +60,8 @@ export const defaultSelectedColumns = () => [
   '62',
 ]
 
-export const state = () => ({
+
+const DEFAULT_QUERY = {
   ...stateGenerator(),
   searchIn: searchIn(),
   columns: [],
@@ -224,7 +226,10 @@ export const state = () => ({
     },
     { id: '62', label: 'Scoring', key: 'review_states' },
   ],
-})
+}
+
+export const state = () => (DEFAULT_QUERY)
+
 export const getters = {
   ...gettersGenerator(),
   getSearched: (state, getters) => {
@@ -345,25 +350,25 @@ export const getters = {
     const q =
       state.searchString && state.searchString.length > 1
         ? state.searchString
-        : ''
+        : undefined
     const country = getters.getFilteredCountries
     // const donor = state.dashboardType === 'donor' ? [state.dashboardId] : null
     const donor = rootGetters['system/getUnicefDonor'].id
     const viewAs = rootGetters.getAccountApproved ? 'donor' : ''
     return {
-      page_size: state.pageSize,
-      page: state.page,
-      ordering: state.sorting,
+      page_size: state.pageSize === DEFAULT_QUERY.pageSize ? undefined : state.pageSize,
+      page: state.page === DEFAULT_QUERY.page ? undefined : state.page,
+      ordering: (state.sorting === DEFAULT_QUERY.sorting) ? undefined : state.sorting,
       q,
       in: q ? state.searchIn : undefined,
       country,
-      donor,
+      donor: (!donor || donor === "")? undefined : donor,
       region:
-        state.filteredRegion || state.filteredRegion === 0
+        ((state.filteredRegion || state.filteredRegion === 0) && state.filteredRegion !== DEFAULT_QUERY.filteredRegion)
           ? state.filteredRegion
-          : '',
+          : undefined,
       ic: state.innovationCategories,
-      fo: state.filteredOffice,
+      fo: state.filteredOffice == DEFAULT_QUERY.filteredOffice ? undefined : state.filteredOffice,
       co: state.filteredCountryOffice,
       gov: state.governmentFinanced ? [1, 2] : undefined,
       approved: state.governmentApproved ? 1 : undefined,
@@ -371,23 +376,22 @@ export const getters = {
       dhi: state.selectedDHI,
       hfa: state.selectedHFA,
       hsc: state.selectedHSC,
-      goal: state.selectedGoal ? state.selectedGoal : '',
-      result: state.selectedResult ? state.selectedResult : '',
+      goal: (state.selectedGoal && state.selectedGoal !== DEFAULT_QUERY.selectedGoal) ? state.selectedGoal : undefined,
+      result: (state.selectedResult && state.selectedResult !== DEFAULT_QUERY.selectedResult) ? state.selectedResult : undefined,
       cl: state.selectedCapabilityLevels,
       cc: state.selectedCapabilityCategories,
       cs: state.selectedCapabilitySubcategories,
-      view_as: viewAs,
-      sc: state.selectedColumns,
-      // new
+      view_as: viewAs ? viewAs : undefined,
+      sc: state.selectedColumns.join(','),
       ro: state.filteredRegionalOffice,
       us: state.sectors,
       rp: state.regionalPriorities,
       iw: state.innovationWays,
-      stage: state.stage,
+      stage: state.stage == DEFAULT_QUERY.stage ? undefined : state.stage,
       hp: state.hardwarePlatforms,
       pp: state.programmePlatforms,
       pf: state.platformFunctions,
-      is: state.informationSecurity,
+      is: state.informationSecurity == DEFAULT_QUERY.informationSecurity ? undefined : state.informationSecurity,
     }
   },
 }
@@ -705,7 +709,7 @@ export const mutations = {
     state.selectedCapabilityCategories = intArrayFromQs(options.cc)
     state.selectedCapabilitySubcategories = intArrayFromQs(options.cs)
     state.selectedColumns = options.sc
-      ? strArrayFromQs(options.sc)
+      ? options.sc.split(',')
       : defaultSelectedColumns()
     state.dashboardType = options.view_as ? options.view_as : 'user'
     state.dashboardId =
