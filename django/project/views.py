@@ -165,14 +165,14 @@ class ProjectListViewSet(TokenAuthMixin, GenericViewSet):
         user_managed_offices = list(user.userprofile.manager_of.values_list('id', flat=True))
 
         if not user_managed_offices:
-            return data
+            qs = Project.objects.none()
+        else:
+            qs = Project.objects.annotate(
+                co_id=Cast(KeyTextTransform('country_office', 'data'), output_field=IntegerField())).annotate(
+                draft_co_id=Cast(KeyTextTransform('country_office', 'draft'), output_field=IntegerField()))
 
-        qs = Project.objects.annotate(
-            co_id=Cast(KeyTextTransform('country_office', 'data'), output_field=IntegerField())).annotate(
-            draft_co_id=Cast(KeyTextTransform('country_office', 'draft'), output_field=IntegerField()))
-
-        qs = qs.filter(
-            Q(co_id__in=user_managed_offices) | Q(draft_co_id__in=user_managed_offices)).order_by('-modified')
+            qs = qs.filter(
+                Q(co_id__in=user_managed_offices) | Q(draft_co_id__in=user_managed_offices)).order_by('-modified')
 
         page = self.paginate_queryset(qs)
         for project in page:
@@ -247,6 +247,7 @@ class ProjectRetrieveViewSet(TeamTokenAuthMixin, ViewSet):
             co_id = project.get_country_office_id()
             if co_id:
                 is_country_manager = self.request.user.userprofile.manager_of.filter(id=co_id).exists()
+
             if is_member or is_country_user_or_admin or is_country_manager or self.request.user.is_superuser:
                 data = project.get_member_data()
                 draft = project.get_member_draft()
