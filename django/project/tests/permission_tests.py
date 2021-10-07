@@ -350,13 +350,13 @@ class PermissionTests(SetupTests):
                                                                 'asdkjfh78y87', 'asdkjfh78y87')
         profile = UserProfile.objects.get(id=user_profile_id)
 
-        url = reverse("project-publish", kwargs={"project_id": self.project_id, "country_office_id": self.country_office.id})
+        url = reverse("project-publish", kwargs={"project_id": self.project_id,
+                                                 "country_office_id": self.country_office.id})
         response = test_user_client.put(url, self.project_data, format="json")
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.json()['detail'], 'You do not have permission to perform this action.')
 
         profile.manager_of.add(self.country_office.id)
 
-        url = reverse("project-publish", kwargs={"project_id": self.project_id, "country_office_id": self.country_office.id})
         response = test_user_client.put(url, self.project_data, format="json")
         self.assertEqual(response.status_code, 200)

@@ -21,9 +21,8 @@ class InTeamOrReadOnly(permissions.BasePermission):
         if co_id:
             is_country_manager = request.user.userprofile.manager_of.filter(id=co_id).exists()
 
-        return request.user.is_superuser \
-               or obj.team.filter(id=request.user.userprofile.id).exists() \
-               or is_country_manager
+        return request.user.is_superuser or obj.team.filter(
+            id=request.user.userprofile.id).exists() or is_country_manager
 
 
 class InCountryAdminForApproval(permissions.BasePermission):
