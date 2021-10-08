@@ -10,7 +10,7 @@ import {
   strArrayFromQs,
   parseCustomAnswers,
 } from '../utilities/api'
-import _ from 'lodash'
+
 
 export const searchIn = () => ['name', 'overview', 'partner', 'desc', 'ach']
 export const defaultSelectedColumns = () => [
@@ -362,7 +362,7 @@ export const getters = {
       q,
       in: q ? state.searchIn : undefined,
       country,
-      donor: (!donor || donor === "")? undefined : donor,
+      donor: (!donor || donor === '')? undefined : donor,
       region:
         ((state.filteredRegion || state.filteredRegion === 0) && state.filteredRegion !== DEFAULT_QUERY.filteredRegion)
           ? state.filteredRegion
