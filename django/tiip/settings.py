@@ -374,10 +374,10 @@ for arg in sys.argv:
         DEFAULT_FILE_STORAGE = 'inmemorystorage.InMemoryStorage'
         PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
 
-if SITE_ID == 3:
+if SITE_ID == 4:
     ENVIRONMENT_NAME = f"PRODUCTION - ({os.environ.get('DEPLOY_VERSION', 'Unknown')})"
     ENVIRONMENT_COLOR = "red"
-elif SITE_ID == 4:
+elif SITE_ID == 3:
     ENVIRONMENT_NAME = f"QA / STAGING - ({os.environ.get('DEPLOY_VERSION', 'Unknown')})"
     ENVIRONMENT_COLOR = "orange"
 else:
