@@ -21,28 +21,16 @@ def dev():
     env.webpack_options = ''
 
 
-def qa():
-    """Configure qa"""
+def staging():
+    """Configure staging"""
     env.host_string = QA_HOST_STRING
     env.name = 'staging'
     env.port = 22
-    env.branch = "tags/2.1.5"
+    env.branch = "dev"
     env.project_root = '~/TIIP'
     env.backend_root = 'django'
     env.frontend_root = 'frontend'
     env.webpack_options = '-live'
-
-
-def staging():
-    """Configure staging"""
-    env.host_string = TEST_HOST_STRING
-    env.name = 'staging'
-    env.port = 22
-    env.branch = "master"
-    env.project_root = '~/TIIP'
-    env.backend_root = 'django'
-    env.frontend_root = 'frontend'
-    env.webpack_options = ''
 
 
 def production():
@@ -123,11 +111,19 @@ def deploy(tag=None):
             run('git pull origin %s' % env.branch)
         time.sleep(10)
 
+        backend_env_file_path = "{}/{}/.env".format(env.project_root, env.backend_root)
+        run('[ -f {} ] || echo "DEPLOY_VERSION=0.0.0" > {}'.format(
+            backend_env_file_path, backend_env_file_path))
+        run('if [ -z $(grep "DEPLOY_VERSION=" "{}") ]; then echo "DEPLOY_VERSION=0.0.0" >> {}; fi'.format(
+            backend_env_file_path, backend_env_file_path))
+        version = run('git describe --tags --always')
+        run('sed -i "s/DEPLOY_VERSION=.*/DEPLOY_VERSION={}/g" {}'.format(version, backend_env_file_path))
+
         if env.name == 'dev':
             options = "-f {}/docker-compose.yml -f {}/docker-compose.dev.yml ".format(
                 env.project_root, env.project_root)
         elif env.name == 'staging':
-            options = "-f {}/docker-compose.yml -f {}/docker-compose.test.yml ".format(
+            options = "-f {}/docker-compose.yml -f {}/docker-compose.qa.yml ".format(
                 env.project_root, env.project_root)
         elif env.name == 'production':
             options = "-f {}/docker-compose.yml -f {}/docker-compose.prod.yml ".format(

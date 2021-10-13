@@ -375,13 +375,13 @@ for arg in sys.argv:
         PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
 
 if SITE_ID == 4:
-    ENVIRONMENT_NAME = "PRODUCTION"
+    ENVIRONMENT_NAME = f"PRODUCTION - ({os.environ.get('DEPLOY_VERSION', 'Unknown')})"
     ENVIRONMENT_COLOR = "red"
 elif SITE_ID == 3:
-    ENVIRONMENT_NAME = "QA / STAGING"
+    ENVIRONMENT_NAME = f"QA / STAGING - ({os.environ.get('DEPLOY_VERSION', 'Unknown')})"
     ENVIRONMENT_COLOR = "orange"
 else:
-    ENVIRONMENT_NAME = "DEVELOPMENT"
+    ENVIRONMENT_NAME = f"DEVELOPMENT - ({os.environ.get('DEPLOY_VERSION', 'Unknown')})"
     ENVIRONMENT_COLOR = "blue"
 
 
@@ -419,3 +419,5 @@ THUMBNAIL_PADDING = True
 # THUMBNAIL_RATIO = 14.56/9
 THUMBNAIL_HEIGHT = 520
 # THUMBNAIL_WIDTH = round(THUMBNAIL_HEIGHT*THUMBNAIL_RATIO)
+
+SIMPLE_FEEDBACK_SEND_TO = 'invent@unicef.org'
