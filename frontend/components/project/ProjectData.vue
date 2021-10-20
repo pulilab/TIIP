@@ -42,7 +42,7 @@
               <li v-for="manager in countryManagers" :key="manager.id">{{ manager.name }} ({{ manager.email }})</li>
             </ul>
             <span v-else>
-              <i>No country manager assigned to the office.</i>
+              <i><translate>No country manager assigned to the office.</translate></i>
             </span>
           </simple-field>
 
