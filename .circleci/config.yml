@@ -127,7 +127,7 @@ jobs:
           name: Deploy Over SSH
           working_directory: ~/tiip/django
           command: |
-            fab qa deploy:<< pipeline.git.tag >>
+            fab staging deploy:<< pipeline.git.tag >>
           no_output_timeout: "20m"
 
   e2e-dev:
@@ -169,13 +169,13 @@ workflows:
                 job_type: deployment
                 issue_regexp: '[A-Z0-9]{2,30}-[0-9]+'
                 environment: DEV  # DEV, PROD, QA
-      - e2e-dev:
-          requires:
-            - build-and-test
-            - deploy-dev
-          filters:
-            branches:
-              only: dev
+#      - e2e-dev:
+#          requires:
+#            - build-and-test
+#            - deploy-dev
+#          filters:
+#            branches:
+#              only: dev
       - deploy-qa:
           name: QA Server Deployment
           requires:

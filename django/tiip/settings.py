@@ -271,6 +271,8 @@ if SITE_ID in [3, 4]:
         RAVEN_CONFIG = {
             'dsn': 'https://bca06cdc7c9545faac1db722363bc313:5e185d21565d453e83667556ad385f92@sentry.vidzor.com/31',
         }
+    elif SITE_ID == 2:  # DEV
+        EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 
     CELERYBEAT_SCHEDULE = {
         "send_project_approval_digest": {
@@ -294,7 +296,7 @@ if SITE_ID in [3, 4]:
     DEBUG = False
 
     ALLOWED_HOSTS = ['uni-tiip-dev', '40.113.114.39', 'tiip.unitst.org', 'invent.unicef.org',
-                     '.tipp.pulilab.com', 'nginx:9010', 'nginx', 'qa.invent.pulilab.com']
+                     'nginx:9010', 'nginx', 'qa.invent.pulilab.com', 'dev.invent.pulilab.com']
 
     REST_FRAMEWORK = {
         'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -375,13 +377,13 @@ for arg in sys.argv:
         PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
 
 if SITE_ID == 4:
-    ENVIRONMENT_NAME = "PRODUCTION"
+    ENVIRONMENT_NAME = f"PRODUCTION - ({os.environ.get('DEPLOY_VERSION', 'Unknown')})"
     ENVIRONMENT_COLOR = "red"
 elif SITE_ID == 3:
-    ENVIRONMENT_NAME = "QA / STAGING"
+    ENVIRONMENT_NAME = f"QA / STAGING - ({os.environ.get('DEPLOY_VERSION', 'Unknown')})"
     ENVIRONMENT_COLOR = "orange"
 else:
-    ENVIRONMENT_NAME = "DEVELOPMENT"
+    ENVIRONMENT_NAME = f"DEVELOPMENT - ({os.environ.get('DEPLOY_VERSION', 'Unknown')})"
     ENVIRONMENT_COLOR = "blue"
 
 
@@ -390,8 +392,8 @@ if CI_RUN:
     MEDIA_ROOT = "/home/circleci/tiip/django/media/"
 
 OSM_MAP_CLI_KEY = 'a9ea45b5-ab37-4323-8263-767aa5896113'
-CSRF_TRUSTED_ORIGINS = ['uni-tiip-dev', '40.113.114.39', 'tiip.unitst.org', 'tipp.pulilab.com', 
-                        'invent.unicef.org', 'qa.invent.pulilab.com']
+CSRF_TRUSTED_ORIGINS = ['uni-tiip-dev', '40.113.114.39', 'tiip.unitst.org',
+                        'invent.unicef.org', 'qa.invent.pulilab.com', 'dev.invent.pulilab.com']
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
@@ -419,3 +421,5 @@ THUMBNAIL_PADDING = True
 # THUMBNAIL_RATIO = 14.56/9
 THUMBNAIL_HEIGHT = 520
 # THUMBNAIL_WIDTH = round(THUMBNAIL_HEIGHT*THUMBNAIL_RATIO)
+
+SIMPLE_FEEDBACK_SEND_TO = 'invent@unicef.org'

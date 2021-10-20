@@ -15,16 +15,6 @@
             :header="$gettext('Narrative of the initiative') | translate"
           />
 
-          <el-row v-if="project.coverImage.length > 0">
-            <el-col :span="12">
-              <simple-field :header="$gettext(`Initiative's cover image`) | translate">
-                <a :href="project.coverImage[0].url" target="_blank">
-                  <img :src="project.coverImage[0].url" class="cover" />
-                </a>
-              </simple-field>
-            </el-col>
-          </el-row>
-
           <el-row>
             <el-col :span="12">
               <simple-field :content="project.contact_name" :header="$gettext('Contact name') | translate" />
@@ -35,13 +25,21 @@
           </el-row>
 
           <div class="GrayArea">
-            <simple-field :header="$gettext('Team members') | translate">
-              <team-list :value="project.team" />
-            </simple-field>
-            <simple-field v-if="isEmptyArr(project.viewers)" :header="$gettext('Viewers') | translate">
-              <team-list :value="project.viewers" />
-            </simple-field>
+            <el-col :span="12">
+              <simple-field :header="$gettext('Team members') | translate">
+                <team-list :value="project.team" />
+              </simple-field>
+            </el-col>
+            <el-col :span="12">
+              <simple-field v-if="isEmptyArr(project.viewers)" :header="$gettext('Viewers') | translate">
+                <team-list :value="project.viewers" />
+              </simple-field>
+            </el-col>
           </div>
+
+          <simple-field :header="$gettext('INVENT country focal point(s)') | translate">
+            {{ countryManagers }}
+          </simple-field>
 
           <simple-field :header="$gettext('Last Updated') | translate" :content="lastUpdated" />
         </collapsible-card>
@@ -386,6 +384,11 @@ export default {
         return this.getCountryDetails(this.project.country)
       }
       return {}
+    },
+    countryManagers() {
+      return this.office?.managers?.length > 0
+        ? this.office?.managers.map((m) => `${m.name} (${m.email})`).join(', ')
+        : '-'
     },
     selectedRegion() {
       if (this.office) {
