@@ -130,6 +130,11 @@ class SearchTests(SetupTests):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['count'], 2)
 
+        data = {"q": self.project_id, "in": "id"}  # ID
+        response = self.test_user_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['count'], 1)
+
     def test_found_in(self):
         url = reverse("search-project-list")
         data = {"q": "overview", "found": ""}
