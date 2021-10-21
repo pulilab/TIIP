@@ -96,7 +96,15 @@ class ProjectSearch(ExtendedModel):
         q = Q()
 
         for field in selected_fields:
-            q |= Q(**{"{}__icontains".format(cls.SEARCH_BY[field]): search_term})
+            if field == "id":
+                try:
+                    search_id = int(search_term)
+                except ValueError:
+                    pass
+                else:
+                    q |= Q(**{"{}__exact".format(cls.SEARCH_BY[field]): search_id})
+            else:
+                q |= Q(**{"{}__icontains".format(cls.SEARCH_BY[field]): search_term})
 
         return queryset.filter(q) if selected_fields else queryset
 
