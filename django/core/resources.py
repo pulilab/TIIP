@@ -52,11 +52,11 @@ class UserResource(resources.ModelResource):  # pragma: no cover
     class Meta:
         model = User
         fields = ('id', 'name', 'email', 'account_type', 'organization', 'country', 'donor', 'groups', 'language',
-                  'last_login', 'date_joined', 'is_active', 'is_staff', 'is_superuser','is_gpo',
+                  'last_login', 'date_joined', 'is_active', 'is_staff', 'is_superuser', 'is_gpo',
                   'initiatives_where_team_member', 'initiatives_where_viewer',
                   'initiatives_where_invent_focal_point', 'favorited_initiatives')
         export_order = ('id', 'name', 'email', 'account_type', 'organization', 'country', 'donor', 'groups',
-                        'language','last_login', 'date_joined', 'is_active',
+                        'language', 'last_login', 'date_joined', 'is_active',
                         'is_staff', 'is_superuser', 'is_gpo', 
                         'initiatives_where_team_member', 'initiatives_where_viewer',
                         'initiatives_where_invent_focal_point', 'favorited_initiatives')
