@@ -175,7 +175,7 @@ const config = {
     retry: false,
   },
   router: {
-    middleware: ['auth', 'reset'],
+    middleware: ['auth', 'reset', 'tracking'],
     base: '/',
   },
   // purgeCSS: {
