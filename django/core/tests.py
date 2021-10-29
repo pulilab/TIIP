@@ -1,4 +1,3 @@
-from PIL import Image
 from django.contrib.admin import AdminSite
 from django.contrib.admin.widgets import AdminTextInputWidget
 from django.core.files.uploadedfile import SimpleUploadedFile
