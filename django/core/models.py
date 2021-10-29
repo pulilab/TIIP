@@ -150,10 +150,6 @@ class NewsItem(ExtendedModel):
         return f"{self.id}-{self.title}"
 
     @property
-    def image_url(self):
-        return self.image.url if self.image else None
-
-    @property
     def thumbnail(self):
         try:
             if self.image:
