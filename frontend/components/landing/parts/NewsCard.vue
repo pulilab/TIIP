@@ -1,11 +1,12 @@
 <template>
   <a
-    :href="news.url"
+    :href="news.link"
     target="_blank"
     class="NewsCard"
-    :class="{ noImg: !news.imgUrl }"
-    :style="`background-image: url(${imgUrl})`"
+    :class="{ noImg: !news.thumbnail }"
+    style="background-image: url(bg-unicef-globe.svg)"
   >
+    <img v-if="news.thumbnail" :src="news.thumbnail" :alt="news.alt_text" />
     <div class="content">
       <div class="title">
         {{ news.title }}
@@ -13,8 +14,8 @@
       <div class="desc">
         {{ news.description }}
       </div>
-      <div class="read">
-        <translate>Read the Story</translate>
+      <div v-if="news.link_text" class="read">
+        {{ news.link_text }}
         <fa class="right" icon="chevron-right" size="sm" />
       </div>
     </div>
@@ -29,11 +30,6 @@ export default {
       required: true,
     },
   },
-  computed: {
-    imgUrl() {
-      return this.news.imgUrl ? this.news.imgUrl : '/bg-unicef-globe.svg'
-    },
-  },
 }
 </script>
 
@@ -43,6 +39,7 @@ export default {
 
 .NewsCard {
   position: relative;
+  overflow: hidden;
   width: 480px;
   height: 360px;
   color: @colorWhite;
@@ -64,6 +61,14 @@ export default {
   &:hover::after {
     z-index: 2;
   }
+  img {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
   &.noImg {
     background-size: 82%;
@@ -78,7 +83,7 @@ export default {
     justify-content: flex-end;
     bottom: 0;
     height: 213px;
-    padding: 24px;
+    padding: 28px;
     background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #00000082 100%);
 
     .title {
