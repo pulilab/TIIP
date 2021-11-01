@@ -1,11 +1,5 @@
 <template>
-  <a
-    :href="news.link"
-    target="_blank"
-    class="NewsCard"
-    :class="{ noImg: !news.thumbnail }"
-    style="background-image: url(bg-unicef-globe.svg)"
-  >
+  <a :href="news.link" target="_blank" class="NewsCard" :class="{ noImg: !news.thumbnail }">
     <img v-if="news.thumbnail" :src="news.thumbnail" :alt="news.alt_text" />
     <div class="content">
       <div class="title">
@@ -46,6 +40,7 @@ export default {
   background-color: @colorWhite;
   border-radius: 3px;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.08), 1px 2px 4px 0 rgba(0, 0, 0, 0.12);
+  background-image: url(bg-unicef-globe.svg);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
