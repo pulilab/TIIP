@@ -62,9 +62,9 @@ class UserResource(resources.ModelResource):  # pragma: no cover
                         'initiatives_where_invent_focal_point', 'favorited_initiatives')
 
     def dehydrate_favorited_initiatives(self, user: User):
-        favorite_count = (Project.objects.filter(favorited_by=user.userprofile).count()
-            if hasattr(user, 'userprofile')
-            else 0)
+        favorite_count = Project.objects.filter(favorited_by=user.userprofile).count() \
+            if hasattr(user, 'userprofile') \
+            else 0
         return favorite_count
 
     def dehydrate_initiatives_where_invent_focal_point(self, user: User):
@@ -72,9 +72,9 @@ class UserResource(resources.ModelResource):  # pragma: no cover
         return focal_point_counter
 
     def dehydrate_initiatives_where_viewer(self, user: User):
-        viewer_counter = (Project.objects.filter(viewers=user.userprofile).count()
-            if hasattr(user, 'userprofile')
-            else 0)
+        viewer_counter = Project.objects.filter(viewers=user.userprofile).count() \
+            if hasattr(user, 'userprofile') \
+            else 0
         return viewer_counter
 
     def dehydrate_initiatives_where_team_member(self, user: User):
