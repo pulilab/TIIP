@@ -62,20 +62,20 @@ class UserResource(resources.ModelResource):  # pragma: no cover
                         'initiatives_where_invent_focal_point', 'favorited_initiatives')
 
     def dehydrate_favorited_initiatives(self, user: User):
-        favorite_count = Project.objects.filter(favorited_by=user.userprofile) if hasattr(user, 'userprofile') else []
-        return len(list(favorite_count))
+        favorite_count = Project.objects.filter(favorited_by=user.userprofile).count() if hasattr(user, 'userprofile') else 0
+        return favorite_count
 
     def dehydrate_initiatives_where_invent_focal_point(self, user: User):
-        focal_point_counter = user.userprofile.manager_of.all() if hasattr(user, 'userprofile') else []
-        return len(list(focal_point_counter))
+        focal_point_counter = user.userprofile.manager_of.all().count() if hasattr(user, 'userprofile') else 0
+        return focal_point_counter
 
     def dehydrate_initiatives_where_viewer(self, user: User):
-        viewer_counter = Project.objects.filter(viewers=user.userprofile) if hasattr(user, 'userprofile') else []
-        return len(list(viewer_counter))
+        viewer_counter = Project.objects.filter(viewers=user.userprofile).count() if hasattr(user, 'userprofile') else 0
+        return viewer_counter
 
     def dehydrate_initiatives_where_team_member(self, user: User):
-        team_at_counter = Project.objects.filter(team=user.userprofile) if hasattr(user, 'userprofile') else []
-        return len(list(team_at_counter))
+        team_at_counter = Project.objects.filter(team=user.userprofile).count() if hasattr(user, 'userprofile') else 0
+        return team_at_counter
 
     def dehydrate_last_login(self, user: User):
         return user.last_login.date() if user.last_login else 'None'
