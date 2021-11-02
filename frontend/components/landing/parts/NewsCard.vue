@@ -40,7 +40,7 @@ export default {
   background-color: @colorWhite;
   border-radius: 3px;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.08), 1px 2px 4px 0 rgba(0, 0, 0, 0.12);
-  background-image: url(bg-unicef-globe.svg);
+  background-image: url('~/static/bg-unicef-globe.svg');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
