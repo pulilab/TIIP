@@ -79,7 +79,7 @@ const config = {
     { src: '~plugins/watchHead.js', ssr: false },
     { src: '~plugins/directives.js', ssr: false },
     { src: '~plugins/charts.js', ssr: false },
-    { src: '~plugins/filters.js', ssr: false, mode: 'client' },
+    { src: '~plugins/filters.js' },
   ],
   modules: [
     '@nuxtjs/axios',
