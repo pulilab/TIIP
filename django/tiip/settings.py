@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_extensions',
-    'raven.contrib.django.raven_compat',
     'drf_yasg',
     'ordered_model',
     'rosetta',
@@ -251,6 +250,22 @@ CELERY_RESULT_SERIALIZER = 'json'
 
 # PRODUCTION SETTINGS
 if SITE_ID in [3, 4]:
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+    sentry_sdk.init(
+        dsn=os.environ.get('SENTRY_DSN', ''),
+        integrations=[DjangoIntegration()],
+
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        # We recommend adjusting this value in production.
+        traces_sample_rate=1.0,
+
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True
+    )
+
     if SITE_ID == 3:  # QA
         # Mailgun settings
         EMAIL_USE_TLS = True
@@ -261,9 +276,6 @@ if SITE_ID in [3, 4]:
         EMAIL_BACKEND = 'core.middleware.TestCeleryEmailBackend'
         TEST_FORCED_TO_ADDRESS = ["t@pulilab.com", "f@pulilab.com"]
 
-        RAVEN_CONFIG = {
-            'dsn': 'https://0b6cb1cc48594b499991547adb024864:f851242c5437437ca866e749c965d8ec@sentry.vidzor.com/29',
-        }
     elif SITE_ID == 4:  # PROD AZURE
         EMAIL_HOST = "extmail01.unicef.org"
         EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
@@ -271,8 +283,6 @@ if SITE_ID in [3, 4]:
         RAVEN_CONFIG = {
             'dsn': 'https://bca06cdc7c9545faac1db722363bc313:5e185d21565d453e83667556ad385f92@sentry.vidzor.com/31',
         }
-    elif SITE_ID == 2:  # DEV
-        EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 
     CELERYBEAT_SCHEDULE = {
         "send_project_approval_digest": {
