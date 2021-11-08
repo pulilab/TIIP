@@ -33,12 +33,12 @@ const loginUrl =
   '&response_mode=fragment&scope=openid offline_access'
 
 const config = {
-  // only use to debug on dev server
-  vue: {
-    config: {
-      devtools: true,
-    },
-  },
+  // only use to debug on DEV server
+  // vue: {
+  //   config: {
+  //     devtools: true,
+  //   },
+  // },
   head: {
     title: "Invent: UNICEF's T4D and Innovation Inventory",
     meta: [
