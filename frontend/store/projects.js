@@ -226,11 +226,16 @@ export const getters = {
 }
 
 export const actions = {
-  async loadLandingProjects({ commit, rootGetters }) {
+  async loadLandingProjects({ commit, rootGetters, dispatch }) {
     try {
       const { data } = await this.$axios.get('/api/projects/landing/')
       const regions = rootGetters['system/getRegions']
-      const countries = rootGetters['countries/getCountries'].map((c) => {
+      let countries = rootGetters['countries/getCountries']
+      if (countries.length === 0) {
+        await dispatch('countries/loadMapData', {}, { root: true })
+        countries = rootGetters['countries/getCountries']
+      }
+      countries.map((c) => {
         return {
           ...c,
           unicef_region: regions.find((r) => r.id === c.unicef_region),
