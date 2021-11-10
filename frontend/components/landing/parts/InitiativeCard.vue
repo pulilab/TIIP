@@ -15,7 +15,8 @@
         </div>
         <div tabindex="0" ref="popover" @focusout="menuVisible = false" v-if="showActions">
           <el-popover placement="top-end" width="170" v-model="menuVisible">
-            <nuxt-link v-if="!project.is_draft"
+            <nuxt-link
+              v-if="!project.is_draft"
               :to="
                 localePath({
                   name: 'organisation-initiatives-id-published',
@@ -30,7 +31,8 @@
               <fa icon="arrow-right" />
               <translate>View Published</translate>
             </nuxt-link>
-            <nuxt-link v-if="project.is_draft"
+            <nuxt-link
+              v-if="project.is_draft"
               :to="
                 localePath({
                   name: 'organisation-initiatives-id',
@@ -45,7 +47,8 @@
               <fa icon="arrow-right" />
               <translate>View Draft</translate>
             </nuxt-link>
-            <nuxt-link v-if="showActions"
+            <nuxt-link
+              v-if="showActions"
               :to="
                 localePath({
                   name: 'organisation-initiatives-id-edit',
@@ -101,8 +104,8 @@ export default {
     },
     showActions: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   methods: {
     toggleMiniMenu() {
