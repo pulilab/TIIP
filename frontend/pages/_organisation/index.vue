@@ -2,6 +2,7 @@
   <div class="LandingPage">
     <WelcomeSection />
     <InitiativesSection />
+    <NewsSection />
     <div class="MapBoxContainer">
       <LandingMap v-if="!showCoverImage" />
       <div v-if="showCoverImage" :style="{ backgroundImage: `url(${landingData.cover_url})` }" class="CoverImageBg" />
@@ -15,6 +16,7 @@ import { mapGetters } from 'vuex'
 import LandingMap from '@/components/landing/LandingMap.vue'
 import WelcomeSection from '@/components/landing/WelcomeSection.vue'
 import InitiativesSection from '@/components/landing/InitiativesSection.vue'
+import NewsSection from '@/components/landing/NewsSection.vue'
 import AboutSection from '@/components/landing/AboutSection.vue'
 
 export default {
@@ -22,6 +24,7 @@ export default {
     LandingMap,
     WelcomeSection,
     InitiativesSection,
+    NewsSection,
     AboutSection,
   },
   async fetch({ store }) {
@@ -32,6 +35,7 @@ export default {
       store.dispatch('countries/loadMapData'),
       store.dispatch('offices/loadOffices'),
       store.dispatch('projects/loadLandingProjects'),
+      store.dispatch('landing/loadNewsFeed'),
     ])
     await store.dispatch('dashboard/loadProjectsMap')
   },

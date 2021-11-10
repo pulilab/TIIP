@@ -33,6 +33,12 @@ const loginUrl =
   '&response_mode=fragment&scope=openid offline_access'
 
 const config = {
+  // only use to debug on DEV server
+  // vue: {
+  //   config: {
+  //     devtools: true,
+  //   },
+  // },
   head: {
     title: "Invent: UNICEF's T4D and Innovation Inventory",
     meta: [
@@ -79,7 +85,7 @@ const config = {
     { src: '~plugins/watchHead.js', ssr: false },
     { src: '~plugins/directives.js', ssr: false },
     { src: '~plugins/charts.js', ssr: false },
-    '~plugins/filters.js',
+    { src: '~plugins/filters.js' },
   ],
   modules: [
     '@nuxtjs/axios',
