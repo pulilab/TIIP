@@ -162,18 +162,7 @@ class ProjectListViewSet(TokenAuthMixin, GenericViewSet):
 
     def country_manager_list(self, user):
         data = []
-        user_managed_offices = list(user.userprofile.manager_of.values_list('id', flat=True))
-
-        if not user_managed_offices:
-            qs = Project.objects.none()
-        else:
-            qs = Project.objects.annotate(
-                co_id=Cast(KeyTextTransform('country_office', 'data'), output_field=IntegerField())).annotate(
-                draft_co_id=Cast(KeyTextTransform('country_office', 'draft'), output_field=IntegerField()))
-
-            qs = qs.filter(
-                Q(co_id__in=user_managed_offices) | Q(draft_co_id__in=user_managed_offices)).order_by('-modified')
-
+        qs = Project.objects.country_managers_projects(user)
         page = self.paginate_queryset(qs)
         for project in page:
             published = project.to_representation()
