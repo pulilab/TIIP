@@ -1,10 +1,12 @@
 import copy
 from collections import OrderedDict
+from datetime import date
 
 from django.contrib.postgres.fields.jsonb import KeyTextTransform
 from django.db import transaction
 from django.db.models import QuerySet, IntegerField, Q
 from django.db.models.functions import Cast
+from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, UpdateModelMixin, CreateModelMixin, \
@@ -29,6 +31,7 @@ from toolkit.models import Toolkit, ToolkitVersion
 from .models import Project, CoverageVersion, TechnologyPlatform, DigitalStrategy, \
     HealthCategory, HSCChallenge, Portfolio, ProjectPortfolioState, ReviewScore
 from user.models import UserProfile
+from .resources import ProjectResource
 from .serializers import ProjectDraftSerializer, ProjectGroupSerializer, ProjectPublishedSerializer, \
     MapProjectCountrySerializer, CountryCustomAnswerSerializer, DonorCustomAnswerSerializer, \
     ProjectApprovalSerializer, ProjectImportV2Serializer, ImportRowSerializer, PortfolioListSerializer, \
@@ -937,3 +940,20 @@ class ProjectImageUploadViewSet(TokenAuthMixin, UpdateModelMixin, GenericViewSet
     queryset = Project.objects.all()
     serializer_class = ProjectImageUploadSerializer
     parser_classes = (MultiPartParser,)
+
+
+class CountryManagerExportView(TokenAuthMixin, GenericViewSet):
+    def retrieve(self, request, *args, **kwargs):
+        queryset = Project.objects.country_managers_projects(request.user)
+        project_resource = ProjectResource()
+        project_resource.get_queryset = lambda: queryset
+        dataset = project_resource.export()
+
+        filename = f'country_manager_export_{str(date.today())}.xlsx'
+        response = HttpResponse(
+            dataset.xlsx,
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+
+        return response
