@@ -113,13 +113,13 @@ export default {
       return false
     },
     showStar() {
-      return this.forceStar || this.isMember
+      return this.forceStar || (this.isMember && !this.isCountry)
     },
     showEye() {
       return this.forceEye || (!this.isMember && this.isViewer)
     },
     showGlobe() {
-      return this.forceGlobe || (this.isCountry && !this.isTeam)
+      return (this.forceGlobe || this.isCountry) || (this.isCountry && !this.isTeam)
     },
   },
 }
