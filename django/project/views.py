@@ -2,10 +2,8 @@ import copy
 from collections import OrderedDict
 from datetime import date
 
-from django.contrib.postgres.fields.jsonb import KeyTextTransform
 from django.db import transaction
-from django.db.models import QuerySet, IntegerField, Q
-from django.db.models.functions import Cast
+from django.db.models import QuerySet
 from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.exceptions import ValidationError, PermissionDenied
@@ -941,7 +939,7 @@ class ProjectImageUploadViewSet(TokenAuthMixin, UpdateModelMixin, GenericViewSet
     serializer_class = ProjectImageUploadSerializer
     parser_classes = (MultiPartParser,)
 
-
+project/models.py:67:1
 class CountryManagerExportView(TokenAuthMixin, GenericViewSet):
     def retrieve(self, request, *args, **kwargs):
         queryset = Project.objects.country_managers_projects(request.user)

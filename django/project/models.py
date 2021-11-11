@@ -64,6 +64,7 @@ class ProjectManager(models.Manager):
                 Q(co_id__in=user_managed_offices) | Q(draft_co_id__in=user_managed_offices)).order_by('-modified')
         return qs
 
+
 class ProjectQuerySet(ActiveQuerySet, ProjectManager):
     pass
 
