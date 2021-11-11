@@ -939,7 +939,7 @@ class ProjectImageUploadViewSet(TokenAuthMixin, UpdateModelMixin, GenericViewSet
     serializer_class = ProjectImageUploadSerializer
     parser_classes = (MultiPartParser,)
 
-project/models.py:67:1
+
 class CountryManagerExportView(TokenAuthMixin, GenericViewSet):
     def retrieve(self, request, *args, **kwargs):
         queryset = Project.objects.country_managers_projects(request.user)
