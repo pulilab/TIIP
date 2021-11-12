@@ -263,7 +263,13 @@ if SITE_ID in [3, 4]:
 
         # If you wish to associate users to errors (assuming you are using
         # django.contrib.auth) you may enable sending PII data.
-        send_default_pii=True
+        send_default_pii=True,
+
+        # By default the SDK will try to use the SENTRY_RELEASE
+        # environment variable, or infer a git commit
+        # SHA as release, however you may want to set
+        # something more human-readable.
+        release=os.environ.get('DEPLOY_VERSION', '0.0.0')
     )
 
     if SITE_ID == 3:  # QA
