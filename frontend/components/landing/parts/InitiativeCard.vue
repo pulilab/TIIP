@@ -32,7 +32,6 @@
               <translate>View Published</translate>
             </nuxt-link>
             <nuxt-link
-              v-if="project.is_draft"
               :to="
                 localePath({
                   name: 'organisation-initiatives-id',
