@@ -61,8 +61,6 @@ class Country(UserManagement, LandingPageCommon):
     lat = models.DecimalField(null=True, blank=True, max_digits=18, decimal_places=15)
     lon = models.DecimalField(null=True, blank=True, max_digits=18, decimal_places=15)
 
-    unicef_region = models.IntegerField(choices=UNICEF_REGIONS, null=True, blank=True)
-
     class Meta:
         verbose_name_plural = "Countries"
         ordering = ('id',)
