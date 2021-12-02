@@ -802,12 +802,12 @@ class CountryOfficeTests(APITestCase):
 
         country_office_1, _ = CountryOffice.objects.get_or_create(
             name='Country Office 1',
-            region=Country.UNICEF_REGIONS[0][0],
+            region=CountryOffice.REGIONS[0][0],
             country=self.country
         )
         country_office_2, _ = CountryOffice.objects.get_or_create(
             name='Country Office 2',
-            region=Country.UNICEF_REGIONS[1][0],
+            region=CountryOffice.REGIONS[1][0],
             country=self.country
         )
 
