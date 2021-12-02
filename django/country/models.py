@@ -69,6 +69,7 @@ class Country(UserManagement, LandingPageCommon):
     def regions(self):
         return list(set(self.countryoffice_set.values_list('region', flat=True)))
 
+
 class RegionalOffice(InvalidateCacheMixin, models.Model):
     name = models.CharField(max_length=256)
 

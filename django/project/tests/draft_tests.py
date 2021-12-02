@@ -2,7 +2,7 @@ import copy
 
 from django.urls import reverse
 
-from country.models import CountryOffice, Country
+from country.models import CountryOffice
 from project.models import Project, HealthFocusArea, HealthCategory
 
 from project.tests.setup import SetupTests
