@@ -82,6 +82,7 @@ class CountryTests(APITestCase):
         self.assertIn("name", response_keys)
         self.assertIn("code", response_keys)
         self.assertIn("id", response_keys)
+        self.assertIn("regions", response_keys)
 
     def test_get_countries(self):
         Country.objects.exclude(id=self.country.id).delete()
