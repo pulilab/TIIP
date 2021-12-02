@@ -79,8 +79,19 @@ class RegionalOffice(InvalidateCacheMixin, models.Model):
 
 
 class CountryOffice(ExtendedModel):
+    REGIONS = [
+        (0, _('EAPR')),
+        (1, _('ECAR')),
+        (2, _('ESAR')),
+        (3, _('LACR')),
+        (4, _('MENA')),
+        (5, _('SAR')),
+        (6, _('WCAR')),
+        (7, _('HQ'))
+    ]
+
     name = models.CharField(max_length=256)
-    region = models.IntegerField(choices=Country.UNICEF_REGIONS, null=True, blank=True)
+    region = models.IntegerField(choices=REGIONS, null=True, blank=True)
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
     regional_office = models.ForeignKey(RegionalOffice, on_delete=models.SET_NULL, null=True, blank=True)
     city = models.CharField(max_length=256, null=True, blank=True)
