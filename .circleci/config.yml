@@ -29,7 +29,7 @@ jobs:
 
       - restore_cache:
           keys:
-            - v6-dependencies-b-{{ checksum "django/requirements.txt" }}
+            - v8-dependencies-b-{{ checksum "django/requirements.txt" }}
 
       - restore_cache:
           keys:
@@ -55,10 +55,13 @@ jobs:
 
       - save_cache:
           paths:
+            - "django/Pipfile.lock"
+            - ".venv"
             - "django/.venv"
             - "/usr/local/bin"
             - "/usr/local/lib/python3.7/site-packages"
-          key: v6-dependencies-b-{{ checksum "django/requirements.txt" }}
+            - "./.venv/lib/python3.7/site-packages"
+          key: v8-dependencies-b-{{ checksum "django/requirements.txt" }}
 
       - save_cache:
           paths:
@@ -128,7 +131,7 @@ jobs:
           working_directory: ~/tiip/django
           command: |
             fab staging deploy:<< pipeline.git.tag >>
-          no_output_timeout: "20m"
+          no_output_timeout: "30m"
 
   e2e-dev:
     docker:
