@@ -97,6 +97,15 @@ def deploy(tag=None):
     db_up = None
     """Updates the server and restarts the apps"""
     with cd(env.project_root):
+        if env.name == 'dev':
+            options = f"-f {env.project_root}/docker-compose.yml -f {env.project_root}/docker-compose.dev.yml "
+        elif env.name == 'staging':
+            options = f"-f {env.project_root}/docker-compose.yml -f {env.project_root}/docker-compose.qa.yml "
+        elif env.name == 'production':
+            options = f"-f {env.project_root}/docker-compose.yml -f {env.project_root}/docker-compose.prod.yml "
+        else:
+            options = ""
+
         # get new stuff from git
         run('git fetch')
         if env.name == 'production':
@@ -110,25 +119,24 @@ def deploy(tag=None):
             run('git pull origin %s' % env.branch)
         time.sleep(10)
 
-        backend_env_file_path = "{}/{}/.env".format(env.project_root, env.backend_root)
-        run('[ -f {} ] || echo "DEPLOY_VERSION=0.0.0" > {}'.format(
-            backend_env_file_path, backend_env_file_path))
-        run('if [ -z $(grep "DEPLOY_VERSION=" "{}") ]; then echo "DEPLOY_VERSION=0.0.0" >> {}; fi'.format(
-            backend_env_file_path, backend_env_file_path))
-        version = run('git describe --tags --always')
-        run('sed -i "s/DEPLOY_VERSION=.*/DEPLOY_VERSION={}/g" {}'.format(version, backend_env_file_path))
+        # Translation generation: checks and commit if needs update
+        if tag:
+            with cd(env.frontend_root):
+                run('bash gettext.sh')
+                run("export TERM=xterm && git --no-pager diff ../django/translations/master.pot")
+                run("export TERM=xterm && git --no-pager diff --stat ../django/translations/master.pot")
+            with warn_only():
+                result = run('bash auto_commit_translation_changes.sh')
+                if result.return_code == 1:
+                    print("Skipping this deploy, translations have been updated. Triggering new tag and deployment.")
+                    return
 
-        if env.name == 'dev':
-            options = "-f {}/docker-compose.yml -f {}/docker-compose.dev.yml ".format(
-                env.project_root, env.project_root)
-        elif env.name == 'staging':
-            options = "-f {}/docker-compose.yml -f {}/docker-compose.qa.yml ".format(
-                env.project_root, env.project_root)
-        elif env.name == 'production':
-            options = "-f {}/docker-compose.yml -f {}/docker-compose.prod.yml ".format(
-                env.project_root, env.project_root)
-        else:
-            options = ""
+        backend_env_file_path = "{}/{}/.env".format(env.project_root, env.backend_root)
+        run(f'[ -f {backend_env_file_path} ] || echo "DEPLOY_VERSION=0.0.0" > {backend_env_file_path}')
+        run(f'if [ -z $(grep "DEPLOY_VERSION=" "{backend_env_file_path}") ]; '
+            f'then echo "DEPLOY_VERSION=0.0.0" >> {backend_env_file_path}; fi')
+        version = run('git describe --tags --always')
+        run(f'sed -i "s/DEPLOY_VERSION=.*/DEPLOY_VERSION={version}/g" {backend_env_file_path}')
 
         ps = run('docker-compose ps')
         running = "".join([l for l in ps.split('\n') if 'Up' in l])
@@ -148,6 +156,11 @@ def deploy(tag=None):
             run('docker-compose {}restart rabbitmq'.format(options))
 
         time.sleep(5)
+
+        if tag:
+            _update_translations_frontend()
+            _update_translations_backend()
+            time.sleep(10)
 
         # handle backend
         with cd(env.backend_root):
@@ -206,6 +219,16 @@ def _migrate_db():
 def _import_geodata():
     run('python geodata_import.py')
 
+
+def _update_translations_frontend():
+    with warn_only():
+        run("docker-compose exec django python manage.py update_translations master.pot")
+
+
+def _update_translations_backend():
+    with warn_only():
+        run("docker-compose exec django django-admin makemessages -a")
+        run("docker-compose exec django django-admin compilemessages")
 
 # LOCAL STUFF #
 
