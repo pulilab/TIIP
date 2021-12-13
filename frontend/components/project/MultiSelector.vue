@@ -149,7 +149,6 @@ export default {
 }
 
 .el-select .el-select__tags .el-tag__close {
-    /* right: -6px; */
     top: -1px;
     right: 3px;
     margin-right: -5px;
