@@ -1247,3 +1247,13 @@ class ProjectTests(SetupTests):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {'project': {'start_date': ['Wrong date format']}})
 
+    def test_project_end_date_earlier_than_start_date(self):
+        data = copy.deepcopy(self.project_data)
+        data['project']['start_date'] = str(datetime.today().date())
+        data['project']['end_date'] = str(datetime.today().date() - timedelta(days=1))
+
+        url = reverse("project-publish", kwargs={"project_id": self.project_id,
+                                                 "country_office_id": self.country_office.id})
+        response = self.test_user_client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {'project': {'end_date': ['End date cannot be earlier than start date']}})
