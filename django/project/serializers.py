@@ -3,6 +3,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import ReadOnlyField
 from rest_framework.validators import UniqueValidator
+from dateutil.parser import parse, ParserError
 
 # This has to stay here to use the proper celery instance with the djcelery_email package
 import scheduler.celery  # noqa
@@ -140,6 +141,22 @@ class ProjectPublishedSerializer(serializers.Serializer):
                     project.data['country_office'] != self.initial_data['country_office']:
                 raise serializers.ValidationError('Country office cannot be altered on published projects.')
         return value
+
+    def validate(self, attrs):
+        if attrs.get('end_date'):
+            try:
+                end_date = parse(attrs.get('end_date'))
+            except ParserError:
+                raise serializers.ValidationError({'end_date': 'Wrong date format'})
+
+            try:
+                start_date = parse(attrs.get('start_date'))
+            except ParserError:
+                raise serializers.ValidationError({'start_date': 'Wrong date format'})
+
+            if end_date < start_date:
+                raise serializers.ValidationError({'end_date': 'End date cannot be earlier than start date'})
+        return attrs
 
     def update(self, instance, validated_data):
         validated_data['country'] = self.co.country.id
