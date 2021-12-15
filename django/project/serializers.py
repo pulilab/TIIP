@@ -142,19 +142,23 @@ class ProjectPublishedSerializer(serializers.Serializer):
                 raise serializers.ValidationError('Country office cannot be altered on published projects.')
         return value
 
+    @staticmethod
+    def validate_date(value):
+        try:
+            parse(value)
+        except ParserError:
+            raise serializers.ValidationError('Wrong date format')
+        return value
+
+    def validate_start_date(self, value):
+        return self.validate_date(value)
+
+    def validate_end_date(self, value):
+        return self.validate_date(value)
+
     def validate(self, attrs):
         if attrs.get('end_date'):
-            try:
-                end_date = parse(attrs.get('end_date'))
-            except ParserError:
-                raise serializers.ValidationError({'end_date': 'Wrong date format'})
-
-            try:
-                start_date = parse(attrs.get('start_date'))
-            except ParserError:
-                raise serializers.ValidationError({'start_date': 'Wrong date format'})
-
-            if end_date < start_date:
+            if parse(attrs.get('end_date')) < parse(attrs.get('start_date')):
                 raise serializers.ValidationError({'end_date': 'End date cannot be earlier than start date'})
         return attrs
 
