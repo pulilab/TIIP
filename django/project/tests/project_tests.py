@@ -1236,3 +1236,14 @@ class ProjectTests(SetupTests):
         response = self.test_user_client.put(url, data, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {'project': {'end_date': ['Wrong date format']}})
+
+    def test_project_start_date_wrong_format(self):
+        data = copy.deepcopy(self.project_data)
+        data['project']['start_date'] = "1970aaa"
+
+        url = reverse("project-publish", kwargs={"project_id": self.project_id,
+                                                 "country_office_id": self.country_office.id})
+        response = self.test_user_client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {'project': {'start_date': ['Wrong date format']}})
+
