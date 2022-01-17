@@ -181,7 +181,7 @@ const config = {
     retry: false,
   },
   router: {
-    middleware: ['auth', 'reset', 'tracking'],
+    middleware: ['auth', 'reset', 'tracking', 'noUnicefRecords'],
     base: '/',
   },
   // purgeCSS: {
