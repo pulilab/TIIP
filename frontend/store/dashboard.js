@@ -377,7 +377,8 @@ export const getters = {
       rp: state.regionalPriorities,
       // pi: state.stage === null ? undefined : state.stage,
       iw: state.innovationWays,
-      stage: (state.filteredStages === DEFAULT_QUERY.filteredStages || state.filteredStages === "") ? undefined : state.filteredStages,
+      stage: intArrayFromQs(state.stage),
+
       hp: state.hardwarePlatforms,
       pp: state.programmePlatforms,
       pf: state.platformFunctions,
@@ -687,8 +688,8 @@ export const mutations = {
     state.hardwarePlatforms = intArrayFromQs(options.hp)
     state.programmePlatforms = intArrayFromQs(options.pp)
     state.platformFunctions = intArrayFromQs(options.pf)
-    state.stage = options.pi ? +options.pi : null
-    state.informationSecurity = options.is ? +options.is : null
+    state.stage = intArrayFromQs(options.stage)
+    state.informationSecurity = intArrayFromQs(options.is)
 
     state.selectedDHI = intArrayFromQs(options.dhi)
     state.selectedHFA = intArrayFromQs(options.hfa)
