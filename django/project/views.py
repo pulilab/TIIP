@@ -378,7 +378,7 @@ class ProjectUnPublishViewSet(CheckRequiredMixin, TeamTokenAuthMixin, ViewSet):
     @transaction.atomic
     def update(self, request, project_id):
         project = get_object_or_400(Project, select_for_update=True, error_message="No such project", id=project_id)
-        data_before_reseting = project.data #because the unpublish resets to {} the .data
+        data_before_reseting = project.data  # because the unpublish() resets to {} the .data
         project.unpublish()
         data = project.to_representation(draft_mode=True)
 
