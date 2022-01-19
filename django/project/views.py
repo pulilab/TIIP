@@ -47,28 +47,28 @@ class ProjectPublicViewSet(ViewSet):
         """
         Terminology and taxonomy endpoint - List all the available taxonomies and terminologies
 
-        Reponse:  
-        `technology_platforms` = WHO's Software list  
-        `goal_areas`  
-        `result_areas`  
-        `capability_levels`  
-        `capability_categories`  
-        `capability_subcategories`  
-        `health_focus_areas` = WHO's Health Focus Areas  
-        `hsc_challenges` = WHO's Health System Challanges  
-        `strategies` = WHO's Digital Health Interventions  
-        `regional_offices`  
-        `currencies`  
-        `sectors` = UNICEF Sectors  
-        `regional_priorities` = Regional Priorities  
-        `hardware` = Hardware Platform(s) and Physical Product(s)  
-        `nontech` = Programme Innovation(s) and Non-Technology Platform(s)  
-        `functions` = Function(s) of Platform  
-        `cpd` = CPD and annual work plan  
-        `innovation_categories` = Innovation Categories  
-        `innovation_ways` = Innovation ways  
+        Reponse:
+        `technology_platforms` = WHO's Software list
+        `goal_areas`
+        `result_areas`
+        `capability_levels`
+        `capability_categories`
+        `capability_subcategories`
+        `health_focus_areas` = WHO's Health Focus Areas
+        `hsc_challenges` = WHO's Health System Challanges
+        `strategies` = WHO's Digital Health Interventions
+        `regional_offices`
+        `currencies`
+        `sectors` = UNICEF Sectors
+        `regional_priorities` = Regional Priorities
+        `hardware` = Hardware Platform(s) and Physical Product(s)
+        `nontech` = Programme Innovation(s) and Non-Technology Platform(s)
+        `functions` = Function(s) of Platform
+        `cpd` = CPD and annual work plan
+        `innovation_categories` = Innovation Categories
+        `innovation_ways` = Innovation ways
         `isc` = Information Security Classification
-        `phases` = [DEPRECATED] Phase of Initiative  
+        `phases` = [DEPRECATED] Phase of Initiative
         `stages` = [New] Phases of initiative
         """
         return Response(self._get_project_structure())
@@ -378,11 +378,12 @@ class ProjectUnPublishViewSet(CheckRequiredMixin, TeamTokenAuthMixin, ViewSet):
     @transaction.atomic
     def update(self, request, project_id):
         project = get_object_or_400(Project, select_for_update=True, error_message="No such project", id=project_id)
+        data_before_reseting = project.data #because the unpublish resets to {} the .data
         project.unpublish()
         data = project.to_representation(draft_mode=True)
 
         ProjectVersion.objects.create(project=project, user=request.user.userprofile, name=project.name,
-                                      data=project.data, published=False)
+                                      data=data_before_reseting, published=False)
         return Response(project.to_response_dict(published={}, draft=data), status=status.HTTP_200_OK)
 
 
