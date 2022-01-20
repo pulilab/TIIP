@@ -180,3 +180,13 @@ class ProjectStageTests(SetupTests):
         response = self.test_user_client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.json())
         self.assertEqual(response.json()['draft']['current_phase'], stages[2].id)
+
+    def test_current_phase_no_phase_selected(self):
+        data = copy.deepcopy(self.project_data)
+        stage_1 = Stage.objects.order_by('order').first()
+        data['project']['stages'] = []
+
+        url = reverse("project-create", kwargs={"country_office_id": self.country_office.id})
+        response = self.test_user_client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.json())
+        self.assertEqual(response.json()['draft']['current_phase'], stage_1.id)
