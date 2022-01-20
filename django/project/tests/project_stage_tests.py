@@ -131,3 +131,29 @@ class ProjectStageTests(SetupTests):
         response = self.test_user_client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.json())
         self.assertEqual(response.json()['draft']['current_phase'], stage_discontinued.id)
+
+    def test_current_phase_one_before_discontinued(self):
+        now = timezone.now()
+        data = copy.deepcopy(self.project_data)
+        stage_1 = Stage.objects.all()[0]
+        discontinued_id = Stage.objects.get(name='Discontinued').id
+        all_stages = list(Stage.objects.order_by('order').values_list('id', flat=True))
+        one_before_discontinued_id = all_stages[all_stages.index(discontinued_id) - 1]
+        # add stages
+        data['project']['stages'] = [
+            {
+                'id': stage_1.id,
+                'date': str((now - timezone.timedelta(days=10)).date()),
+                'note': 'preparation note'
+            },
+            {
+                'id': one_before_discontinued_id,
+                'date': str((now - timezone.timedelta(days=7)).date()),
+                'note': 'analysis note'
+            }
+        ]
+
+        url = reverse("project-create", kwargs={"country_office_id": self.country_office.id})
+        response = self.test_user_client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.json())
+        self.assertEqual(response.json()['draft']['current_phase'], one_before_discontinued_id)
