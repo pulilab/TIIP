@@ -52,6 +52,7 @@ class ListResultSerializer(serializers.Serializer):
     regional_priorities = serializers.ReadOnlyField()
     regional_office = serializers.ReadOnlyField(source='country_office.regional_office.id')
     stages = serializers.ReadOnlyField()
+    current_phase = serializers.ReadOnlyField(source="project.data.current_phase")
     start_date = serializers.ReadOnlyField(source="project.data.start_date")
     end_date = serializers.ReadOnlyField(source="project.data.end_date")
     target_group_reached = serializers.ReadOnlyField(source="project.data.target_group_reached")
