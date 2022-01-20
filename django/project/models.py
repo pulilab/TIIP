@@ -1,6 +1,6 @@
 import uuid
 from collections import namedtuple
-from typing import List, Union
+from typing import List, Union, Dict
 
 from django.contrib.postgres.fields.jsonb import KeyTextTransform
 from django.db.models.functions import Cast
@@ -794,6 +794,11 @@ class Stage(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
         """
         return cls.objects.get(name='Discontinued')
 
+    @classmethod
+    def calc_current_phase(cls, stages: List[Dict]):
+        discontinued_id = cls.get_discontinued().id
+        all_stages = list(cls.objects.order_by('order').values_list('id', flat=True))
+        one_before_discontinued_id = all_stages[all_stages.index(discontinued_id) - 1]
 class Phase(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
     class Meta(ExtendedNameOrderedSoftDeletedModel.Meta):
         verbose_name_plural = '[DEPRECATED] Phase of Initiative'
