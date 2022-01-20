@@ -44,20 +44,21 @@ class ProjectStageTests(SetupTests):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.json())
         self.assertEqual(response.json(), {'project': {'stages': [{'date': ['This field may not be null.']}]}})
 
+        stages = Stage.objects.all()
         # add stages
         stages = [
             {
-                'id': 1,
+                'id': stages[0].id,
                 'date': str((now - timezone.timedelta(days=10)).date()),
                 'note': 'preparation note'
             },
             {
-                'id': 2,
+                'id': stages[1].id,
                 'date': str((now - timezone.timedelta(days=7)).date()),
                 'note': 'analysis note'
             },
             {
-                'id': 3,
+                'id': stages[2].id,
                 'date': str((now - timezone.timedelta(days=3)).date()),
                 'note': None
             }
