@@ -787,6 +787,12 @@ class Stage(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
     def __str__(self):  # pragma: no cover
         return self.name
 
+    @classmethod
+    def get_discontinued(cls):
+        """
+        Hardcoded for now. Object with this name must exist in the DB to work.
+        """
+        return cls.objects.get(name='Discontinued')
 
 class Phase(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
     class Meta(ExtendedNameOrderedSoftDeletedModel.Meta):
