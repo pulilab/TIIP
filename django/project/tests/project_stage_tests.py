@@ -107,3 +107,27 @@ class ProjectStageTests(SetupTests):
         self.assertEqual(data[0]['id'], stage_b.id)
         self.assertEqual(data[1]['id'], stage_a.id)
         self.assertEqual(data[2]['id'], stage_c.id)
+
+    def test_current_phase_discontinued(self):
+        now = timezone.now()
+        data = copy.deepcopy(self.project_data)
+        stage_1 = Stage.objects.all()[0]
+        stage_discontinued = Stage.objects.get(name='Discontinued')
+        # add stages
+        data['project']['stages'] = [
+            {
+                'id': stage_1.id,
+                'date': str((now - timezone.timedelta(days=10)).date()),
+                'note': 'preparation note'
+            },
+            {
+                'id': stage_discontinued.id,
+                'date': str((now - timezone.timedelta(days=7)).date()),
+                'note': 'analysis note'
+            }
+        ]
+
+        url = reverse("project-create", kwargs={"country_office_id": self.country_office.id})
+        response = self.test_user_client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.json())
+        self.assertEqual(response.json()['draft']['current_phase'], stage_discontinued.id)
