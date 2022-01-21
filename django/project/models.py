@@ -800,7 +800,7 @@ class Stage(InvalidateCacheMixin, ExtendedNameOrderedSoftDeletedModel):
         all_stages = list(cls.objects.order_by('order').values_list('id', flat=True))
         one_before_discontinued_id = all_stages[all_stages.index(discontinued_id) - 1]
 
-        if not stages:  # when no phases are selected to be done, the current phase is the first one
+        if not stages:  # when no phases are selected the current phase is the first one
             return all_stages[0]
 
         stage_ids = [stage['id'] for stage in stages]
