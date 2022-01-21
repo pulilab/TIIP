@@ -48,7 +48,7 @@ class ProjectSearch(ExtendedModel):
         "ic": "innovation_categories",
         "portfolio": "project__review_states",
         "ro": "country_office__regional_office",
-        "stage": "stages",
+        "stage": "project__data__current_phase",
         "iw": "innovation_ways",
         "us": "unicef_sector",
         "hp": "hardware",
@@ -129,11 +129,11 @@ class ProjectSearch(ExtendedModel):
         if selected_fields:
             for field in selected_fields:
                 if query_params[field]:
-                    if field in ["country", "co", "region", "goal", "result", "ro", "is"]:
+                    if field in ["country", "co", "region", "goal", "result", "ro", "is", "stage"]:
                         lookup_param = "in"
                         lookup = lookup_cleanup(query_params.getlist(field))
                     elif field in ["donor", "sw", "dhi", "hfa", "hsc",
-                                   "cl", "cc", "cs", "ic", "stage",
+                                   "cl", "cc", "cs", "ic",
                                    "iw", "us", "hp", "pp", "pf", "rp"]:
                         lookup_param = "overlap"  # This is the OR clause here
                         lookup = lookup_cleanup(query_params.getlist(field))
