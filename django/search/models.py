@@ -70,7 +70,6 @@ class ProjectSearch(ExtendedModel):
     dhi_categories = ArrayField(models.IntegerField(), default=list)
     hsc = ArrayField(models.IntegerField(), default=list)
     hfa_categories = ArrayField(models.IntegerField(), default=list)
-    stages = ArrayField(models.IntegerField(), default=list)
 
     # UNICEF fields
     capability_levels = ArrayField(models.IntegerField(), default=list)
@@ -186,7 +185,6 @@ class ProjectSearch(ExtendedModel):
             self.donors = [int(x) for x in project.data.get("donors", [])]
 
             self.software = project.data.get('platforms')
-            self.stages = [int(x['id']) for x in project.data.get("stages", [])]
             self.hsc = project.data.get('hsc_challenges')
             self.dhi_categories = list(set(filter(None.__ne__,
                                                   [DigitalStrategy.get_parent_id(int(id), 'parent') for
