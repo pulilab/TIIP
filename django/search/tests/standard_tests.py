@@ -417,12 +417,23 @@ class SearchTests(SetupTests):
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
         self.assertEqual(response.json()['count'], 0)
 
+        # Stage 1 & Stage 2 are set for both projects, that means the current_phase for both will be Stage 3
         data = {"stage": stages[0].id}
+        response = self.test_user_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
+        self.assertEqual(response.json()['count'], 0)
+
+        data = {"stage": stages[1].id}
+        response = self.test_user_client.get(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
+        self.assertEqual(response.json()['count'], 0)
+
+        data = {"stage": stages[2].id}
         response = self.test_user_client.get(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
         self.assertEqual(response.json()['count'], 2)
 
-        url = url + f'?stage={stages[0].id}&stage=300'
+        url = url + f'?stage={stages[2].id}&stage=300'
         response = self.test_user_client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
         self.assertEqual(response.json()['count'], 2)
