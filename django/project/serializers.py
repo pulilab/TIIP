@@ -13,7 +13,6 @@ from core.utils import send_mail_wrapper
 from country.models import CustomQuestion, CountryOffice
 from country.serializers import UserProfileSerializer
 from project.utils import remove_keys
-from tiip.validators import EmailEndingValidator
 from user.models import UserProfile
 from .models import Project, ProjectApproval, ImportRow, ProjectImportV2, Portfolio, ProblemStatement, \
     ProjectPortfolioState, ReviewScore, TechnologyPlatform, HardwarePlatform, NontechPlatform, PlatformFunction
@@ -214,10 +213,10 @@ class ProjectDraftSerializer(ProjectPublishedSerializer):
 
 class ProjectGroupSerializer(serializers.ModelSerializer):
     new_team_emails = serializers.ListField(
-        child=serializers.EmailField(validators=[EmailEndingValidator()]),
+        child=serializers.EmailField(),
         max_length=64, min_length=0, allow_empty=True, required=False)
     new_viewer_emails = serializers.ListField(
-        child=serializers.EmailField(validators=[EmailEndingValidator()]),
+        child=serializers.EmailField(),
         max_length=64, min_length=0, allow_empty=True, required=False)
 
     class Meta:
