@@ -147,7 +147,7 @@ class ProjectListViewSet(TokenAuthMixin, GenericViewSet):
         qs = Project.objects.member_of(user).order_by('-modified')
         page = self.paginate_queryset(qs)
         for project in page:
-            published = project.to_representation() if project.public_id else None
+            published = project.to_representation()
             draft = project.to_representation(draft_mode=True)
             data.append(project.to_response_dict(published=published, draft=draft))
         return data
@@ -166,7 +166,7 @@ class ProjectListViewSet(TokenAuthMixin, GenericViewSet):
         qs = Project.objects.country_managers_projects(user)
         page = self.paginate_queryset(qs)
         for project in page:
-            published = project.to_representation() if project.public_id else None
+            published = project.to_representation()
             draft = project.to_representation(draft_mode=True)
             data.append(project.to_response_dict(published=published, draft=draft))
         return data
