@@ -38,7 +38,7 @@ api_info = openapi.Info(
     title='UNICEF T4D & Innovation Inventory Portal API',
     default_version='v1',
     description='UNICEF T4D & Innovation Inventory Portal API',
-    contact=openapi.Contact(email="f@pulilab.com"),
+    contact=openapi.Contact(email=""),
 )
 
 api_info_router = SimpleRouter()

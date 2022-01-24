@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'qu1nafi=f@#w8fz&)(i4h*-1@!gm4)dg^^@vt7!fhwjo!6qh9z')
+SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
 DEBUG = bool(strtobool(os.environ.get('DEBUG', 'False')))
 
@@ -248,96 +248,6 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
-# PRODUCTION SETTINGS
-if SITE_ID in [3, 4]:
-    import sentry_sdk
-    from sentry_sdk.integrations.django import DjangoIntegration
-    sentry_sdk.init(
-        dsn=os.environ.get('SENTRY_DSN', ''),
-        integrations=[DjangoIntegration()],
-
-        # Set traces_sample_rate to 1.0 to capture 100%
-        # of transactions for performance monitoring.
-        # We recommend adjusting this value in production.
-        traces_sample_rate=1.0,
-
-        # If you wish to associate users to errors (assuming you are using
-        # django.contrib.auth) you may enable sending PII data.
-        send_default_pii=True,
-
-        # By default the SDK will try to use the SENTRY_RELEASE
-        # environment variable, or infer a git commit
-        # SHA as release, however you may want to set
-        # something more human-readable.
-        release=os.environ.get('DEPLOY_VERSION', '0.0.0')
-    )
-
-    if SITE_ID == 3:  # QA
-        # Mailgun settings
-        EMAIL_USE_TLS = True
-        EMAIL_HOST = "smtp.mailgun.org"
-        EMAIL_HOST_USER = "postmaster@whomaps.pulilab.com"
-        EMAIL_HOST_PASSWORD = "5ede15430fbf90989648a0fe12e379cc"
-        EMAIL_PORT = 587
-        EMAIL_BACKEND = 'core.middleware.TestCeleryEmailBackend'
-        TEST_FORCED_TO_ADDRESS = ["t@pulilab.com", "f@pulilab.com"]
-
-    elif SITE_ID == 4:  # PROD AZURE
-        EMAIL_HOST = "extmail01.unicef.org"
-        EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
-
-        RAVEN_CONFIG = {
-            'dsn': 'https://bca06cdc7c9545faac1db722363bc313:5e185d21565d453e83667556ad385f92@sentry.vidzor.com/31',
-        }
-
-    CELERYBEAT_SCHEDULE = {
-        "send_project_approval_digest": {
-            "task": 'send_project_approval_digest',
-            "schedule": datetime.timedelta(days=1),
-        },
-        "project_still_in_draft_notification": {
-            "task": 'project_still_in_draft_notification',
-            "schedule": datetime.timedelta(days=31),
-        },
-        "published_projects_updated_long_ago": {
-            "task": 'published_projects_updated_long_ago',
-            "schedule": datetime.timedelta(days=31),
-        },
-        "project_review_requested_monthly_notification": {
-            "task": 'project_review_requested_monthly_notification',
-            "schedule": datetime.timedelta(days=30),
-        },
-    }
-
-    DEBUG = False
-
-    ALLOWED_HOSTS = ['uni-tiip-dev', '40.113.114.39', 'tiip.unitst.org', 'invent.unicef.org',
-                     'nginx:9010', 'nginx', 'qa.invent.pulilab.com', 'dev.invent.pulilab.com']
-
-    REST_FRAMEWORK = {
-        'DEFAULT_AUTHENTICATION_CLASSES': (
-            'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        ),
-        'DEFAULT_RENDERER_CLASSES': (
-            'rest_framework.renderers.JSONRenderer',
-        )
-    }
-
-    CACHES = {
-        "default": {
-            "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": "redis://{}:6379/1".format(REDIS_URL),
-            "OPTIONS": {
-                "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            }
-        }
-    }
-
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-
 FROM_EMAIL = DEFAULT_FROM_EMAIL
 
 
@@ -392,24 +302,10 @@ for arg in sys.argv:
         DEFAULT_FILE_STORAGE = 'inmemorystorage.InMemoryStorage'
         PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
 
-if SITE_ID == 4:
-    ENVIRONMENT_NAME = f"PRODUCTION - ({os.environ.get('DEPLOY_VERSION', 'Unknown')})"
-    ENVIRONMENT_COLOR = "red"
-elif SITE_ID == 3:
-    ENVIRONMENT_NAME = f"QA / STAGING - ({os.environ.get('DEPLOY_VERSION', 'Unknown')})"
-    ENVIRONMENT_COLOR = "orange"
-else:
-    ENVIRONMENT_NAME = f"DEVELOPMENT - ({os.environ.get('DEPLOY_VERSION', 'Unknown')})"
-    ENVIRONMENT_COLOR = "blue"
+ENVIRONMENT_NAME = f"DEVELOPMENT - ({os.environ.get('DEPLOY_VERSION', 'Unknown')})"
+ENVIRONMENT_COLOR = "blue"
 
-
-if CI_RUN:
-    STATIC_ROOT = "/home/circleci/tiip/nginx/site/static/"
-    MEDIA_ROOT = "/home/circleci/tiip/django/media/"
-
-OSM_MAP_CLI_KEY = 'a9ea45b5-ab37-4323-8263-767aa5896113'
-CSRF_TRUSTED_ORIGINS = ['uni-tiip-dev', '40.113.114.39', 'tiip.unitst.org',
-                        'invent.unicef.org', 'qa.invent.pulilab.com', 'dev.invent.pulilab.com']
+OSM_MAP_CLI_KEY = os.environ.get('OSM_MAP_CLI_KEY', '')
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
@@ -437,5 +333,3 @@ THUMBNAIL_PADDING = True
 # THUMBNAIL_RATIO = 14.56/9
 THUMBNAIL_HEIGHT = 520
 # THUMBNAIL_WIDTH = round(THUMBNAIL_HEIGHT*THUMBNAIL_RATIO)
-
-SIMPLE_FEEDBACK_SEND_TO = 'invent@unicef.org'

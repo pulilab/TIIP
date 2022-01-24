@@ -24,9 +24,9 @@ if (result.error) {
 
 const loginUrl =
   'https://login.microsoftonline.com/' +
-  (process.env.AZURE_TENANT || '77410195-14e1-4fb8-904b-ab1892023667') +
+  (process.env.AZURE_TENANT || '') +
   '/oauth2/v2.0/authorize?client_id=' +
-  (process.env.AZURE_CLIENT_ID || '77b9a76e-130b-4847-8345-82841046150f') +
+  (process.env.AZURE_CLIENT_ID || '') +
   '&response_type=code&redirect_uri=' +
   (process.env.AZURE_REDIRECT_URI ||
     'http://localhost/accounts/azure/login/callback/') +
