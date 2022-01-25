@@ -47,29 +47,29 @@ class ProjectPublicViewSet(ViewSet):
         """
         Terminology and taxonomy endpoint - List all the available taxonomies and terminologies
 
-        Reponse:
-        `technology_platforms` = WHO's Software list
-        `goal_areas`
-        `result_areas`
-        `capability_levels`
-        `capability_categories`
-        `capability_subcategories`
-        `health_focus_areas` = WHO's Health Focus Areas
-        `hsc_challenges` = WHO's Health System Challanges
-        `strategies` = WHO's Digital Health Interventions
-        `regional_offices`
-        `currencies`
-        `sectors` = UNICEF Sectors
-        `regional_priorities` = Regional Priorities
-        `hardware` = Hardware Platform(s) and Physical Product(s)
-        `nontech` = Programme Innovation(s) and Non-Technology Platform(s)
-        `functions` = Function(s) of Platform
-        `cpd` = CPD and annual work plan
-        `innovation_categories` = Innovation Categories
-        `innovation_ways` = Innovation ways
-        `isc` = Information Security Classification
-        `phases` = [DEPRECATED] Phase of Initiative
-        `stages` = [New] Phases of initiative
+        Reponse:  
+        `technology_platforms` = WHO's Software list  
+        `goal_areas`  
+        `result_areas`  
+        `capability_levels`  
+        `capability_categories`  
+        `capability_subcategories`  
+        `health_focus_areas` = WHO's Health Focus Areas  
+        `hsc_challenges` = WHO's Health System Challanges  
+        `strategies` = WHO's Digital Health Interventions  
+        `regional_offices`  
+        `currencies`  
+        `sectors` = UNICEF Sectors  
+        `regional_priorities` = Regional Priorities  
+        `hardware` = Hardware Platform(s) and Physical Product(s)  
+        `nontech` = Programme Innovation(s) and Non-Technology Platform(s)  
+        `functions` = Function(s) of Platform  
+        `cpd` = CPD and annual work plan  
+        `innovation_categories` = Innovation Categories  
+        `innovation_ways` = Innovation ways  
+        `isc` = Information Security Classification  
+        `phases` = [DEPRECATED] Phase of Initiative  
+        `stages` = [New] Phases of initiative  
         """
         return Response(self._get_project_structure())
 
