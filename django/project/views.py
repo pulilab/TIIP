@@ -382,7 +382,7 @@ class ProjectUnPublishViewSet(CheckRequiredMixin, TeamTokenAuthMixin, ViewSet):
         data = project.to_representation(draft_mode=True)
 
         ProjectVersion.objects.create(project=project, user=request.user.userprofile, name=project.name,
-                                      data=draft.data, published=False)
+                                      data=project.data, published=False)
         return Response(project.to_response_dict(published={}, draft=data), status=status.HTTP_200_OK)
 
 
