@@ -421,7 +421,6 @@ export default {
         exportCols.forEach((col) => {
           if (p[col.key] && col.id !== '61') {
             cell = col.parse(p[col.key])
-            console.log('🚀 ~ file: ListExport.vue ~ line 424 ~ exportCols.forEach ~ cell', cell)
             if (Array.isArray(cell)) {
               row.push(...cell)
             } else {
