@@ -25,6 +25,7 @@ from project.utils import remove_keys, migrate_project_phases
 from toolkit.toolkit_data import toolkit_default
 from user.models import UserProfile
 
+
 class ProjectManager(models.Manager):
     use_in_migrations = True
 
