@@ -1,4 +1,5 @@
 import uuid
+from copy import deepcopy
 from collections import namedtuple
 from typing import List, Union
 
@@ -23,7 +24,6 @@ from project.cache import InvalidateCacheMixin
 from project.utils import remove_keys, migrate_project_phases
 from toolkit.toolkit_data import toolkit_default
 from user.models import UserProfile
-
 
 class ProjectManager(models.Manager):
     use_in_migrations = True
@@ -129,10 +129,10 @@ class Project(SoftDeleteModel, ExtendedModel):
         return self.get_country().user_in_groups(user.userprofile) if self.get_country() else False
 
     def get_member_data(self):
-        return self.data
+        return deepcopy(self.data)
 
     def get_member_draft(self):
-        return self.draft
+        return deepcopy(self.draft)
 
     def get_non_member_data(self):
         return remove_keys(data_dict=self.data, keys=self.FIELDS_FOR_MEMBERS_ONLY)
