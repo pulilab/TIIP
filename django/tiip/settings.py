@@ -233,6 +233,8 @@ ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_ADAPTER = 'user.adapters.DefaultAccountAdapterCustom'
 ACCOUNT_EMAIL_SUBJECT_PREFIX = ""
 ACCOUNT_EMAIL_CONFIRMATION_HMAC = False  # This is for backwards compat, should move to True to not store it in DB
+
+PROJECT_NAME = "UNICEF T4D & Innovation Inventory Portal"
 DEFAULT_FROM_EMAIL = "UNICEF T4D & Innovation Inventory Portal <noreply@invent.unicef.org>"
 
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
@@ -378,12 +380,10 @@ ROSETTA_MESSAGES_PER_PAGE = 25
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'translations'),  # don't move this, update_translations mgmt cmd is using it
     os.path.join(BASE_DIR, 'locale'),
-    os.path.join(BASE_DIR, 'cms/locale'),
     os.path.join(BASE_DIR, 'core/locale'),
     os.path.join(BASE_DIR, 'country/locale'),
     os.path.join(BASE_DIR, 'project/locale'),
     os.path.join(BASE_DIR, 'search/locale'),
-    os.path.join(BASE_DIR, 'toolkit/locale'),
     os.path.join(BASE_DIR, 'user/locale'),
 ]
 
