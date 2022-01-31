@@ -25,6 +25,9 @@ PBKDF2PasswordHasher.iterations = 30000
 class Organisation(ExtendedModel):
     name = models.CharField(unique=True, max_length=255)
 
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):  # pragma: no cover
         return self.name
 
@@ -70,7 +73,8 @@ class UserProfile(ExtendedModel):
         return "{} <{}>".format(self.name, self.user.email) if self.name else ""
 
     @staticmethod
-    def get_sentinel_user():
+    def get_sentinel_user():  # pragma: no cover
+        # TODO: remove this after CMS is removed
         user, _ = get_user_model().objects.get_or_create(username='deleted')
         profile, _ = UserProfile.objects.get_or_create(name='Deleted user', user=user)
         return profile
