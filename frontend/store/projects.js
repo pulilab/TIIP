@@ -1,5 +1,4 @@
 import isEmpty from 'lodash/isEmpty'
-import forOwn from 'lodash/forOwn'
 import get from 'lodash/get'
 
 export const state = () => ({
@@ -443,13 +442,9 @@ export const mutations = {
   SET_PROJECT_STRUCTURE: (state, structure) => {
     state.projectStructure = structure
   },
-  SET_CURRENT_PROJECT_COVERAGE_VERSIONS: (state, coverage) => {
-    state.currentProjectCoverageVersions = coverage
-  },
   RESET_PROJECTS_DATA: (state) => {
     state.userProjects = []
     state.currentProject = null
     state.projectStructure = {}
-    state.currentProjectCoverageVersions = []
   },
 }
