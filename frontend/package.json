@@ -11,7 +11,7 @@
     "start": "nuxt start",
     "analyze": "nuxt build -a ",
     "precommit": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "precommit:fix": "yarn lint --fix",
+    "precommit:fix": "yarn precommit --fix",
     "test": "jest",
     "test:w": "jest --watch",
     "translation:extract": "bash gettext.sh"
