@@ -10,10 +10,8 @@
     "build": "nuxt build",
     "start": "nuxt start",
     "analyze": "nuxt build -a ",
-    "generate": "nuxt generate",
-    "lint": "eslint --fix --ext .js,.vue --ignore-path .gitignore .",
-    "precommit": "npm run lint",
-    "precommit:fix": "npm run lint -- --fix",
+    "precommit": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "precommit:fix": "yarn lint --fix",
     "test": "jest",
     "test:w": "jest --watch",
     "translation:extract": "bash gettext.sh"
