@@ -42,3 +42,5 @@ yarn-error.log
 .history/
 django/.env
 *.icloud
+init-letsencrypt.qa.sh
+init-letsencrypt.dev.sh
