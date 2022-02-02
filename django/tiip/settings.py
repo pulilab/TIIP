@@ -219,6 +219,8 @@ ACCOUNT_ADAPTER = 'user.adapters.DefaultAccountAdapterCustom'
 ACCOUNT_EMAIL_SUBJECT_PREFIX = ""
 ACCOUNT_EMAIL_CONFIRMATION_HMAC = False  # This is for backwards compat, should move to True to not store it in DB
 
+ENABLE_API_REGISTRATION = env.bool('ENABLE_API_REGISTRATION', default=True)
+
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
