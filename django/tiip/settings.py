@@ -19,7 +19,8 @@ ALLOWED_HOSTS = ['*']
 
 PROJECT_NAME = env.str('PROJECT_NAME', default='Example')
 DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL', default='john@example.org')
-API_MAINTAINER = env.str('API_MAINTAINER', default='john@example.org')  # Developer email who can be reached for API inquiries
+# Developer email who can be reached for API inquiries
+API_MAINTAINER = env.str('API_MAINTAINER', default='john@example.org')
 
 # Application definition
 
@@ -327,6 +328,6 @@ ENVIRONMENT_COLOR = "blue"
 EMAIL_VALIDATOR_REGEX = r'{}'.format(env.str('EMAIL_VALIDATOR_REGEX', default=r'*'))
 
 try:
-  from .settings_deployed import *
+    from .settings_deployed import *  # noqa
 except ImportError:
-  pass
+    pass
