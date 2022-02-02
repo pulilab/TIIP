@@ -11,13 +11,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env = Env()
 env.read_env()
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'qu1nafi=f@#w8fz&)(i4h*-1@!gm4)dg^^@vt7!fhwjo!6qh9z')
+SECRET_KEY = env.str('SECRET_KEY')
 
-DEBUG = bool(strtobool(os.environ.get('DEBUG', 'False')))
+DEBUG = env.bool('DEBUG', default=False)
 
 ALLOWED_HOSTS = ['*']
 
+PROJECT_NAME = env.str('PROJECT_NAME', default='Example')
+DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL', default='john@example.org')
 
 # Application definition
 
@@ -51,11 +52,9 @@ INSTALLED_APPS = [
     'user',
     'core',
     'project',
-    'toolkit',
     'country',
     'search',
     'scheduler',
-    'cms',
     'simple-feedback',
     'import_export',
 ]
@@ -97,16 +96,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tiip.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/1.9/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres',
         'USER': 'postgres',
-        'HOST': os.environ.get("DATABASE_URL", 'postgres'),
+        'HOST': 'postgres',
         'PORT': 5432,
     }
 }
@@ -116,10 +111,6 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
-
-
-# Password validation
-# https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -136,16 +127,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/1.9/topics/i18n/
-
 LANGUAGES = (
     ('en', _('English')),
     ('fr', _('French')),
     ('es', _('Spanish')),
     ('pt', _('Portuguese')),
-    ('ar', _('Arabic')),
 )
 LANGUAGE_CODE = 'en'
 
@@ -158,9 +144,6 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.9/howto/static-files/
-
 STATIC_URL = '/static/'
 STATIC_ROOT = '/usr/share/django/static'
 
@@ -170,8 +153,8 @@ MEDIA_URL = '/media/'
 
 FILE_UPLOAD_PERMISSIONS = 0o644
 
-SITE_ID = int(os.environ.get('SITE_ID', 1))
-CI_RUN = bool(os.environ.get('CI_RUN', False))
+SITE_ID = env.int('SITE_ID', default=1)
+CI_RUN = env.bool('CI_RUN', default=False)
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -216,14 +199,14 @@ REST_AUTH_SERIALIZERS = {
 SOCIALACCOUNT_PROVIDERS = {
     'azure': {
         'APP': {
-            'client_id': os.environ.get('AZURE_CLIENT_ID', ''),
-            'secret': os.environ.get('AZURE_SECRET', ''),
+            'client_id': env.str('AZURE_CLIENT_ID', default=''),
+            'secret': env.str('AZURE_SECRET', default=''),
         },
     }
 }
 SOCIALACCOUNT_ADAPTER = 'user.adapters.MyAzureAccountAdapter'
-SOCIALACCOUNT_AZURE_TENANT = os.environ.get('AZURE_TENANT', '')
-SOCIALACCOUNT_CALLBACK_URL = os.environ.get('AZURE_CALLBACK_URL', 'http://localhost/accounts/azure/login/callback/')
+SOCIALACCOUNT_AZURE_TENANT = env.str('AZURE_TENANT', default='')
+SOCIALACCOUNT_CALLBACK_URL = env.str('AZURE_CALLBACK_URL', default='http://localhost/accounts/azure/login/callback/')
 LOGIN_REDIRECT_URL = '/'
 
 ACCOUNT_EMAIL_VERIFICATION = "none"
@@ -235,15 +218,12 @@ ACCOUNT_ADAPTER = 'user.adapters.DefaultAccountAdapterCustom'
 ACCOUNT_EMAIL_SUBJECT_PREFIX = ""
 ACCOUNT_EMAIL_CONFIRMATION_HMAC = False  # This is for backwards compat, should move to True to not store it in DB
 
-PROJECT_NAME = "UNICEF T4D & Innovation Inventory Portal"
-DEFAULT_FROM_EMAIL = "UNICEF T4D & Innovation Inventory Portal <noreply@invent.unicef.org>"
-
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-EMAIL_SENDING_PRODUCTION = os.environ.get('EMAIL_SENDING_PRODUCTION', False)
+EMAIL_SENDING_PRODUCTION = env.bool('EMAIL_SENDING_PRODUCTION', default=False)
 
-REDIS_URL = os.environ.get('REDIS_URL', 'redis')
+REDIS_URL = env.str('REDIS_URL', default='redis')
 
 # Celery settings
 BROKER_URL = 'redis://{}:6379/0'.format(REDIS_URL)
@@ -251,98 +231,7 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
-# PRODUCTION SETTINGS
-if SITE_ID in [3, 4]:
-    import sentry_sdk
-    from sentry_sdk.integrations.django import DjangoIntegration
-    sentry_sdk.init(
-        dsn=os.environ.get('SENTRY_DSN', ''),
-        integrations=[DjangoIntegration()],
-
-        # Set traces_sample_rate to 1.0 to capture 100%
-        # of transactions for performance monitoring.
-        # We recommend adjusting this value in production.
-        traces_sample_rate=1.0,
-
-        # If you wish to associate users to errors (assuming you are using
-        # django.contrib.auth) you may enable sending PII data.
-        send_default_pii=True,
-
-        # By default the SDK will try to use the SENTRY_RELEASE
-        # environment variable, or infer a git commit
-        # SHA as release, however you may want to set
-        # something more human-readable.
-        release=os.environ.get('DEPLOY_VERSION', '0.0.0')
-    )
-
-    if SITE_ID == 3:  # QA
-        # Mailgun settings
-        EMAIL_USE_TLS = True
-        EMAIL_HOST = "smtp.mailgun.org"
-        EMAIL_HOST_USER = "postmaster@whomaps.pulilab.com"
-        EMAIL_HOST_PASSWORD = "5ede15430fbf90989648a0fe12e379cc"
-        EMAIL_PORT = 587
-        EMAIL_BACKEND = 'core.middleware.TestCeleryEmailBackend'
-        TEST_FORCED_TO_ADDRESS = ["t@pulilab.com", "f@pulilab.com"]
-
-    elif SITE_ID == 4:  # PROD AZURE
-        EMAIL_HOST = "extmail01.unicef.org"
-        EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
-
-        RAVEN_CONFIG = {
-            'dsn': 'https://bca06cdc7c9545faac1db722363bc313:5e185d21565d453e83667556ad385f92@sentry.vidzor.com/31',
-        }
-
-    CELERYBEAT_SCHEDULE = {
-        "send_project_approval_digest": {
-            "task": 'send_project_approval_digest',
-            "schedule": datetime.timedelta(days=1),
-        },
-        "project_still_in_draft_notification": {
-            "task": 'project_still_in_draft_notification',
-            "schedule": datetime.timedelta(days=31),
-        },
-        "published_projects_updated_long_ago": {
-            "task": 'published_projects_updated_long_ago',
-            "schedule": datetime.timedelta(days=31),
-        },
-        "project_review_requested_monthly_notification": {
-            "task": 'project_review_requested_monthly_notification',
-            "schedule": datetime.timedelta(days=30),
-        },
-    }
-
-    DEBUG = False
-
-    ALLOWED_HOSTS = ['uni-tiip-dev', '40.113.114.39', 'tiip.unitst.org', 'invent.unicef.org',
-                     'nginx:9010', 'nginx', 'qa.invent.pulilab.com', 'dev.invent.pulilab.com']
-
-    REST_FRAMEWORK = {
-        'DEFAULT_AUTHENTICATION_CLASSES': (
-            'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        ),
-        'DEFAULT_RENDERER_CLASSES': (
-            'rest_framework.renderers.JSONRenderer',
-        )
-    }
-
-    CACHES = {
-        "default": {
-            "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": "redis://{}:6379/1".format(REDIS_URL),
-            "OPTIONS": {
-                "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            }
-        }
-    }
-
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-
 FROM_EMAIL = DEFAULT_FROM_EMAIL
-
 
 # Geodata settings
 GEOJSON_TEMP_DIR = os.path.join(os.path.dirname(__file__), os.pardir, 'temp/')
@@ -358,7 +247,7 @@ LOGGING = {
         'logfile': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/tmp/whomaps.log',
+            'filename': '/tmp/logger.log',
             'maxBytes': 10000000,
         },
     },
@@ -393,24 +282,11 @@ for arg in sys.argv:
         DEFAULT_FILE_STORAGE = 'inmemorystorage.InMemoryStorage'
         PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
 
-if SITE_ID == 4:
-    ENVIRONMENT_NAME = f"PRODUCTION - ({os.environ.get('DEPLOY_VERSION', 'Unknown')})"
-    ENVIRONMENT_COLOR = "red"
-elif SITE_ID == 3:
-    ENVIRONMENT_NAME = f"QA / STAGING - ({os.environ.get('DEPLOY_VERSION', 'Unknown')})"
-    ENVIRONMENT_COLOR = "orange"
-else:
-    ENVIRONMENT_NAME = f"DEVELOPMENT - ({os.environ.get('DEPLOY_VERSION', 'Unknown')})"
-    ENVIRONMENT_COLOR = "blue"
-
-
 if CI_RUN:
     STATIC_ROOT = "/home/circleci/tiip/nginx/site/static/"
     MEDIA_ROOT = "/home/circleci/tiip/django/media/"
 
-OSM_MAP_CLI_KEY = 'a9ea45b5-ab37-4323-8263-767aa5896113'
-CSRF_TRUSTED_ORIGINS = ['uni-tiip-dev', '40.113.114.39', 'tiip.unitst.org',
-                        'invent.unicef.org', 'qa.invent.pulilab.com', 'dev.invent.pulilab.com']
+OSM_MAP_CLI_KEY = env.str('OSM_MAP_CLI_KEY', default='')
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
@@ -430,8 +306,8 @@ PORTFOLIO_PROBLEMSTATEMENT_TRESHOLDS = {
     'HIGH': 6
 }
 
-NOTIFICATION_PROJECT_REVIEW_DAYS = 30  # subject to change, check with client
-MIGRATE_PHASES = os.environ.get('MIGRATE_PHASES', False)
+NOTIFICATION_PROJECT_REVIEW_DAYS = 30
+MIGRATE_PHASES = env.bool('MIGRATE_PHASES', default=False)
 
 THUMBNAIL_PRESERVE_FORMAT = False
 THUMBNAIL_PADDING = True
@@ -439,4 +315,12 @@ THUMBNAIL_PADDING = True
 THUMBNAIL_HEIGHT = 520
 # THUMBNAIL_WIDTH = round(THUMBNAIL_HEIGHT*THUMBNAIL_RATIO)
 
-SIMPLE_FEEDBACK_SEND_TO = 'invent@unicef.org'
+SIMPLE_FEEDBACK_SEND_TO = env.str('SIMPLE_FEEDBACK_SEND_TO', 'john@example.org')
+
+ENVIRONMENT_NAME = f"DEVELOPMENT - ({env.str('DEPLOY_VERSION', default='Unknown')})"
+ENVIRONMENT_COLOR = "blue"
+
+try:
+  from .settings_deployed import *
+except ImportError:
+  pass
