@@ -19,6 +19,7 @@ ALLOWED_HOSTS = ['*']
 
 PROJECT_NAME = env.str('PROJECT_NAME', default='Example')
 DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL', default='john@example.org')
+API_MAINTAINER = env.str('API_MAINTAINER', default='john@example.org')  # Developer email who can be reached for API inquiries
 
 # Application definition
 
@@ -315,10 +316,13 @@ THUMBNAIL_PADDING = True
 THUMBNAIL_HEIGHT = 520
 # THUMBNAIL_WIDTH = round(THUMBNAIL_HEIGHT*THUMBNAIL_RATIO)
 
-SIMPLE_FEEDBACK_SEND_TO = env.str('SIMPLE_FEEDBACK_SEND_TO', 'john@example.org')
+SIMPLE_FEEDBACK_SEND_TO = env.str('SIMPLE_FEEDBACK_SEND_TO', default='john@example.org')
 
 ENVIRONMENT_NAME = f"DEVELOPMENT - ({env.str('DEPLOY_VERSION', default='Unknown')})"
 ENVIRONMENT_COLOR = "blue"
+
+# Validator for emails that can be registered as team members, viewers, eg.: r'(example.org|example.com)$'
+EMAIL_VALIDATOR_REGEX = r'{}'.format(env.str('EMAIL_VALIDATOR_REGEX', default=r'*'))
 
 try:
   from .settings_deployed import *
