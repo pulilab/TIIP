@@ -325,7 +325,7 @@ ENVIRONMENT_NAME = f"DEVELOPMENT - ({env.str('DEPLOY_VERSION', default='Unknown'
 ENVIRONMENT_COLOR = "blue"
 
 # Validator for emails that can be registered as team members, viewers, eg.: r'(example.org|example.com)$'
-EMAIL_VALIDATOR_REGEX = r'{}'.format(env.str('EMAIL_VALIDATOR_REGEX', default=r'*'))
+EMAIL_VALIDATOR_REGEX = r'{}'.format(env.str('EMAIL_VALIDATOR_REGEX', default=''))
 
 try:
     from .settings_deployed import *  # noqa
