@@ -85,7 +85,7 @@ const config = {
     { src: '~plugins/watchHead.js', ssr: false },
     { src: '~plugins/directives.js', ssr: false },
     { src: '~plugins/charts.js', ssr: false },
-    { src: '~plugins/no-unicef-record.js', ssr: false },
+    // { src: '~plugins/no-unicef-record.js', ssr: false },
     { src: '~plugins/filters.js' },
   ],
   modules: [
@@ -182,7 +182,8 @@ const config = {
     retry: false,
   },
   router: {
-    middleware: ['auth', 'noUnicefRecords', 'reset', 'tracking'],
+    // middleware: ['auth', 'noUnicefRecords', 'reset', 'tracking'],
+    middleware: ['auth', 'reset', 'tracking'],
     base: '/',
   },
   // purgeCSS: {
