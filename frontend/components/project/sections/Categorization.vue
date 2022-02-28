@@ -117,9 +117,7 @@
           class="DigitalHealthIntervention"
         >
           <template slot="label">
-            <translate key="strategies">
-              What are the Digital Health Intervention(s)?
-            </translate>
+            <translate key="strategies">What are the Digital Health Intervention(s)?</translate>
             <a
               class="TooltipLink"
               target="_blank"

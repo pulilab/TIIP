@@ -3,10 +3,7 @@
     <div class="Info">
       <p>
         <fa icon="info-circle" />
-        <translate>
-          The Import Interface allows you to import your Projects from an Excel
-          file into the Digital Health Atlas.
-        </translate>
+        <translate>The Import Interface allows you to import your Projects from an Excel file into the Digital Health Atlas.</translate>
       </p>
       <p>
         <translate> When importing your initiatives </translate>

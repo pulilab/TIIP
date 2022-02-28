@@ -11,10 +11,7 @@
         :publish-rule="publishRules.interoperability_links"
       >
         <template slot="label">
-          <translate key="interoperability_links">
-            Does your project share information with one or more of these
-            digital Health Information System components?
-          </translate>
+          <translate key="interoperability_links">Does your project share information with one or more of these digital Health Information System components?</translate>
         </template>
 
         <interoperability-link-component
@@ -34,9 +31,7 @@
         :publish-rule="publishRules.interoperability_standards"
       >
         <template slot="label">
-          <translate key="interoperability-standards">
-            What data standards does your digital health project use?
-          </translate>
+          <translate key="interoperability-standards">What data standards does your digital health project use?</translate>
           <form-hint>
             <translate key="interoperability-standards-hint">
               If your data standards are not available here, please email

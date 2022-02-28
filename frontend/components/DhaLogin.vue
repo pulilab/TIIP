@@ -291,14 +291,18 @@ export default {
         return
       }
       try {
+        console.log("🚀 ~ file: DhaLogin.vue ~ line 296 ~ loginLocal ~ this.profile.country", this.profile.country)
         if (this.profile.country) {
           this.setSelectedCountry(this.profile.country)
         }
+        console.log("Basically this.$route.query:[",this.$route.query,"]")
         if (this.$route.query && this.$route.query.next) {
           const path = this.$route.query.next
           const query = { ...this.$route.query, next: undefined }
+          console.log("Yoko on 301: [",path,"]")
           this.$router.push({ path, query })
         } else {
+          console.log("Yoko on 304: [",this.$route.params,"]")
           this.$router.push(
             this.localePath({
               name: 'organisation-inventory-list',
@@ -308,6 +312,8 @@ export default {
           )
         }
       } catch (e) {
+        console.log("Oh no. It yoko. Basically this.$route.query:[",this.$route.query,"]")
+        console.log("YOKO E:[",e,"]")
         this.handleRoutingErrors(e)
       }
       this.$nuxt.$loading.finish('loginLoader')
